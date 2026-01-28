@@ -1,0 +1,392 @@
+﻿<Page x:Class="MiniApp.Views.ScanQrView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Title="ScanQrView"
+      Background="#FFFFFF">
+
+    <Page.Resources>
+        <DropShadowEffect x:Key="textShadow"
+                  Color="Black"
+                  BlurRadius="8"
+                  ShadowDepth="2"
+                  Opacity="0.5"/>
+
+        <!-- Font Resources -->
+        <FontFamily x:Key="PoppinsFamily">pack://application:,,,/Fonts/Poppins/#Poppins</FontFamily>
+
+        <!-- Color Resources -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#4A64E0"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#FF0000"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#444444"/>
+        <SolidColorBrush x:Key="MediumGray" Color="#333333"/>
+    </Page.Resources>
+
+    <Grid>
+
+        <!-- Background Image -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/bg.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <!-- PRINTER STATUS INDICATOR (TOP RIGHT) -->
+        <Grid HorizontalAlignment="Right"
+      VerticalAlignment="Top"
+      Margin="0,20,25,0"
+      Panel.ZIndex="999">
+
+            <Border x:Name="PrinterStatusBorder"
+            CornerRadius="20"
+            Padding="12,6"
+            Background="#3300FF00">
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <!-- Glowing Circle -->
+                    <Ellipse x:Name="PrinterStatusLight"
+                     Width="14"
+                     Height="14"
+                     Fill="LimeGreen"
+                     Margin="0,0,8,0">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="LimeGreen"
+                                      BlurRadius="18"
+                                      ShadowDepth="0"
+                                      Opacity="0.9"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+
+                    <!-- Status Text -->
+                    <TextBlock x:Name="PrinterStatusText"
+                       Text="READY"
+                       FontFamily="{StaticResource PoppinsFamily}"
+                       FontWeight="SemiBold"
+                       FontSize="14"
+                       Foreground="LimeGreen"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+
+        <!-- Main Container -->
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header - Logo -->
+            <Image Grid.Row="0" 
+       Source="/Assets/logo.png" 
+       Height="60" 
+       HorizontalAlignment="Center" 
+       Margin="0,-10,0,60"
+       Stretch="Uniform"
+       MouseDown="Logo_Click"/>
+
+
+            <!-- Main Content -->
+            <Grid Margin="0,66,0,-11" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Side Image -->
+                <Image Grid.Column="0"
+                       Source="/Assets/leftside.png"
+                       Width="327" Height="400"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,0,50,0"
+                       Stretch="Uniform"/>
+
+                <!-- Center QR Section -->
+                <StackPanel Grid.Column="1" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Width="520">
+
+                    <!-- Main Heading -->
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,30" Height="185" Width="558">
+                        <TextBlock Text="CREATE"
+                                   FontFamily="{StaticResource PoppinsFamily}"
+                                   FontSize="45"
+                                   FontWeight="Bold"
+                                   FontStyle="Italic"
+                                   Foreground="Red"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="your own"
+                                   FontFamily="{StaticResource PoppinsFamily}"
+                                   FontSize="26"
+                                   FontStyle="Italic"
+                                   Foreground="#444444"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,-8,0,0"/>
+
+                        <TextBlock Text="PHOTO MAGNETS"
+                                   FontFamily="{StaticResource PoppinsFamily}"
+                                   FontSize="42"
+                                   FontWeight="Bold"
+                                   Foreground="#4A64E0"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,-8,0,0"/>
+
+                        <TextBlock Text="in 30 seconds"
+                                   FontFamily="{StaticResource PoppinsFamily}"
+                                   FontSize="24"
+                                   FontStyle="Italic"
+                                   Foreground="Red"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,5,0,0" Height="56"/>
+                    </StackPanel>
+
+                    <!-- QR Code Area -->
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <Grid>
+                            <Image Source="/Assets/qrborder.png" 
+                                   Width="235" Height="235"
+                                   HorizontalAlignment="Center"/>
+
+                        </Grid>
+
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Scan here to" 
+                                       FontFamily="{StaticResource PoppinsFamily}"
+                                       FontSize="18" 
+                                       Foreground="Black"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="upload your photo!" 
+                                       FontFamily="{StaticResource PoppinsFamily}"
+                                       FontSize="20" 
+                                       FontWeight="Bold" 
+                                       Foreground="Red" Height="38" Width="217"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Right Side Image -->
+                <Image Grid.Column="2"
+                       Source="/Assets/rightside.png"
+                       Width="327" Height="496"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Margin="50,0,0,0"
+                       Stretch="Uniform"/>
+                <Image Source="/Assets/arrow.png" 
+                               Width="106"
+                               HorizontalAlignment="Left"
+                               Margin="30,428,0,72" Grid.Column="1">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-15.351"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+               
+                <Grid Grid.Column="1"
+      Grid.ColumnSpan="2"
+      RenderTransformOrigin="-0.545,0.95"
+      Margin="400,0,140,400"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Top">
+
+                    <!-- Background Star Image -->
+                    <Image x:Name="starImage"
+           Source="/Assets/Star.png"
+           Stretch="Uniform"
+           RenderOptions.BitmapScalingMode="HighQuality"
+           Width="180"
+           Height="180"
+           Visibility="Collapsed"/>
+
+                    <!-- Price Container (same name as before) -->
+                    <StackPanel x:Name="priceText"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Collapsed"
+                RenderTransformOrigin="0.5,0.5">
+
+                        <!-- 10% smaller -->
+                        <StackPanel.RenderTransform>
+                            <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                        </StackPanel.RenderTransform>
+
+                        <!-- PRICE VALUE -->
+                        <TextBlock x:Name="priceValueText"
+                   FontFamily="{StaticResource PoppinsFamily}"
+                   FontSize="55"
+                   FontWeight="ExtraBold"
+                   Foreground="White"
+                   HorizontalAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black"
+                                  BlurRadius="3"
+                                  ShadowDepth="0"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+
+                        <!-- CURRENCY -->
+                        <TextBlock x:Name="priceCurrencyText"
+                   Text="CHF"
+                   FontFamily="{StaticResource PoppinsFamily}"
+                   FontSize="45"
+                   FontWeight="Bold"
+                   Margin="0,-6,0,0"
+                   Foreground="White"
+                   HorizontalAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black"
+                                  BlurRadius="3"
+                                  ShadowDepth="0"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header - Logo -->
+            <Image Grid.Row="0" 
+                Source="/Assets/logo.png" 
+                Height="60" 
+                HorizontalAlignment="Center" 
+                Margin="0,-10,0,60"
+                Stretch="Uniform"
+                 MouseDown="Logo_Click"
+                   />
+
+            <!-- Main Content -->
+            <Grid Margin="0,66,0,-11" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Side Image -->
+                <Image Grid.Column="0"
+                    Source="/Assets/leftside.png"
+                    Width="327" Height="400"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,50,0"
+                    Stretch="Uniform"/>
+
+                <!-- Center QR Section -->
+                <StackPanel Grid.Column="1" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Width="520">
+
+                    <!-- Main Heading -->
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,30" Height="185" Width="558">
+                        <TextBlock Text="CREATE"
+                            FontFamily="{StaticResource PoppinsFamily}"
+                            FontSize="45"
+                            FontWeight="Bold"
+                            FontStyle="Italic"
+                            Foreground="Red"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="your own"
+                            FontFamily="{StaticResource PoppinsFamily}"
+                            FontSize="26"
+                            FontStyle="Italic"
+                            Foreground="#444444"
+                            HorizontalAlignment="Center"
+                            Margin="0,-8,0,0"/>
+
+                        <TextBlock Text="PHOTO MAGNETS"
+                            FontFamily="{StaticResource PoppinsFamily}"
+                            FontSize="42"
+                            FontWeight="Bold"
+                            Foreground="#4A64E0"
+                            HorizontalAlignment="Center"
+                            Margin="0,-8,0,0"/>
+
+                        <TextBlock Text="in 30 seconds"
+                            FontFamily="{StaticResource PoppinsFamily}"
+                            FontSize="24"
+                            FontStyle="Italic"
+                            Foreground="Red"
+                            HorizontalAlignment="Center"
+                            Margin="0,5,0,0" Height="56"/>
+                    </StackPanel>
+
+                    <!-- QR Code Area -->
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <Grid>
+                            <Image Source="/Assets/qrborder.png" 
+                                Width="235" Height="235"
+                                HorizontalAlignment="Center"/>
+
+                            <Image x:Name="qrDynamicImage1"
+                                Width="200" Height="200"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Stretch="Uniform"
+                                Source="/Assets/qr.png"/>
+
+
+                        </Grid>
+
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="Scan here to" 
+                                FontFamily="{StaticResource PoppinsFamily}"
+                                FontSize="18" 
+                                Foreground="Black"
+                                HorizontalAlignment="Center"/>
+                            <TextBlock Text="upload your photo!" 
+                                FontFamily="{StaticResource PoppinsFamily}"
+                                FontSize="20" 
+                                FontWeight="Bold" 
+                                Foreground="Red" Height="38" Width="217"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Right Side Image -->
+                <Image Grid.Column="2"
+                    Source="/Assets/rightside.png"
+                    Width="327" Height="496"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Margin="50,0,0,0"
+                    Stretch="Uniform"/>
+                <Image Source="/Assets/arrow.png" 
+                    Width="106"
+                    HorizontalAlignment="Left"
+                    Margin="30,428,0,72" Grid.Column="1">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-15.351"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,85 @@
+﻿<Page x:Class="MiniApp.Views.PrintSuccessView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Print Success"
+      Background="#FFFFFF"
+      Loaded="Page_Loaded">
+
+    <Grid>
+        <!-- Background -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/bg.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Logo -->
+            <Image Grid.Row="0"
+                   Source="/Assets/logo.png"
+                   Height="60"
+                   HorizontalAlignment="Center"
+                   Margin="0,20,0,30"
+                   Stretch="Uniform"/>
+
+            <!-- Center Box -->
+            <Border Grid.Row="1"
+                    Background="#EEEEEE"
+                    CornerRadius="20"
+                    Padding="40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="600"
+                    Height="220">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="20"
+                                      ShadowDepth="5"
+                                      Opacity="0.3"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Success Animation / Video -->
+                    <MediaElement x:Name="SuccessVideo"
+                                  Grid.Column="0"
+                                  LoadedBehavior="Manual"
+                                  UnloadedBehavior="Stop"
+                                  Stretch="Uniform"
+                                  MediaEnded="SuccessVideo_MediaEnded"
+                                  MediaFailed="SuccessVideo_MediaFailed"/>
+
+                    <!-- Success Message -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock Text="Your personalized 
+                                   magnet is ready"
+                                   FontSize="24" Foreground="#333"
+                                   HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,10">
+                <!-- Divider line -->
+                <Border Height="3"
+                        Background="#EEEEEE"
+                        Width="660"
+                        Margin="0,0,0,12"
+                        CornerRadius="2"/>
+              
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

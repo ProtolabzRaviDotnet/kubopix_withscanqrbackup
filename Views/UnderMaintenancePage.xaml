@@ -1,0 +1,122 @@
+﻿<Page x:Class="MiniApp.Views.UnderMaintenancePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Kiosk Under Maintenance"
+      Background="#FFFFFF"
+     >
+
+    <Grid>
+        <!-- Background -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/bg.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Logo -->
+            <Image Grid.Row="0"
+                   Source="/Assets/logo.png"
+                   Height="60"
+                   HorizontalAlignment="Center"
+                   Margin="0,20,0,30"
+                   Stretch="Uniform"
+                   MouseDown="Logo_Click_UM"/>
+
+            <!-- Center Box -->
+            <Border Grid.Row="1"
+                    Background="#F2F2F2"
+                    CornerRadius="20"
+                    Padding="40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="620"
+                    Height="240">
+
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="18"
+                                      ShadowDepth="4"
+                                      Opacity="0.25"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0"
+      Width="220"
+      Height="220"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+
+                        <!-- Grey Circle Background -->
+                        <Ellipse Margin="30,40,40,35">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#F5F5F5" Offset="0.0"/>
+                                    <GradientStop Color="#D6D6D6" Offset="1.0"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <!-- Maintenance Image -->
+                        <Image Source="/Assets/UnderMaintenance.png"
+           Stretch="Uniform"
+           Width="200"
+           Height="130"
+           HorizontalAlignment="Left"
+           VerticalAlignment="Top" Margin="40,48,0,0"/>
+                    </Grid>
+
+
+                    <!-- Maintenance Message -->
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="20,0,0,0">
+
+                        <TextBlock Text="Kiosk Under Maintenance"
+                                   FontSize="26"
+                                   FontWeight="SemiBold"
+                                   Foreground="#FF9800"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock x:Name="ErrorMessageText"
+                                   Text="This kiosk is currently under maintenance.
+Services are temporarily unavailable.
+Please try again after some time."
+                                   Margin="0,12,0,0"
+                                   FontSize="18"
+                                   Foreground="#555"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,10">
+
+                <Border Height="3"
+                        Background="#E0E0E0"
+                        Width="680"
+                        Margin="0,0,0,12"
+                        CornerRadius="2"/>
+
+                <TextBlock Text="Thank you for your patience."
+                           FontSize="14"
+                           Foreground="#777"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+       
+    </Grid>
+</Page>

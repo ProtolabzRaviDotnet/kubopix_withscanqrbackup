@@ -1,0 +1,1116 @@
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\MiniAppClonned\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp_Working_11_11_2025\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\Working\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\App.baml
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\App.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+C:\Users\Developer\Desktop\DebugCode\MiniApp_10_12_2025\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\LatestWorking\Today_12_12_25\MiniApp\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Assets\PaymentBadge.svg
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Live\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Clonned\WorkingClient\15_01_26\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Test\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Test\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Test\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Test\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Test\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Test\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Test\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Test\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Test\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Test\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\Client\Live\MiniApp_22_01_26\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Assets\CoverVideo.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Assets\printprogress.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Assets\printsuccess.mp4
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.exe
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Libs\dcrf32.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Libs\SeaorySDK.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.dll.config
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.deps.json
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.runtimeconfig.json
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Azure.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Azure.Identity.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Bcl.Cryptography.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Caching.Memory.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Abstractions.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Logging.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.IdentityModel.Tokens.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.SqlServer.Server.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\Newtonsoft.Json.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\QRCoder.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.ClientModel.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Configuration.ConfigurationManager.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.IdentityModel.Tokens.Jwt.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Memory.Data.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\System.Security.Cryptography.ProtectedData.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\cs\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\de\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\es\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\fr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\it\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\ja\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\ko\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\pl\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\pt-BR\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\ru\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\tr\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\zh-Hans\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.AssemblyReference.cache
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MainWindow.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\LoginView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\App.baml
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MainWindow.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\AttractVideoView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForErrorPage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmExitDialogForUnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ConfirmLogOutDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\LoginView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PasswordDialog.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintErrorView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintProgressView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\PrintSuccessView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\ScanQrView.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\Views\UnderMaintenancePage.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\App.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp_Content.g.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp_MarkupCompile.cache
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.g.resources
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfoInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.AssemblyInfo.cs
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.CoreCompileInputs.cache
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.csproj.Up2Date
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\refint\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll

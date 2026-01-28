@@ -1,0 +1,67 @@
+﻿<Page x:Class="MiniApp.Views.PrintProgressView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Print Progress"
+      Loaded="Page_Loaded"
+      Background="#FFFFFF">
+
+    <Grid>
+        <!-- Background -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/bg.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Logo -->
+            <Image Grid.Row="0" Source="/Assets/logo.png"
+                   Height="60" HorizontalAlignment="Center" Margin="0,20,0,30"
+                   Stretch="Uniform"/>
+
+            <!-- Center Box -->
+            <Border Grid.Row="1" Background="#EEEEEE" CornerRadius="20" Padding="40"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="600" Height="300">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="5" Opacity="0.3"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Loader Video -->
+                    <MediaElement x:Name="LoaderVideo"
+                                  Grid.Column="0"
+                                  LoadedBehavior="Manual"
+                                  UnloadedBehavior="Stop"
+                                  Stretch="Uniform"
+                                  MediaEnded="LoaderVideo_MediaEnded"
+                                  MediaFailed="LoaderVideo_MediaFailed"/>
+
+                    <!-- Text + Timer -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="25,0,0,0">
+                        <TextBlock Text="Your print is in process."
+                                   FontSize="22" Foreground="#333"
+                                   HorizontalAlignment="Left" Margin="0,0,0,10"/>
+
+                        <TextBlock x:Name="TimerText"
+                                   Text="00:30"
+                                   FontSize="48"
+                                   FontWeight="Bold"
+                                   Foreground="#1A237E"
+                                   Margin="55,0,0,0"
+                                   HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

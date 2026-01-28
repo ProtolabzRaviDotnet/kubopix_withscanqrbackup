@@ -1,0 +1,29 @@
+﻿<Application x:Class="MiniApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- Default Font Styles -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" 
+                    Value="pack://application:,,,/MiniApp;component/Fonts/#Poppins"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" 
+                    Value="pack://application:,,,/MiniApp;component/Fonts/#Poppins"/>
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="FontFamily" 
+                    Value="pack://application:,,,/MiniApp;component/Fonts/#Poppins"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" 
+                    Value="pack://application:,,,/MiniApp;component/Fonts/#Poppins"/>
+        </Style>
+
+    </Application.Resources>
+</Application>
+
