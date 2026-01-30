@@ -1114,3 +1114,4 @@ D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-window
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.pdb
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.genruntimeconfig.cache
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\MiniApp.sourcelink.json

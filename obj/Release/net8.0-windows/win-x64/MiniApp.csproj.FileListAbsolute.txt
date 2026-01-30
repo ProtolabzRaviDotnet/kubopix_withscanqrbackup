@@ -5205,7 +5205,6 @@ D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-window
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\hostfxr.dll
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\hostpolicy.dll
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\mscordaccore.dll
-D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\mscordaccore_amd64_amd64_8.0.2225.52707.dll
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\mscordbi.dll
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\mscorrc.dll
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\msquic.dll
@@ -5477,3 +5476,5 @@ D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-window
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\win-x64\MiniApp.pdb
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\win-x64\MiniApp.genruntimeconfig.cache
 D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\win-x64\ref\MiniApp.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\bin\Release\net8.0-windows\win-x64\mscordaccore_amd64_amd64_8.0.2325.60607.dll
+D:\Vinay Work's\KuboMediaDesktopApp\LiveLatest\MiniApp\obj\Release\net8.0-windows\win-x64\MiniApp.sourcelink.json

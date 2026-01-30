@@ -232,7 +232,7 @@ E:\MiniApp2.0\LivePublished\Latest\createdump.exe
 E:\MiniApp2.0\LivePublished\Latest\hostfxr.dll
 E:\MiniApp2.0\LivePublished\Latest\hostpolicy.dll
 E:\MiniApp2.0\LivePublished\Latest\mscordaccore.dll
-E:\MiniApp2.0\LivePublished\Latest\mscordaccore_amd64_amd64_8.0.2225.52707.dll
+E:\MiniApp2.0\LivePublished\Latest\mscordaccore_amd64_amd64_8.0.2325.60607.dll
 E:\MiniApp2.0\LivePublished\Latest\mscordbi.dll
 E:\MiniApp2.0\LivePublished\Latest\mscorrc.dll
 E:\MiniApp2.0\LivePublished\Latest\msquic.dll
