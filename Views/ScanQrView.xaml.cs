@@ -117,23 +117,32 @@ namespace MiniApp.Views
             if (result != true)
                 return;
 
-            // MAKE PRINTER OFFLINE BEFORE EXIT / SHUTDOWN
-            if (_printerId > 0 && _shopLoginId > 0)
-            {
-                await OrderQueueService.SetPrinterOffline(
-                    _printerId,
-                    _shopLoginId
-                );
-            }
-
             // ACTION BASED LOGIC 
             if (passwordDialog.SelectedAction == "EXIT")
             {
+                // MAKE PRINTER OFFLINE BEFORE EXIT
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
                 // Close only Mini-App
                 Application.Current.MainWindow.Close();
             }
             else if (passwordDialog.SelectedAction == "SHUTDOWN")
             {
+                // MAKE PRINTER OFFLINE BEFORE  SHUTDOWN
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
                 // Shutdown Windows
                 System.Diagnostics.Process.Start("shutdown", "/s /t 0");
             }
@@ -144,6 +153,15 @@ namespace MiniApp.Views
             }
             else if (passwordDialog.SelectedAction == "LOGOUTPROFILE")
             {
+                // MAKE PRINTER OFFLINE BEFORE EXIT
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
                 MiniAppSessionManager.Clear();
                 var LoginPage = new LoginView();
                 NavigationService?.Navigate(LoginPage);
@@ -545,6 +563,16 @@ namespace MiniApp.Views
                 if (lastJob == null)
                 {
                     AppLogger.Log("No failed print jobs available.");
+                    return;
+                }
+
+                // SAFETY CHECK — BACKEND REFUND PROTECTION
+                if (lastJob.OrderStatus == 3 && lastJob.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
+                {
+                    FailedPrintSession.Remove(lastJob.OrderId);
+                    AppLogger.Log(
+                        $"Order {lastJob.OrderId} already refunded by backend. Retry blocked."
+                    );
                     return;
                 }
 

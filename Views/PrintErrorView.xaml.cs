@@ -271,6 +271,8 @@ namespace MiniApp.Views
         // Refund Timer Logic
         private void StartRefundTimer()
         {
+            _ = TrackPrintFailureImmediately();
+
             _refundDeadline = DateTime.Now.AddMinutes(10); // FIXED
 
             _refundTimer = new DispatcherTimer
@@ -330,33 +332,24 @@ namespace MiniApp.Views
         // Refund TWINT If Required
         private async Task RefundTwintIfRequired()
         {
-            if (_failedOrder == null)
-                return;
+            if (_failedOrder == null || _refundTriggered) return;
 
-            if (_refundTriggered) //double refund protection
-                return;
-
-            if (_orderQueueService == null)  
+            if (_orderQueueService == null)
             {
                 AppLogger.Log("OrderQueueService is null. Refund skipped.");
                 return;
             }
 
-            // ONLY paid + TWINT
-            if (_failedOrder.IsPaidOrder != 1 ||
-                _failedOrder.OrderPaymentTypeId != 3 ||
-                string.IsNullOrEmpty(_failedOrder.PaymentIntentId))
-                return;
-
             _refundTriggered = true;
 
+            //// 1️-Track failure in backend table
+            //await _orderQueueService.TrackPrintFailureAsync(_failedOrder);
+
+            // 2️-Call Refund API ONLY if eligible (backend will check RefundEligibleAt)
             await _orderQueueService.RefundTwintPaymentAsync(_failedOrder, 0);
 
-            FailedPrintSession.Remove(_failedOrder.OrderId); // cleanup
-
-            AppLogger.Log(
-                $"TWINT refund triggered for Order {_failedOrder.OrderId}"
-            );
+            FailedPrintSession.Remove(_failedOrder.OrderId);
+            AppLogger.Log($"TWINT refund triggered for Order {_failedOrder.OrderId}");
         }
 
         // Maintenance Overlay Methods
@@ -386,5 +379,53 @@ namespace MiniApp.Views
             HideMaintenanceOverlay();
         }
 
+        // Track Print Failure Immediately
+        private async Task TrackPrintFailureImmediately()
+        {
+            if (_failedOrder == null) return;
+            if (_orderQueueService == null) return;
+
+            // Only For Twint Paid Order
+            if (_failedOrder.IsPaidOrder != 1 ||
+                _failedOrder.OrderPaymentTypeId != 3 ||
+                string.IsNullOrEmpty(_failedOrder.PaymentIntentId))
+                return;
+
+            await _orderQueueService.TrackPrintFailureAsync(_failedOrder);
+        }
+
+        // Refund TWINT If Required -- Working Old
+        //private async Task RefundTwintIfRequired()
+        //{
+        //    if (_failedOrder == null)
+        //        return;
+
+        //    if (_refundTriggered) //double refund protection
+        //        return;
+
+        //    if (_orderQueueService == null)  
+        //    {
+        //        AppLogger.Log("OrderQueueService is null. Refund skipped.");
+        //        return;
+        //    }
+
+        //    // ONLY paid + TWINT
+        //    if (_failedOrder.IsPaidOrder != 1 ||
+        //        _failedOrder.OrderPaymentTypeId != 3 ||
+        //        string.IsNullOrEmpty(_failedOrder.PaymentIntentId))
+        //        return;
+
+        //    _refundTriggered = true;
+
+        //    await _orderQueueService.RefundTwintPaymentAsync(_failedOrder, 0);
+
+        //    FailedPrintSession.Remove(_failedOrder.OrderId); // cleanup
+
+        //    AppLogger.Log(
+        //        $"TWINT refund triggered for Order {_failedOrder.OrderId}"
+        //    );
+        //}
+
+        
     }
 }

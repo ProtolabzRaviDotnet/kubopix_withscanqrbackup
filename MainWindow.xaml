@@ -1,4 +1,4 @@
-﻿<Window x:Class="MiniApp.MainWindow"
+﻿<!--<Window x:Class="MiniApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MiniApp"
@@ -8,9 +8,9 @@
         Background="White">
 
     <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-</Window>
+</Window>-->
 
-<!--<Window x:Class="MiniApp.MainWindow"
+<Window x:Class="MiniApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MiniApp"
@@ -24,7 +24,7 @@
 
 
     <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-</Window>-->
+</Window>
 
     
 

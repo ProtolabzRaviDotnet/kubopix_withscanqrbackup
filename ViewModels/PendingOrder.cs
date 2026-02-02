@@ -15,5 +15,6 @@ namespace MiniApp.ViewModels
         public Int64 PrinterId { get; set; }
         public int IsPaidOrder { get; set; } //(0 = Free 1 = Paid)
         public int OrderPaymentTypeId { get; set; } // (1 For Stripe // 2 For Free //3 For Twint)
+        public int OrderStatus { get; set; } //3 For Refunded via Twint
     }
 }

@@ -33,7 +33,9 @@ namespace MiniApp.Services
         private readonly HttpClient _client;
 
         private bool _isProcessing = false;
-        private static bool _isStarted = false; // guard so StartQueue is idempotent
+        //private static bool _isStarted = false; // guard so StartQueue is idempotent
+        private bool _isStarted = false;
+
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private int _printerStatus = 0;
@@ -323,7 +325,8 @@ namespace MiniApp.Services
                             ShopLoginId = order.ShopLoginId,
                             PrinterId = order.PrinterId,
                             IsPaidOrder = order.IsPaidOrder,
-                            OrderPaymentTypeId = order.OrderPaymentTypeId
+                            OrderPaymentTypeId = order.OrderPaymentTypeId,
+                            OrderStatus = order.OrderStatus
                         });
 
                         var failedOrder = FailedPrintSession.GetAll().LastOrDefault();
@@ -1590,6 +1593,22 @@ namespace MiniApp.Services
             });
         }
 
+        // Track Print Failure via API -- Refund Order Tracking
+        public async Task TrackPrintFailureAsync(PendingOrder order)
+        {
+            var payload = new
+            {
+                ShopLoginId = order.ShopLoginId,
+                OrderId = order.OrderId,
+                PaymentIntentId = order.PaymentIntentId,
+                OrderPaymentTypeId = order.OrderPaymentTypeId
+            };
+
+            var json = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await _client.PostAsync($"{AppConfig.ApiBaseUrl}api/refund/track-print-failure", content);
+        }
     }
 }
 

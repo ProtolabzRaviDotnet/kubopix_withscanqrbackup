@@ -45,11 +45,24 @@ namespace MiniApp.Views
                 LoadRibbonCount(PrinterName);
             }
 
+            // ---------------- SAFETY CLEANUP ----------------
+            if (FailedPrintSession.HasFailedJobs)
+            {
+                var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
+
+                //  If already refunded by backend (light cut case)
+                if (lastJob != null && lastJob.OrderStatus == 3 && lastJob.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
+                {
+                    FailedPrintSession.Remove(lastJob.OrderId);
+                    AppLogger.Log($"Refunded order {lastJob.OrderId} removed before showing retry option.");
+                }
+            }
+            // ---------------------------------------------
+
             // FAILED PRINT JOB OPTION
             if (FailedPrintSession.HasFailedJobs)
             {
-                rbPrintFailedJobs.Content =
-                    $"Print Last Failed Job";
+                rbPrintFailedJobs.Content = $"Print Last Failed Job";
 
                 rbPrintFailedJobs.Visibility = Visibility.Visible;
             }
