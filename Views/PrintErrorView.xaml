@@ -146,8 +146,8 @@
                 <StackPanel HorizontalAlignment="Center">
 
                     <Image Source="/Assets/MaintenancePopup.png"
-                           Height="350"
-                           Width="350"
+                           Height="400"
+                           Width="400"
                            Stretch="Uniform"/>
 
                 </StackPanel>
