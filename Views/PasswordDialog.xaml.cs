@@ -45,18 +45,9 @@ namespace MiniApp.Views
                 LoadRibbonCount(PrinterName);
             }
 
-            // ---------------- SAFETY CLEANUP ----------------
-            if (FailedPrintSession.HasFailedJobs)
-            {
-                var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
+            // Call helper function
+            _ = CheckAndRemoveRefundedOrderAsync();
 
-                //  If already refunded by backend (light cut case)
-                if (lastJob != null && lastJob.OrderStatus == 3 && lastJob.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
-                {
-                    FailedPrintSession.Remove(lastJob.OrderId);
-                    AppLogger.Log($"Refunded order {lastJob.OrderId} removed before showing retry option.");
-                }
-            }
             // ---------------------------------------------
 
             // FAILED PRINT JOB OPTION
@@ -119,5 +110,25 @@ namespace MiniApp.Views
             DialogResult = false;
             Close();
         }
+
+        private async Task CheckAndRemoveRefundedOrderAsync()
+        {
+            if (!FailedPrintSession.HasFailedJobs)
+                return;
+
+            var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
+            if (lastJob == null)
+                return;
+
+            var orderDetail = await LoginView.GetOrderDetailByOrderId(lastJob.OrderId);
+            if (orderDetail != null && orderDetail.OrderStatus == 3 && orderDetail.OrderPaymentTypeId == 3)
+            {
+                rbPrintFailedJobs.Visibility = Visibility.Collapsed;
+
+                FailedPrintSession.Remove(lastJob.OrderId);
+                AppLogger.Log($"Refunded order {lastJob.OrderId} removed before showing retry option.");
+            }
+        }
+
     }
 }

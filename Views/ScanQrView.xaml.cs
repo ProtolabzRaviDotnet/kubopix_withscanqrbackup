@@ -566,8 +566,17 @@ namespace MiniApp.Views
                     return;
                 }
 
+                // Await the async API call
+                var orderDetail = await LoginView.GetOrderDetailByOrderId(lastJob.OrderId);
+
+                 if (orderDetail == null)
+                 {
+                     AppLogger.Log($"Order details not found for Order ID {lastJob.OrderId}. Retry aborted.");
+                     return;
+                 }
+
                 // SAFETY CHECK — BACKEND REFUND PROTECTION
-                if (lastJob.OrderStatus == 3 && lastJob.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
+                if (orderDetail.OrderStatus == 3 && orderDetail.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
                 {
                     FailedPrintSession.Remove(lastJob.OrderId);
                     AppLogger.Log(

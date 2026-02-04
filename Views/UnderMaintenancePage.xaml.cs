@@ -188,7 +188,7 @@ namespace MiniApp.Views
             if (qrDetails == null) return;
 
             // Fetch LIVE printer state
-            var printerState = await LoginView.GetLivePrinterState(session.Token, session.PrinterId, session.ShopLoginId);
+            var printerState = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
             if (printerState == null) return; // <-- null check
 
             NavigationService?.Navigate(

@@ -44,6 +44,8 @@ namespace MiniApp.Views
 
         private bool _isCurrentErrorTwint = false; // NEW: Only current error TWINT flag
 
+        private bool _printFailureTrackedOnce = false;
+
         // Constructor
         public PrintErrorView(string errorMessage, PendingOrder? failedOrder = null, int? orderPaymentTypeId = null, bool isSdkPrinterError = false)
         {
@@ -108,6 +110,13 @@ namespace MiniApp.Views
             Loaded += Page_Loaded;
             Unloaded += Page_Unloaded;
             _isSdkPrinterError = isSdkPrinterError;
+
+            // ---- AFTER OrderQueueService initialization ----
+            if (_isCurrentErrorTwint)
+            {
+                _ = TrackPrintFailureImmediately();
+            }
+
         }
 
         // Page Events and Methods
@@ -160,18 +169,18 @@ namespace MiniApp.Views
             if (result != true)
                 return;
 
-            // MAKE PRINTER OFFLINE BEFORE EXIT / SHUTDOWN
-            if (printerId > 0 && shoploginId > 0)
-            {
-                await OrderQueueService.SetPrinterOffline(
-                    printerId,
-                    shoploginId
-                );
-            }
-
             // ACTION BASED LOGIC 
             if (errorPageDailog.SelectedAction == "EXIT")
             {
+                // MAKE PRINTER OFFLINE BEFORE EXIT / SHUTDOWN
+                if (printerId > 0 && shoploginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        printerId,
+                        shoploginId
+                    );
+                }
+
                 // Close only Mini-App
                 Application.Current.MainWindow.Close();
             }
@@ -244,7 +253,7 @@ namespace MiniApp.Views
             if (qrDetails == null) return;
 
             // Fetch LIVE printer state
-            var printerState = await LoginView.GetLivePrinterState(session.Token, session.PrinterId, session.ShopLoginId);
+            var printerState = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
             if (printerState == null) return; // <-- null check
 
             NavigationService?.Navigate(
@@ -271,7 +280,7 @@ namespace MiniApp.Views
         // Refund Timer Logic
         private void StartRefundTimer()
         {
-            _ = TrackPrintFailureImmediately();
+            //_ = TrackPrintFailureImmediately();
 
             _refundDeadline = DateTime.Now.AddMinutes(10); // FIXED
 
@@ -382,14 +391,25 @@ namespace MiniApp.Views
         // Track Print Failure Immediately
         private async Task TrackPrintFailureImmediately()
         {
-            if (_failedOrder == null) return;
-            if (_orderQueueService == null) return;
+            if (_printFailureTrackedOnce)
+
+                return;
+
+            if (_orderQueueService == null)
+
+                return;
+
+            if (_failedOrder == null)
+
+                return;
+
 
             // Only For Twint Paid Order
-            if (_failedOrder.IsPaidOrder != 1 ||
-                _failedOrder.OrderPaymentTypeId != 3 ||
-                string.IsNullOrEmpty(_failedOrder.PaymentIntentId))
+            if (_failedOrder.IsPaidOrder != 1 || _failedOrder.OrderPaymentTypeId != 3 || string.IsNullOrEmpty(_failedOrder.PaymentIntentId))
+
                 return;
+
+            _printFailureTrackedOnce = true; // SET BEFORE await
 
             await _orderQueueService.TrackPrintFailureAsync(_failedOrder);
         }
@@ -426,6 +446,6 @@ namespace MiniApp.Views
         //    );
         //}
 
-        
+
     }
 }

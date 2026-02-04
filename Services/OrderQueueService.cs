@@ -651,6 +651,26 @@ namespace MiniApp.Services
 
                 return (false, $"Print exception: {ex.Message}");
             }
+
+            finally
+            {
+                // Temp Image Cleanup
+                if (!string.IsNullOrEmpty(resizedPath))
+                {
+                    try
+                    {
+                        if (File.Exists(resizedPath))
+                        {
+                            File.Delete(resizedPath);
+                            AppLogger.Log("TEMP file deleted in finally.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.Log("TEMP delete failed in finally: " + ex.Message);
+                    }
+                }
+            }
         }
 
         // Capture Payment via API

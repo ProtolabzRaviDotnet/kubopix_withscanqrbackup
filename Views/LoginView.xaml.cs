@@ -3,6 +3,7 @@ using MiniApp.Services;
 using MiniApp.ViewModels;
 using MiniApp.Wrapper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -587,6 +588,39 @@ namespace MiniApp.Views
                 return JsonConvert.DeserializeObject<PrinterState>(
                     result!.data!.ToString()
                 );
+            }
+        }
+
+        //Make Printer Offline Printer Id ShopLogin Id
+        public static async Task<OrderDetail?> GetOrderDetailByOrderId(Int64 orderId)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"{AppConfig.ApiBaseUrl}api/get/orderdetails?orderId={orderId}";
+
+                    AppLogger.Log("Calling GetOrderDetailByOrderId API: " + url);
+
+                    var response = await client.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
+                        return null;
+
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    var apiResponse = JsonConvert.DeserializeObject<JObject>(json);
+                    var dataToken = apiResponse?["data"];      // null-safe access
+                    if (dataToken == null)
+                        return null;
+
+                    return dataToken.ToObject<OrderDetail>();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("GetOrderDetailByOrderId Error: " + ex.Message);
+                return null;
             }
         }
 
