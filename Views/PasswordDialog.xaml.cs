@@ -36,6 +36,9 @@ namespace MiniApp.Views
         // EVENTS
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Call helper function
+            _ = CheckAndRemoveRefundedOrderAsync();
+
             PasswordBox.Focus();
 
             string PrinterName = LoginView.GetCurrentSessionPrinterName() ?? string.Empty;
@@ -44,9 +47,6 @@ namespace MiniApp.Views
             {
                 LoadRibbonCount(PrinterName);
             }
-
-            // Call helper function
-            _ = CheckAndRemoveRefundedOrderAsync();
 
             // ---------------------------------------------
 
