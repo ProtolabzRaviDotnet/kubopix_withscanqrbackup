@@ -13,8 +13,11 @@ namespace MiniApp.Services
 
         public static void Add(PendingOrder order)
         {
-            if (_failedOrders.Any(o => o.OrderId == order.OrderId))
-                return;
+            //if (_failedOrders.Any(o => o.OrderId == order.OrderId))
+            //    return;
+
+            // REMOVE ALL OLD FAILED JOBS
+            _failedOrders.Clear();
 
             _failedOrders.Add(order);
         }

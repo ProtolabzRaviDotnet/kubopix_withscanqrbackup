@@ -57,6 +57,8 @@ namespace MiniApp.Views
         private const int IdleSeconds = 300; // 5 minutes
         private DispatcherTimer? _printerStatusTimer;
 
+        private bool _isFetchingQr = false;
+
         // CONSTRUCTOR
         public ScanQrView(string jwtToken, long shopLoginId, long printerId,string printerName, string qrUrl, decimal printerPrice,int printerStatus,string expiry,int printerPaymentEnabled)
         {
@@ -208,22 +210,71 @@ namespace MiniApp.Views
         // QR CODE GENERATION AND EXPIRY CHECKER
         private void GenerateQR(string data)
         {
-            QRCodeGenerator qr = new QRCodeGenerator();
-            QRCodeData qrData = qr.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
-            QRCode code = new QRCode(qrData);
-
-            using (Bitmap bmp = code.GetGraphic(20))
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                //AppLogger.Log($"[QR] Raw data: '{data}'");
 
-                BitmapImage img = new BitmapImage();
-                img.BeginInit();
-                img.StreamSource = new MemoryStream(ms.ToArray());
-                img.CacheOption = BitmapCacheOption.OnLoad;
-                img.EndInit();
+                if (string.IsNullOrWhiteSpace(data))
+                {
+                    AppLogger.Log("[QR] Skipped: null/empty");
+                    return;
+                }
 
-                DisplayImage(img);
+                data = data.Trim();
+
+                if (data.Length < 10 ||
+                    data.Equals("null", StringComparison.OrdinalIgnoreCase) ||
+                    data.Equals("undefined", StringComparison.OrdinalIgnoreCase))
+                {
+                    AppLogger.Log($"[QR] Skipped: invalid data -> '{data}'");
+                    return;
+                }
+
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+
+                if (qrData == null || qrData.ModuleMatrix == null || qrData.ModuleMatrix.Count == 0)
+                {
+                    AppLogger.Log("[QR] Failed: empty matrix");
+                    return;
+                }
+
+                using (QRCode code = new QRCode(qrData))
+                using (Bitmap bmp = code.GetGraphic(10))
+                {
+                    if (bmp == null || bmp.Width <= 0 || bmp.Height <= 0)
+                    {
+                        AppLogger.Log("[QR] Failed: invalid bitmap");
+                        return;
+                    }
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                        if (ms.Length == 0)
+                        {
+                            AppLogger.Log("[QR] Failed: empty stream");
+                            return;
+                        }
+
+                        BitmapImage img = new BitmapImage();
+                        img.BeginInit();
+                        img.CacheOption = BitmapCacheOption.OnLoad;
+                        img.StreamSource = new MemoryStream(ms.ToArray());
+                        img.EndInit();
+                        img.Freeze();
+
+                        DisplayImage(img);
+
+                        //AppLogger.Log("[QR] SUCCESS");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"[QR] ERROR: {ex.Message}");
+                AppLogger.Log($"[QR] STACK: {ex.StackTrace}");
             }
         }
 
@@ -239,37 +290,82 @@ namespace MiniApp.Views
         // EXPIRY TIMER TICK
         private async void ExpiryTimer_Tick(object? sender, EventArgs e)
         {
+            if (_isFetchingQr) return; //  prevent parallel calls
+
             try
             {
-
                 if (DateTime.UtcNow >= _qrExpiry)
                 {
+                    _isFetchingQr = true;
+
+                    //AppLogger.Log("[QR REFRESH] Expired — fetching new QR");
+
                     _expiryTimer?.Stop();
 
-                    // QR expired → fetch new one
                     var qrDetails = await FetchQrDetailsAgain();
 
-                    _qrCodeData = qrDetails.qrUrl;
+                    //AppLogger.Log($"[QR REFRESH] API qrUrl: '{qrDetails?.qrUrl}'");
+                    //AppLogger.Log($"[QR REFRESH] API expiry: '{qrDetails?.expiry}'");
 
-                    DateTime parsedExpiry;
-                    string expiryClean = qrDetails.expiry?.Replace(" UTC", "") ?? "";
-                    if (!DateTime.TryParse(expiryClean, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out parsedExpiry))
+                    string? newQr = qrDetails?.qrUrl?.Trim();
+
+                    // VALID QR
+                    if (!string.IsNullOrWhiteSpace(newQr) &&
+                        newQr.Length > 10 &&
+                        !newQr.Equals("null", StringComparison.OrdinalIgnoreCase))
                     {
-                        AppLogger.Log($"Expiry parse failed for fetched qr '{qrDetails.expiry}'. Defaulting to now+10min.");
-                        parsedExpiry = DateTime.UtcNow.AddMinutes(10);
+                        _qrCodeData = newQr;
+
+                        //AppLogger.Log("[QR REFRESH] New QR accepted");
+
+                        GenerateQR(_qrCodeData);
+
+                        // expiry update
+                        DateTime parsedExpiry;
+                        string expiryClean = qrDetails?.expiry?.Replace(" UTC", "") ?? "";
+
+                        if (!DateTime.TryParse(
+                                expiryClean,
+                                CultureInfo.InvariantCulture,
+                                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                                out parsedExpiry))
+                        {
+                            AppLogger.Log($"[QR REFRESH] Expiry parse failed: '{qrDetails?.expiry}'");
+                            parsedExpiry = DateTime.UtcNow.AddMinutes(10);
+                        }
+
+                        _qrExpiry = parsedExpiry.ToUniversalTime();
+
+                        //AppLogger.Log($"[QR REFRESH] Next expiry set: {_qrExpiry}");
+
+                        _expiryTimer!.Interval = TimeSpan.FromSeconds(10); // back to normal
                     }
-                    _qrExpiry = parsedExpiry.ToUniversalTime();
+                    else
+                    {
+                        // INVALID → FAST RETRY
+                        //AppLogger.Log("[QR REFRESH] Invalid QR → retry in 2 sec");
 
-                    // Refresh QR on screen
-                    GenerateQR(_qrCodeData);
+                        _expiryTimer!.Interval = TimeSpan.FromSeconds(2);
+                    }
 
-                    _expiryTimer?.Start(); // Start again
+                    _expiryTimer?.Start();
                 }
             }
             catch (Exception ex)
             {
-                AppLogger.Log($"QR refresh failed: {ex}");
-                _expiryTimer?.Start(); // Start again
+                AppLogger.Log($"[QR REFRESH] ERROR: {ex.Message}");
+                AppLogger.Log($"[QR REFRESH] STACK: {ex.StackTrace}");
+
+                // ERROR → FAST RETRY
+                if (_expiryTimer != null)
+                {
+                    _expiryTimer.Interval = TimeSpan.FromSeconds(2);
+                    _expiryTimer.Start();
+                }
+            }
+            finally
+            {
+                _isFetchingQr = false; // release lock
             }
         }
 

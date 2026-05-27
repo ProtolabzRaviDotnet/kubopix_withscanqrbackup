@@ -49,6 +49,8 @@ namespace MiniApp.Views
         // Constructor
         public PrintErrorView(string errorMessage, PendingOrder? failedOrder = null, int? orderPaymentTypeId = null, bool isSdkPrinterError = false)
         {
+            AppLogger.Log($"PrintErrorView initialized with errorMessage: {errorMessage}");
+
             InitializeComponent();
 
             _errorMessage = errorMessage;
@@ -297,9 +299,19 @@ namespace MiniApp.Views
                 {
                     _refundTimer.Stop();
 
-                    await RefundTwintIfRequired();
+                    bool refundSuccess = await RefundTwintIfRequired();
 
-                    RefundTimerText.Text = "Your Refund has been made";
+                    if (refundSuccess)
+                    {
+                        RefundTimerText.Text = "Your refund has been made";
+                    }
+                    else
+                    {
+                        RefundTimerText.Text = "Refund failed !\nPlease contact support.";
+                        RefundTimerText.Foreground = Brushes.Red;
+                        RefundTimerText.TextWrapping = TextWrapping.Wrap;
+                        RefundTimerText.TextAlignment = TextAlignment.Center;
+                    }
 
                     StartMaintenanceDelayTimer();
                     return;
@@ -339,26 +351,38 @@ namespace MiniApp.Views
         }
 
         // Refund TWINT If Required
-        private async Task RefundTwintIfRequired()
+        private async Task<bool> RefundTwintIfRequired()
         {
-            if (_failedOrder == null || _refundTriggered) return;
+            if (_failedOrder == null || _refundTriggered)
+                return false;
 
             if (_orderQueueService == null)
             {
                 AppLogger.Log("OrderQueueService is null. Refund skipped.");
-                return;
+                return false;
             }
 
             _refundTriggered = true;
 
-            //// 1️-Track failure in backend table
-            //await _orderQueueService.TrackPrintFailureAsync(_failedOrder);
+            bool refundSuccess =
+                await _orderQueueService.RefundTwintPaymentAsync(_failedOrder, 0);
 
-            // 2️-Call Refund API ONLY if eligible (backend will check RefundEligibleAt)
-            await _orderQueueService.RefundTwintPaymentAsync(_failedOrder, 0);
+            if (refundSuccess)
+            {
+                FailedPrintSession.Remove(_failedOrder.OrderId);
 
-            FailedPrintSession.Remove(_failedOrder.OrderId);
-            AppLogger.Log($"TWINT refund triggered for Order {_failedOrder.OrderId}");
+                AppLogger.Log($"TWINT refund successful for Order {_failedOrder.OrderId}");
+
+                return true;
+            }
+
+            AppLogger.Log($"TWINT refund FAILED for Order {_failedOrder.OrderId}");
+
+            // Important:
+            // Allow retry if refund failed
+            _refundTriggered = false;
+
+            return false;
         }
 
         // Maintenance Overlay Methods

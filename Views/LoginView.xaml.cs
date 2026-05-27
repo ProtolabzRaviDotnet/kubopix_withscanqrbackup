@@ -54,6 +54,8 @@ namespace MiniApp.Views
         private static Int64 _currentSessionPrinterId; // store printerId for session
         private static int _currentSessionPrinterPaymentEnabled; // store paymentenabled for session
 
+        public static bool IsOfflineReported { get; set; } = false;
+
         public LoginView()
         {
             InitializeComponent();
@@ -356,7 +358,9 @@ namespace MiniApp.Views
         // Fetch QR Details for Mini App
         public static async Task<dynamic> FetchQrDetailsForMiniApp(Int64 printerId)
         {
-            using (HttpClient client = new HttpClient())
+            try
+            {
+                using (HttpClient client = new HttpClient())
             {
                 string apiUrl = $"{AppConfig.ApiBaseUrl}api/printer/getqrdetailsforminiapp";
 
@@ -381,12 +385,21 @@ namespace MiniApp.Views
                     expiry = (string)result.expiry
                 };
             }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"FetchQrDetailsForMiniApp Error:: {ex}");
+                return false;
+            }
         }
 
         // API call with printer DeviceId included Working
         private async Task<bool> AuthenticateUser(string email, string password, string deviceId)
         {
-            using (HttpClient client = new HttpClient())
+            try
+            {
+
+                using (HttpClient client = new HttpClient())
             {
                 string apiUrl = $"{AppConfig.ApiBaseUrl}api/miniapp/login";
                 var loginData = new { Email = email, Password = password, DeviceId = deviceId };
@@ -442,12 +455,20 @@ namespace MiniApp.Views
 
                 return true;
             }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"AuthenticateUser Login Error:: {ex.Message}");
+                return false;
+            }
         }
 
         // Verify JWT Token Validity
         public static async Task<bool> VerifyToken(string token)
         {
-            using (HttpClient client = new HttpClient())
+            try
+            {
+                using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
@@ -456,6 +477,12 @@ namespace MiniApp.Views
                     $"{AppConfig.ApiBaseUrl}api/miniapp/checkauth");
 
                 return resp.IsSuccessStatusCode;
+            }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"VerifyToken Login Error:: {ex}");
+                return false;
             }
         }
 
@@ -542,6 +569,9 @@ namespace MiniApp.Views
 
                 if (_printerId > 0 && _shopLoginId > 0)
                 {
+                    // Mark as reported to prevent App.xaml.cs from calling it again
+                    IsOfflineReported = true;
+
                     await OrderQueueService.SetPrinterOffline(
                         _printerId,
                         _shopLoginId
@@ -568,13 +598,14 @@ namespace MiniApp.Views
         // Get Live Printer State
         public static async Task<PrinterState?> GetLivePrinterState(string token, long shopLoginId, long printerId)
         {
-            using (HttpClient client = new HttpClient())
+            try
+            {
+                using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
 
-                var resp = await client.GetAsync(
-                    $"{AppConfig.ApiBaseUrl}api/get/printerstate?shopLoginId={shopLoginId}&printerId={printerId}");
+                var resp = await client.GetAsync($"{AppConfig.ApiBaseUrl}api/get/printerstate?shopLoginId={shopLoginId}&printerId={printerId}");
 
                 if (!resp.IsSuccessStatusCode)
                     return null;
@@ -582,6 +613,7 @@ namespace MiniApp.Views
                 var json = await resp.Content.ReadAsStringAsync();
 
                 dynamic? result = JsonConvert.DeserializeObject(json);
+
                 if (result == null || result!.status! != 1)
                     return null;
 
@@ -589,8 +621,15 @@ namespace MiniApp.Views
                     result!.data!.ToString()
                 );
             }
+            }
+            catch (Exception ex)
+            {
+                // log error
+                AppLogger.Log($"GetLivePrinterState Error:: {ex.Message}");
+                return null;
+            }
         }
-
+              
         //Make Printer Offline Printer Id ShopLogin Id
         public static async Task<OrderDetail?> GetOrderDetailByOrderId(Int64 orderId)
         {

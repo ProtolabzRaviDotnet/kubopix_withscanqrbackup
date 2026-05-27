@@ -27,6 +27,7 @@
     <None Remove="Assets\groupimage.png" />
     <None Remove="Assets\KuboMediaFavIcon.ico" />
     <None Remove="Assets\leftside.png" />
+    <None Remove="Assets\leftside2.png" />
     <None Remove="Assets\logo.png" />
     <None Remove="Assets\logout.png" />
     <None Remove="Assets\Maintenance.png" />
@@ -37,7 +38,9 @@
     <None Remove="Assets\printsuccess.mp4" />
     <None Remove="Assets\qr.png" />
     <None Remove="Assets\qrborder.png" />
+    <None Remove="Assets\qrborder2.png" />
     <None Remove="Assets\rightside.png" />
+    <None Remove="Assets\rightside2.png" />
     <None Remove="Assets\Star.png" />
     <None Remove="Assets\UnderMaintenance.png" />
     <None Remove="Fonts\Poppins\OFL.txt" />
@@ -71,6 +74,9 @@
     <Resource Include="Assets\leftside.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\leftside2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -85,6 +91,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\printsuccess.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\TitlisScreensaver.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Assets\logout.png">
@@ -108,7 +117,13 @@
     <Resource Include="Assets\qrborder.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\qrborder2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\rightside.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\rightside2.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Star.png">

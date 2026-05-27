@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,11 +23,13 @@ namespace MiniApp.Views
     /// </summary>
     public partial class PrintSuccessView : Page
     {
+
         // Constructor
         public PrintSuccessView()
         {
             InitializeComponent();
         }
+                
 
         // Page Loaded Event Handler
         private void Page_Loaded(object sender, RoutedEventArgs e)

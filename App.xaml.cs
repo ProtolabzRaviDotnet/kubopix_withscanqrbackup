@@ -1,8 +1,11 @@
-﻿using MiniApp.Services;
+using MiniApp.Services;
+using MiniApp.Views;
 using System.Configuration;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
+using MiniApp.Helpers;
 
 namespace MiniApp
 {
@@ -19,6 +22,7 @@ namespace MiniApp
                 new EventHandler<TouchEventArgs>(OnTouchUpConvertToClick),
                 true);
         }
+               
         private void OnTouchUpConvertToClick(object? sender, TouchEventArgs e)
         {
             if (sender is UIElement element)
@@ -42,5 +46,58 @@ namespace MiniApp
 
         }
 
+        // Ensure printer is set offline on app exit or session end
+        protected override void OnExit(ExitEventArgs e)
+        {
+            SetPrinterOfflineOnExit();
+            base.OnExit(e);
+        }
+
+        // Handle Windows session ending (e.g., user logoff, shutdown) to ensure printer is set offline
+        protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
+        {
+            SetPrinterOfflineOnExit();
+            base.OnSessionEnding(e);
+        }
+
+        // Centralized method to set printer offline with safety checks and logging
+        private void SetPrinterOfflineOnExit()
+        {
+            try
+            {
+                // 1. Check if already handled
+                if (LoginView.IsOfflineReported)
+                {
+                    AppLogger.Log("[APP-EXIT] Printer already reported offline. Skipping redundant call.");
+                    return;
+                }
+                // 2. Get values from static session getters
+                long printerId = LoginView.GetCurrentSessionPrinterId();
+                long shopLoginId = LoginView.GetCurrentSessionShopLoginId();
+                if (printerId > 0 && shopLoginId > 0)
+                {
+                    AppLogger.Log($"[APP-EXIT] Attempting force-offline for PrinterId: {printerId}, ShopLoginId: {shopLoginId}");
+
+                    LoginView.IsOfflineReported = true;
+                    // 3. Execution with 5-second timeout (Blocking call)
+                    bool completed = Task.Run(async () =>
+                    {
+                        await OrderQueueService.SetPrinterOffline(printerId, shopLoginId);
+                    }).Wait(TimeSpan.FromSeconds(5));
+                    if (completed)
+                        AppLogger.Log("[APP-EXIT] Force-offline API call finished successfully.");
+                    else
+                        AppLogger.Log("[APP-EXIT] Force-offline API call TIMED OUT after 5 seconds.");
+                }
+                else
+                {
+                    AppLogger.Log("[APP-EXIT] No active session found. Skipping offline call.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"[APP-EXIT] ERROR during exit-offline: {ex.Message}");
+            }
+        }
     }
- }
+}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,8 +37,6 @@ namespace MiniApp.Views
         // Page Loaded event handler
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set this page as current in the NavigationService
-            NavigationService.Navigate(this);
             InitializeVideo();
             StartTimer();
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.Identity.Client;
+using Microsoft.Identity.Client;
 using MiniApp.Helpers;
 using MiniApp.ViewModels;
 using MiniApp.Views;
@@ -33,7 +33,7 @@ namespace MiniApp.Services
         private readonly HttpClient _client;
 
         private bool _isProcessing = false;
-        //private static bool _isStarted = false; // guard so StartQueue is idempotent
+
         private bool _isStarted = false;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -63,7 +63,7 @@ namespace MiniApp.Services
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _jwtToken);
 
-            AppLogger.Log("OrderQueueService initialized.");
+            //AppLogger.Log("OrderQueueService initialized.");
         }
 
         //Start the queue process in background (idempotent)
@@ -115,25 +115,25 @@ namespace MiniApp.Services
         // Monitor printer status in background (debounced)
         private void StartPrinterMonitoring()
         {
-            AppLogger.Log("Printer monitoring started.");
+            //AppLogger.Log("Printer monitoring started.");
 
             _ = Task.Run(async () =>
             {
                 int consecReady = 0;
                 int consecNotReady = 0;
                 const int requiredConsecutive = 3; // require 3 consistent reads
+                int previousStatus = _printerStatus; // <-- 1. Moved it outside the loop (saves the previous status).
 
                 while (!_cts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        int previousStatus = _printerStatus;
 
                         string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
                         string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
 
-                        AppLogger.Log($"Printer Raw Status: {status}");
-                        AppLogger.Log($"Printer Warning: {warning}");
+                        //AppLogger.Log($"Printer Raw Status: {status}");
+                        //AppLogger.Log($"Printer Warning: {warning}");
 
                         // We parse messages but avoid flipping state on single reads
                         string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
@@ -169,10 +169,11 @@ namespace MiniApp.Services
                             _printerMessage = parsedMessage;
                         }
 
-                        AppLogger.Log($"Printer Status Parsed: {_printerStatus} | {_printerMessage}");
+                        //AppLogger.Log($"Printer Status Parsed: {_printerStatus} | {_printerMessage}");
 
                         if (previousStatus != _printerStatus)
                         {
+                            previousStatus = _printerStatus; // <-- 2. Updated the previous status whenever the state changes.
                             await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, _printerMessage);
                         }
                     }
@@ -193,10 +194,10 @@ namespace MiniApp.Services
             try
             {
                 _isProcessing = true;
-                AppLogger.Log("Checking for pending orders...");
+                //AppLogger.Log("Checking for pending orders...");
 
                 var pendingOrders = await GetPendingOrders();
-                AppLogger.Log($"Pending Orders Retrieved: {pendingOrders.Count}");
+                //AppLogger.Log($"Pending Orders Retrieved: {pendingOrders.Count}");
 
                 // Filter: Remove orders already processed earlier
                 var newOrders = pendingOrders
@@ -205,16 +206,16 @@ namespace MiniApp.Services
 
                 if (newOrders.Count == 0)
                 {
-                    AppLogger.Log("No new pending orders found.");
+                    //AppLogger.Log("No new pending orders found.");
                     return;
                 }
 
-                AppLogger.Log($"Processing {newOrders.Count} new orders...");
+                //AppLogger.Log($"Processing {newOrders.Count} new orders...");
 
                 //Working Code to process each order
                 foreach (var order in newOrders)
                 {
-                    AppLogger.Log($"Processing Order #{order.OrderId}");
+                    //AppLogger.Log($"Processing Order #{order.OrderId}");
 
                     // 1. PRINT START → Navigate to PrintProgressView on UI thread
                     Application.Current.Dispatcher.Invoke(() =>
@@ -234,15 +235,15 @@ namespace MiniApp.Services
                         _processedOrderIds.Add(order.OrderId);
 
                         var processedIdsString = string.Join(", ", _processedOrderIds);
-                        AppLogger.Log($"Processed Order Ids First: {processedIdsString}");
+                        //AppLogger.Log($"Processed Order Ids First: {processedIdsString}");
 
                         var (isSuccess, message) = await PrintOrderAsync(order);
 
-                       AppLogger.Log($"Success: {isSuccess}, Message: {message}");
+                       //AppLogger.Log($"Success: {isSuccess}, Message: {message}");
 
                     if (isSuccess)
                         {
-                            AppLogger.Log($"Print success for Order {order.OrderId}");
+                            //AppLogger.Log($"Print success for Order {order.OrderId}");
                             
                             // Wait for timer completion in PrintProgressView
                             while (!(NavigationService.GetCurrentPage() is PrintProgressView printProgressView && printProgressView.IsTimerCompleted()))
@@ -260,14 +261,23 @@ namespace MiniApp.Services
 
                                 await UpdateOrderStatus(order.OrderId, 1, order.PaymentIntentId ?? string.Empty, orderPaymentTypeId: order.OrderPaymentTypeId); // success
 
+                                //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — Navigating to PrintSuccessView");
+
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     Helpers.NavigationService.Navigate(new PrintSuccessView());
                                 });
 
-                                // Wait 5 seconds, then return to ScanQrView
-                                await Task.Delay(5000);
+                                //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — PrintSuccessView shown, starting 5s delay");
 
+                            // Wait 5 seconds, then return to ScanQrView
+                            await Task.Delay(5000);
+
+                            //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
+
+                            // ← TRY-CATCH 
+                            try
+                            {
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     Helpers.NavigationService.Navigate(new ScanQrView(
@@ -283,6 +293,24 @@ namespace MiniApp.Services
 
                                     ));
                                 });
+
+                                //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — ScanQrView navigation done successfully");
+
+                            }
+                            catch (Exception navEx)
+                            {
+                                AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — Navigation failed: {navEx.Message}");
+                                // FALLBACK: Load Data From Session and Navigate
+                                try
+                                {
+                                    NavigateBackToScanQR();  
+                                }
+                                catch (Exception ex)
+                                {
+                                    AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — Fallback also failed: {ex.Message}");
+                                }
+                            }
+
                             }
                             else
                             {
@@ -290,28 +318,52 @@ namespace MiniApp.Services
                                 // Free order
                                 await UpdateOrderStatusFree(order.OrderId, 1, orderPaymentTypeId: order.OrderPaymentTypeId); // success
 
-                                Application.Current.Dispatcher.Invoke(() =>
+                            //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — Navigating to PrintSuccessView");
+
+                            Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     Helpers.NavigationService.Navigate(new PrintSuccessView());
                                 });
 
-                                await Task.Delay(5000);
+                            //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — PrintSuccessView shown, starting 5s delay");
 
-                                Application.Current.Dispatcher.Invoke(() =>
+                            await Task.Delay(5000);
+
+                            //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
+
+                            // TRY-CATCH for free order navigation back
+                            try
+                            {
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        Helpers.NavigationService.Navigate(new ScanQrView(
+                                            _jwtToken,
+                                            _shopLoginId,
+                                            _printerId,
+                                            _printerName,
+                                            _qrCodeData,
+                                            _printerPrice,
+                                            _printerStatus,
+                                            _qrExpiry.ToString("yyyy-MM-dd HH:mm:ss"),
+                                            _printerPaymentEnabled
+                                        ));
+                                    });
+
+                                //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — ScanQrView navigation done successfully");
+
+                            }
+                                catch (Exception navEx)
                                 {
-                                    Helpers.NavigationService.Navigate(new ScanQrView(
-                                        _jwtToken,
-                                        _shopLoginId,
-                                        _printerId,
-                                        _printerName,
-                                        _qrCodeData,
-                                        _printerPrice,
-                                        _printerStatus,
-                                        _qrExpiry.ToString("yyyy-MM-dd HH:mm:ss"),
-                                        _printerPaymentEnabled
-
-                                    ));
-                                });
+                                AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — Navigation failed: {navEx.Message}");
+                                try
+                                    {
+                                        NavigateBackToScanQR();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                    AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — Fallback also failed: {ex.Message}");
+                                }
+                                }
                             }
                         }
                         else
@@ -331,7 +383,7 @@ namespace MiniApp.Services
 
                         var failedOrder = FailedPrintSession.GetAll().LastOrDefault();
 
-                        AppLogger.Log($"Print failed for Order {order.OrderId}");
+                        //AppLogger.Log($"Print failed for Order {order.OrderId}");
 
                         if (order.IsPaidOrder == 1 && (order.OrderPaymentTypeId == 1 || order.OrderPaymentTypeId == 3))//OrderPaymentTypeId = 1 For Stripe or OrderPaymentTypeId = 3 for Twint
                         {
@@ -351,10 +403,17 @@ namespace MiniApp.Services
                             {
                                 // Stop the timer in PrintProgressView if it's the current page
                                 var currentPage = NavigationService.GetCurrentPage();
+                                
+                                //AppLogger.Log($"Current Page before navigating to error view (ProcessPendingOrders): {currentPage?.GetType().Name}");
+
                                 if (currentPage is PrintProgressView printProgressView)
                                 {
                                     printProgressView.StopTimer();
+
+                                    //AppLogger.Log("Stopped PrintProgressView timer due to print failure.");
                                 }
+
+                                AppLogger.Log($"Navigating to PrintErrorView with message (ProcessPendingOrders): {message}");
                                 // Navigate to PrintErrorView with the real error message
                                 NavigationService.Navigate(new PrintErrorView(message, failedOrder, order.OrderPaymentTypeId));
 
@@ -364,7 +423,7 @@ namespace MiniApp.Services
 
                         // MARK as processed
                         var processedIdsString2 = string.Join(", ", _processedOrderIds);
-                        AppLogger.Log($"Processed Order Ids Last 2: {processedIdsString2}");
+                        //AppLogger.Log($"Processed Order Ids Last 2: {processedIdsString2}");
                    
                     await Task.Delay(2000);
                 }
@@ -385,30 +444,39 @@ namespace MiniApp.Services
         // Fetch pending orders from API
         private async Task<List<PendingOrder>> GetPendingOrders()
         {
-            var url = $"{AppConfig.ApiBaseUrl}api/get/pendingorders?shopLoginId={_shopLoginId}&printerId={_printerId}";
-            AppLogger.Log($"Requesting Pending Orders: {url}");
-
-            var resp = await _client.GetAsync(url);
-
-            if (!resp.IsSuccessStatusCode)
-                return new List<PendingOrder>();
-
-            var json = await resp.Content.ReadAsStringAsync();
-            dynamic? result = JsonConvert.DeserializeObject(json);
-
-            AppLogger.Log($"Pending Orders API Response: {json}");
-
-            if (result == null)
-                return new List<PendingOrder>();
-
-            if (result.status == 1 && result.data != null)
+            try
             {
-                string dataJson = JsonConvert.SerializeObject(result.data);
-                return JsonConvert.DeserializeObject<List<PendingOrder>>(dataJson)
-                       ?? new List<PendingOrder>();
-            }
+                var url = $"{AppConfig.ApiBaseUrl}api/get/pendingorders?shopLoginId={_shopLoginId}&printerId={_printerId}";
+                //AppLogger.Log($"Requesting Pending Orders: {url}");
 
-            return new List<PendingOrder>();
+                var resp = await _client.GetAsync(url);
+
+                if (!resp.IsSuccessStatusCode)
+                    return new List<PendingOrder>();
+
+                var json = await resp.Content.ReadAsStringAsync();
+                dynamic? result = JsonConvert.DeserializeObject(json);
+
+                //AppLogger.Log($"Pending Orders API Response: {json}");
+
+                if (result == null)
+                    return new List<PendingOrder>();
+
+                if (result.status == 1 && result.data != null)
+                {
+                    string dataJson = JsonConvert.SerializeObject(result.data);
+                    return JsonConvert.DeserializeObject<List<PendingOrder>>(dataJson)
+                           ?? new List<PendingOrder>();
+                }
+
+                return new List<PendingOrder>();
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"Exception : GetPendingOrders: {ex.Message}");
+                // In case of a network timeout or failure, return an empty list to keep the app running safely
+                return new List<PendingOrder>();
+            }
         }
 
         // Load Image from URL
@@ -416,7 +484,7 @@ namespace MiniApp.Services
         {
             try
             {
-                AppLogger.Log($"[IMAGE] Download start: {url}");
+                //AppLogger.Log($"[IMAGE] Download start: {url}");
 
                 var response = await _client.GetAsync(url);
 
@@ -449,7 +517,7 @@ namespace MiniApp.Services
 
                     var img = Image.FromStream(ms);
 
-                    AppLogger.Log($"[IMAGE] Download success: {url}");
+                    //AppLogger.Log($"[IMAGE] Download success: {url}");
 
                     return img;
                 }
@@ -464,59 +532,68 @@ namespace MiniApp.Services
         // Resize Image to CR80 (1011 x 637px @ 300 DPI) - with orientation lock
         private string ResizeAndCropToCard(Image img)
         {
-            AppLogger.Log("Resizing image to CR80 card size...");
-
-            const int CardWidthPx = 1011;
-            const int CardHeightPx = 637;
-            const int Margin = 2;
-
-            // Ensure landscape orientation before processing
-            if (img.Height > img.Width)
+            try
             {
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                AppLogger.Log("Image rotated to landscape.");
-            }
 
-            double cardRatio = (double)CardWidthPx / CardHeightPx;
-            double imgRatio = (double)img.Width / img.Height;
+                //AppLogger.Log("Resizing image to CR80 card size...");
 
-            int newWidth, newHeight;
+                const int CardWidthPx = 1011;
+                const int CardHeightPx = 637;
+                const int Margin = 2;
 
-            if (imgRatio > cardRatio)
-            {
-                newHeight = CardHeightPx;
-                newWidth = (int)Math.Round(imgRatio * CardHeightPx);
-            }
-            else
-            {
-                newWidth = CardWidthPx;
-                newHeight = (int)Math.Round(CardWidthPx / imgRatio);
-            }
-
-            using (var bmp = new Bitmap(newWidth, newHeight))
-            using (var g = Graphics.FromImage(bmp))
-            {
-                g.DrawImage(img, 0, 0, newWidth, newHeight);
-
-                Rectangle cropRect = new Rectangle(
-                    Math.Max(0, (newWidth - CardWidthPx) / 2),
-                    Math.Max(0, (newHeight - CardHeightPx) / 2),
-                    CardWidthPx - Margin,
-                    CardHeightPx - Margin
-                );
-
-                using (var finalBmp = bmp.Clone(cropRect, bmp.PixelFormat))
+                // Ensure landscape orientation before processing
+                if (img.Height > img.Width)
                 {
-                    string tempFile = Path.Combine(Path.GetTempPath(),
-                        "Seaory_PrintReady_" + Guid.NewGuid() + ".jpg");
-
-                    finalBmp.SetResolution(300, 300);
-                    finalBmp.Save(tempFile, System.Drawing.Imaging.ImageFormat.Jpeg);
-
-                    AppLogger.Log($"Image resized and saved: {tempFile}");
-
-                    return tempFile;
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    AppLogger.Log("Image rotated to landscape.");
                 }
+
+                double cardRatio = (double)CardWidthPx / CardHeightPx;
+                double imgRatio = (double)img.Width / img.Height;
+
+                int newWidth, newHeight;
+
+                if (imgRatio > cardRatio)
+                {
+                    newHeight = CardHeightPx;
+                    newWidth = (int)Math.Round(imgRatio * CardHeightPx);
+                }
+                else
+                {
+                    newWidth = CardWidthPx;
+                    newHeight = (int)Math.Round(CardWidthPx / imgRatio);
+                }
+
+                using (var bmp = new Bitmap(newWidth, newHeight))
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.DrawImage(img, 0, 0, newWidth, newHeight);
+
+                    Rectangle cropRect = new Rectangle(
+                        Math.Max(0, (newWidth - CardWidthPx) / 2),
+                        Math.Max(0, (newHeight - CardHeightPx) / 2),
+                        CardWidthPx - Margin,
+                        CardHeightPx - Margin
+                    );
+
+                    using (var finalBmp = bmp.Clone(cropRect, bmp.PixelFormat))
+                    {
+                        string tempFile = Path.Combine(Path.GetTempPath(),
+                            "Seaory_PrintReady_" + Guid.NewGuid() + ".jpg");
+
+                        finalBmp.SetResolution(300, 300);
+                        finalBmp.Save(tempFile, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                        ///AppLogger.Log($"Image resized and saved: {tempFile}");
+
+                        return tempFile;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"Error in ResizeAndCropToCard: {ex.Message}");
+                return string.Empty;
             }
         }
 
@@ -527,7 +604,7 @@ namespace MiniApp.Services
 
             try
             {
-                AppLogger.Log($"Starting print for Order {order.OrderId}");
+                //AppLogger.Log($"Starting print for Order {order.OrderId}");
                 
                 if (string.IsNullOrEmpty(order.Image))
                 {
@@ -541,7 +618,7 @@ namespace MiniApp.Services
                 if (img == null)
                 {
                     AppLogger.Log("[PRINT] Failed to load image (deleted / expired)");
-                    return (false, "Failed to load image from URL");
+                    return (false, "Print failed: the image has expired and was automatically removed after 30 minutes. Please re-scan the QR code and try again.");
                 }
 
                 // STEP 2 — Ensure disposal AFTER null check
@@ -680,7 +757,7 @@ namespace MiniApp.Services
             {
                 var captureUrl = $"{AppConfig.ApiBaseUrl}api/payment/capture";
 
-                AppLogger.Log($"Capture Payment Request: {captureUrl}");
+                //AppLogger.Log($"Capture Payment Request: {captureUrl}");
 
                 var payload = new
                 {
@@ -694,7 +771,7 @@ namespace MiniApp.Services
                 var resp = await _client.PostAsync(captureUrl, content);
                 string responseText = await resp.Content.ReadAsStringAsync();
 
-                AppLogger.Log("Capture Payment Payload: " + responseText);
+                //AppLogger.Log("Capture Payment Payload: " + responseText);
             }
             catch (Exception ex)
             {
@@ -709,11 +786,11 @@ namespace MiniApp.Services
             try
             {
                 var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={orderId}&status={status}&paymentIntentId={paymentIntentId}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
-                AppLogger.Log($"Order Status Update Request: {url}");
+                //AppLogger.Log($"Order Status Update Request: {url}");
 
                 await _client.GetAsync(url);
 
-                AppLogger.Log($"Order {orderId} updated with status {status}, paymentIntentId={paymentIntentId}");
+                //AppLogger.Log($"Order {orderId} updated with status {status}, paymentIntentId={paymentIntentId}");
             }
             catch (Exception ex)
             {
@@ -727,11 +804,11 @@ namespace MiniApp.Services
             try
             {
                 var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus/free?orderId={orderId}&status={status}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
-                AppLogger.Log($"Free Order Status Update Request: {url}");
+                //AppLogger.Log($"Free Order Status Update Request: {url}");
 
                 await _client.GetAsync(url);
 
-                AppLogger.Log($"Free Order {orderId} updated with status {status}");
+                //AppLogger.Log($"Free Order {orderId} updated with status {status}");
             }
             catch (Exception ex)
             {
@@ -747,11 +824,11 @@ namespace MiniApp.Services
                 string url = $"{AppConfig.ApiBaseUrl}api/update/printerstatus" +
              $"?printerId={printerId}&shopLoginId={shopLoginId}&status={statusCode}&message={Uri.EscapeDataString(message ?? "")}";
 
-                AppLogger.Log("Printer Status Update Request: " + url);
+                //AppLogger.Log("Printer Status Update Request: " + url);
 
                 await _client.GetAsync(url);
 
-                AppLogger.Log($"Printer Status Updated → printerId={printerId}, shopLoginId={shopLoginId}, status={statusCode}");
+                //AppLogger.Log($"Printer Status Updated → printerId={printerId}, shopLoginId={shopLoginId}, status={statusCode}");
             }
             catch (Exception ex)
             {
@@ -762,7 +839,9 @@ namespace MiniApp.Services
         // Map Error Codes To Friendly Messages and Status Code 
         public string GetMessageFromErrorCodes(string statusText, string warningText)
         {
-            AppLogger.Log($"Mapping printer error codes: Status={statusText} Warning={warningText}");
+            try
+            {
+            //AppLogger.Log($"Mapping printer error codes: Status={statusText} Warning={warningText}");
             string finalMessage = "";
             bool isNotConnected =
                 statusText.Contains("SDK Error 1167") ||
@@ -1356,15 +1435,19 @@ namespace MiniApp.Services
             }
             else if (statusText.Contains("0x000000AA"))
             {
-                _printerStatus = 112;
-                finalMessage = "Printer is in Use.";
+                //_printerStatus = 112;
+                //finalMessage = "Printer is in Use.";
+
+                //Treat as Ready When Printer is in Use Error Occured.
+                _printerStatus = 1;
+                finalMessage = "Your printer is online and ready for printing.";
             }
-            else if (statusText.Contains("Printer Error"))
+                else if (statusText.Contains("Printer Error"))
             {
                 _printerStatus = 3;
                 finalMessage = "Your printer has an error. Please check the printer.";
             }
-     
+
             // WARNINGS (These DO NOT affect status code)
             if (!string.IsNullOrEmpty(warningText))
             {
@@ -1375,9 +1458,18 @@ namespace MiniApp.Services
                 else if (warningText.StartsWith("SDK Error"))
                     finalMessage += $"\n\n{warningText}";
             }
-            AppLogger.Log($"Final Printer Message: {finalMessage}");
+            //AppLogger.Log($"Final Printer Message: {finalMessage}");
             return finalMessage.Trim();
         }
+    catch (Exception ex)
+    {
+        AppLogger.Log($"Error in GetMessageFromErrorCodes: {ex.Message}");
+
+        _printerStatus = 3;
+
+        return "Unable to read printer status. Please check the printer connection.";
+    }
+}
 
         //Make Printer Offline Printer Id ShopLogin Id
         public static async Task SetPrinterOffline(long printerId, long shopLoginId)
@@ -1388,11 +1480,11 @@ namespace MiniApp.Services
                 {
                     string url = $"{AppConfig.ApiBaseUrl}api/update/printerstatus/offline?printerId={printerId}&shopLoginId={shopLoginId}";
 
-                    AppLogger.Log("Calling Printer Offline API: " + url);
+                    //AppLogger.Log("Calling Printer Offline API: " + url);
 
                     await client.GetAsync(url);
 
-                    AppLogger.Log("Printer offline status updated.");
+                    //AppLogger.Log("Printer offline status updated.");
                 }
             }
             catch (Exception ex)
@@ -1404,6 +1496,8 @@ namespace MiniApp.Services
         // Function To Handle Print Error Message
         private async Task<(bool, string)> WaitForPrintCompletionAsync(string printerName)
         {
+            try
+            {
             const int MAX_WAIT = 120; // seconds
             bool feedDetected = false;
             int readyStableCount = 0;
@@ -1415,7 +1509,7 @@ namespace MiniApp.Services
                 string status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
                 string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
 
-                AppLogger.Log($"[SEAORY-MONITOR] Status={status}, Warning={warning}");
+                //AppLogger.Log($"[SEAORY-MONITOR] Status={status}, Warning={warning}");
 
                 // SDK error
                 if (status.StartsWith("SDK Error"))
@@ -1453,34 +1547,84 @@ namespace MiniApp.Services
 
             return (false, "Print timeout or printer did not complete card movement");
         }
+        catch (Exception ex)
+        {
+            AppLogger.Log($"Error in WaitForPrintCompletionAsync: {ex.Message}");
+            return (false, $"Exception occurred: {ex.Message}");
+        }
+}
 
         // Refund TWINT Payment via API
-        public async Task RefundTwintPaymentAsync(PendingOrder order, decimal refundAmount)
+        public async Task<bool> RefundTwintPaymentAsync(PendingOrder order, decimal refundAmount)
         {
             try
             {
                 var refundUrl = $"{AppConfig.ApiBaseUrl}api/payment/twint/refund";
 
-                AppLogger.Log($"Refund Payment Request: {refundUrl}");
-
                 var payload = new
                 {
                     PaymentIntentId = order.PaymentIntentId,
                     ShopLoginId = order.ShopLoginId,
-                    RefundAmount = refundAmount // 0 = full refund, >0 = partial refund
+                    RefundAmount = refundAmount
                 };
 
                 string json = JsonConvert.SerializeObject(payload);
+
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var resp = await _client.PostAsync(refundUrl, content);
+
                 string responseText = await resp.Content.ReadAsStringAsync();
 
-                AppLogger.Log("Refund Payment Response: " + responseText);
+
+                // Success only if HTTP 200-299
+                if (resp.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(responseText))
+                        {
+                            dynamic? result = JsonConvert.DeserializeObject(responseText);
+                            if (result != null)
+                            {
+                                // Check 'status'
+                                if (result.status != null)
+                                {
+                                    string statusStr = result.status.ToString().ToLower();
+                                    if (statusStr == "1" || statusStr == "true")
+                                    {
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                                // Check 'success'
+                                if (result.success != null)
+                                {
+                                    string successStr = result.success.ToString().ToLower();
+                                    if (successStr == "1" || successStr == "true")
+                                    {
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception jsonEx)
+                    {
+                        AppLogger.Log("Error parsing refund response JSON: " + jsonEx.Message);
+                    }
+
+                    return true;
+                }
+
+                return false;
             }
             catch (Exception ex)
             {
-                AppLogger.Log("RefundTwintPayment Error: " + ex.Message);
+                AppLogger.Log("RefundTwintPayment Error: " + ex);
+
+                return false;
             }
         }
 
@@ -1489,9 +1633,9 @@ namespace MiniApp.Services
         {
             try
             {
-                AppLogger.Log(isRetry
-                    ? $"Retrying failed Order #{order.OrderId}"
-                    : $"Processing Order #{order.OrderId}");
+                //AppLogger.Log(isRetry
+                //    ? $"Retrying failed Order #{order.OrderId}"
+                //    : $"Processing Order #{order.OrderId}");
 
                 // PRINT PROGRESS UI
                 Application.Current.Dispatcher.Invoke(() =>
@@ -1523,13 +1667,31 @@ namespace MiniApp.Services
                         await UpdateOrderStatusFree(order.OrderId, 1, orderPaymentTypeId: order.OrderPaymentTypeId); // success
                     }
 
+                    //Application.Current.Dispatcher.Invoke(() =>
+                    //{
+                    //    NavigationService.Navigate(new PrintSuccessView());
+                    //});
+
+                    //await Task.Delay(5000);
+                    //NavigateBackToScanQR();
+
+                    //AppLogger.Log($"[STUCK-DEBUG] Order #{order.OrderId} — Navigating to PrintSuccessView");
+
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         NavigationService.Navigate(new PrintSuccessView());
                     });
 
+                    //AppLogger.Log($"[STUCK-DEBUG] Order #{order.OrderId} — PrintSuccessView navigated, starting 5s delay");
+
                     await Task.Delay(5000);
+
+                    //AppLogger.Log($"[STUCK-DEBUG] Order #{order.OrderId} — 5s delay completed, calling NavigateBackToScanQR");
+
                     NavigateBackToScanQR();
+
+                    //AppLogger.Log($"[STUCK-DEBUG] Order #{order.OrderId} — NavigateBackToScanQR call finished");
+
 
                     return true; // Print Success
                 }
@@ -1549,48 +1711,68 @@ namespace MiniApp.Services
         // Handle Print Failure
         private async Task HandlePrintFailure(PendingOrder order, string message)
         {
-            FailedPrintSession.Add(order);
-
-
-            if (order.IsPaidOrder == 1 && (order.OrderPaymentTypeId == 1 || order.OrderPaymentTypeId == 3)) //OrderPaymentTypeId = 1 For Stripe or OrderPaymentTypeId = 3 for Twint
+            try
             {
-                await UpdateOrderStatus(order.OrderId, 2, order.PaymentIntentId ?? "", message,order.OrderPaymentTypeId); // failed
-            }
-            else
-            {
-                //Free Order
-                await UpdateOrderStatusFree(order.OrderId, 2, message, order.OrderPaymentTypeId); // failed
-            }
+                FailedPrintSession.Add(order);
 
-            //Send Email on Print Fail and Update Status
-            await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, message);
-
-            // Immediately stop timer and navigate to error view on UI thread
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Stop the timer in PrintProgressView if it's the current page
-                var currentPage = NavigationService.GetCurrentPage();
-                if (currentPage is PrintProgressView printProgressView)
+                if (order.IsPaidOrder == 1 && (order.OrderPaymentTypeId == 1 || order.OrderPaymentTypeId == 3)) // OrderPaymentTypeId = 1 For Stripe or 3 for Twint
                 {
-                    printProgressView.StopTimer();
+                    await UpdateOrderStatus(order.OrderId, 2, order.PaymentIntentId ?? "", message, order.OrderPaymentTypeId); // failed
+                }
+                else
+                {
+                    // Free Order
+                    await UpdateOrderStatusFree(order.OrderId, 2, message, order.OrderPaymentTypeId); // failed
                 }
 
-                NavigationService.Navigate(new PrintErrorView(message, order, order.OrderPaymentTypeId));
+                // Send Email on Print Fail and Update Status
+                await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, message);
 
-            });
+                // Immediately stop timer and navigate to error view on UI thread
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    // Stop the timer in PrintProgressView if it's the current page
+                    var currentPage = NavigationService.GetCurrentPage();
+
+                    AppLogger.Log($"[DEBUG] HandlePrintFailure — current page before navigating to error view: {currentPage?.GetType().Name ?? "null"}");
+
+                    if (currentPage is PrintProgressView printProgressView)
+                    {
+                        printProgressView.StopTimer();
+
+                        AppLogger.Log("[DEBUG] HandlePrintFailure - Stopped PrintProgressView timer due to print failure.");
+                    }
+
+                    AppLogger.Log($"[DEBUG] HandlePrintFailure — Navigating to PrintErrorView with message: {message}");
+
+                    NavigationService.Navigate(new PrintErrorView(message, order, order.OrderPaymentTypeId));
+                });
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"Error in HandlePrintFailure: {ex.Message}");
+            }
         }
 
         // Navigate Back to Scan QR View
         private void NavigateBackToScanQR()
         {
+            //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — entering Dispatcher.Invoke");
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {
                     // Avoid duplicate navigation
                     var currentPage = NavigationService.GetCurrentPage();
+
+                    //AppLogger.Log($"[STUCK-DEBUG] NavigateBackToScanQR — current page: {currentPage?.GetType().Name ?? "null"}");
+
                     if (currentPage is ScanQrView)
+                    {
+                        //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — already on ScanQrView, skipping");
                         return;
+                    }
 
                     Helpers.NavigationService.Navigate(
                         new ScanQrView(
@@ -1605,29 +1787,47 @@ namespace MiniApp.Services
                             _printerPaymentEnabled
                         )
                     );
+
+                    //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — ScanQrView navigation done successfully");
+
                 }
                 catch (Exception ex)
                 {
-                    AppLogger.Log($"NavigateBackToScanQR error: {ex.Message}");
+                    AppLogger.Log($"[STUCK-DEBUG] NavigateBackToScanQR ERROR: {ex}");
                 }
             });
+
+            AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — Dispatcher.Invoke completed");
+
         }
 
         // Track Print Failure via API -- Refund Order Tracking
         public async Task TrackPrintFailureAsync(PendingOrder order)
         {
-            var payload = new
+            try
             {
-                ShopLoginId = order.ShopLoginId,
-                OrderId = order.OrderId,
-                PaymentIntentId = order.PaymentIntentId,
-                OrderPaymentTypeId = order.OrderPaymentTypeId
-            };
+                var payload = new
+                {
+                    ShopLoginId = order.ShopLoginId,
+                    OrderId = order.OrderId,
+                    PaymentIntentId = order.PaymentIntentId,
+                    OrderPaymentTypeId = order.OrderPaymentTypeId
+                };
 
-            var json = JsonConvert.SerializeObject(payload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var json = JsonConvert.SerializeObject(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            await _client.PostAsync($"{AppConfig.ApiBaseUrl}api/refund/track-print-failure", content);
+                var response = await _client.PostAsync($"{AppConfig.ApiBaseUrl}api/refund/track-print-failure",content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    AppLogger.Log($"TrackPrintFailure API failed. Status Code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"Error in TrackPrintFailureAsync: {ex.Message}");
+            }
         }
     }
 }

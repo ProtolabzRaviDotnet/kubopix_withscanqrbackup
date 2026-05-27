@@ -74,11 +74,15 @@
                                    Margin="0,0,0,24"/>
 
                         <!-- Payment info -->
-                        <TextBlock x:Name="NoCharges"  Visibility="Collapsed" Text="No charge has been made to your credit card"
-                                   FontSize="16"
-                                   FontWeight="Medium"
-                                   Foreground="#000"/>
-                        
+                        <TextBlock x:Name="NoCharges"  Visibility="Collapsed" Text="You will not be charged. The amount is only reserved temporarily on your card. Your card issuer will release it automatically within a few business days"
+                         FontSize="16"
+                         FontWeight="Medium"
+                         TextAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Foreground="#000"
+                         TextWrapping="Wrap"
+                                   />
+
                         <StackPanel x:Name="RefundTimerPanel"
             Visibility="Collapsed"
             HorizontalAlignment="Center"

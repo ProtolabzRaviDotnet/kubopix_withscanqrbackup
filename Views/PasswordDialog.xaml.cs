@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,6 +37,8 @@ namespace MiniApp.Views
         // EVENTS
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _ = StartImageMonitorAsync();
+
             // Call helper function
             _ = CheckAndRemoveRefundedOrderAsync();
 
@@ -127,6 +130,55 @@ namespace MiniApp.Views
 
                 FailedPrintSession.Remove(lastJob.OrderId);
                 AppLogger.Log($"Refunded order {lastJob.OrderId} removed before showing retry option.");
+            }
+        }
+
+        private async Task StartImageMonitorAsync()
+        {
+            while (true)
+            {
+                try
+                {
+                    if (!FailedPrintSession.HasFailedJobs)
+                    {
+                        await Task.Delay(2000);
+                        continue;
+                    }
+
+                    var lastJob = FailedPrintSession.GetAll().LastOrDefault();
+
+                    if (lastJob == null)
+                    {
+                        await Task.Delay(2000);
+                        continue;
+                    }
+
+                    using var httpClient = new HttpClient();
+
+                    var response = await httpClient.GetAsync(lastJob.Image);
+
+                    // IMAGE DELETED / EXPIRED 
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        FailedPrintSession.Remove(lastJob.OrderId);
+
+                        Dispatcher.Invoke(() =>
+                        {
+                            rbPrintFailedJobs.Visibility = Visibility.Collapsed;
+                        });
+
+                        AppLogger.Log($"Expired failed job removed. OrderId: {lastJob.OrderId}");
+
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log($"StartImageMonitorAsync Error: {ex.Message}");
+                }
+
+                // CHECK EVERY 2 SEC
+                await Task.Delay(2000);
             }
         }
 

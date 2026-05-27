@@ -16,7 +16,7 @@ namespace MiniApp.Wrapper
 
         private static void Log(string msg)
         {
-            AppLogger.Log("[SEAORY] " + msg);
+            //AppLogger.Log("[SEAORY] " + msg);
         }
 
         // ---------------------------------------------------------
@@ -102,12 +102,12 @@ namespace MiniApp.Wrapper
         // ---------------------------------------------------------
         public static string CheckPrinterStatus(string printerName)
         {
-            Log($"Checking Status for {printerName}");
+            //Log($"Checking Status for {printerName}");
 
             uint status;
             uint r = SOY_PR_GetPrinterStatusA(printerName, out status);
 
-            Log($"Status Result={r}, Value=0x{status:X8}");
+            //Log($"Status Result={r}, Value=0x{status:X8}");
 
             if (r != 0) return $"SDK Error {r}";
             return status == 0 ? "Ready" : $"Printer Error 0x{status:X8}";
@@ -115,12 +115,12 @@ namespace MiniApp.Wrapper
 
         public static string CheckPrinterWarning(string printerName)
         {
-            Log($"Checking Warning for {printerName}");
+            //Log($"Checking Warning for {printerName}");
 
             uint warning;
             uint r = SOY_PR_GetPrinterWarningA(printerName, out warning);
 
-            Log($"Warning Result={r}, Value=0x{warning:X8}");
+            //Log($"Warning Result={r}, Value=0x{warning:X8}");
 
             if (r != 0) return $"SDK Error {r}";
             return warning == 0 ? "No Warnings" : $"Warning 0x{warning:X8}";
@@ -131,7 +131,7 @@ namespace MiniApp.Wrapper
         // ---------------------------------------------------------
         public static string SetPrinterSetting(string printerName, int orientation)
         {
-            Log("Preparing Printer Settings (300×600 DPI + CR80)...");
+           // Log("Preparing Printer Settings (300×600 DPI + CR80)...");
 
             var prop = new SEAORY_DOC_PROP
             {
@@ -174,7 +174,7 @@ namespace MiniApp.Wrapper
             uint result = SOY_PR_SetPrinterSettingA(printerName, ptr);
             Marshal.FreeHGlobal(ptr);
 
-            Log($"SetPrinterSetting returned {result}");
+            //Log($"SetPrinterSetting returned {result}");
 
             return result == 0 ? "OK" : $"SetPrinterSetting Error {result}";
         }
@@ -184,7 +184,7 @@ namespace MiniApp.Wrapper
         // ---------------------------------------------------------
         public static string GetFirstPrintAreaName(string printerName, int orientation)
         {
-            Log($"GetPrintArea for Orientation={orientation}");
+            //Log($"GetPrintArea for Orientation={orientation}");
 
             int areaNum = 0;
             int bytes = 0;
@@ -194,9 +194,9 @@ namespace MiniApp.Wrapper
 
             uint r = SOY_PR_GetPrintAreaA(printerName, orientation, 0, 0, out areaNum, out bytes, allNames, defaultName);
 
-            Log($"GetPrintArea Result={r}, AreaNum={areaNum}, Bytes={bytes}");
-            Log($"All Areas Raw={allNames}");
-            Log($"Default Area={defaultName}");
+            //Log($"GetPrintArea Result={r}, AreaNum={areaNum}, Bytes={bytes}");
+            //Log($"All Areas Raw={allNames}");
+            //Log($"Default Area={defaultName}");
 
             //if (r != 0) return null;
             if (r != 0) return string.Empty;
@@ -211,44 +211,44 @@ namespace MiniApp.Wrapper
         // ---------------------------------------------------------
         public static string PrintImage(string printerName, string imagePath)
         {
-            Log($"Starting PrintImage: {imagePath}");
+            //Log($"Starting PrintImage: {imagePath}");
             // -----------------------------------
             // 1) SET PRINTER SETTINGS (LANDSCAPE)
             // -----------------------------------
             string prep = SetPrinterSetting(printerName, 2); // 2 = Landscape
-            Log($"SetPrinterSetting Result: {prep}");
+            //Log($"SetPrinterSetting Result: {prep}");
             if (prep != "OK")
                 return prep;
             // -----------------------------------
             // 2) FIX CRITICAL ISSUE:
             // SET PRINT AREA TO LANDSCAPE
             // -----------------------------------
-            Log("Fetching Landscape PrintArea…");
+            //Log("Fetching Landscape PrintArea…");
             string areaName = GetFirstPrintAreaName(printerName, 2); // 2 = landscape
             if (string.IsNullOrEmpty(areaName))
             {
                 Log("ERROR: No print area found for landscape!");
                 return "PrintArea Missing";
             }
-            Log("Using PrintArea: " + areaName);
+            //Log("Using PrintArea: " + areaName);
             uint areaSet = SOY_PR_SetPrintAreaA(printerName, 2, 0, 0, areaName);
-            Log($"SetPrintArea returned {areaSet}");
+            //Log($"SetPrintArea returned {areaSet}");
             if (areaSet != 0)
                 return $"SetPrintArea Error {areaSet}";
             // -----------------------------------
             // 3) START PRINT JOB
             // -----------------------------------
             IntPtr hDC;
-            Log("Calling StartPrinting2A...");
+            //Log("Calling StartPrinting2A...");
             uint r1 = SOY_PR_StartPrinting2A(printerName, IntPtr.Zero, out hDC);
-            Log($"StartPrinting2A returned {r1}, hDC={hDC}");
+            //Log($"StartPrinting2A returned {r1}, hDC={hDC}");
             if (r1 != 0)
                 return $"StartPrinting Error {r1}";
             // -----------------------------------
             // 4) START PAGE
             // -----------------------------------
             uint r2 = SOY_PR_StartPage2(hDC);
-            Log($"StartPage2 returned {r2}");
+            //Log($"StartPage2 returned {r2}");
             if (r2 != 0)
                 return $"StartPage Error {r2}";
             // -----------------------------------
@@ -258,21 +258,21 @@ namespace MiniApp.Wrapper
             // (horizontal: 600 DPI long side ~3.37" = 2022 px; vertical: 300 DPI short side ~2.125" = 637 px)
             int W = 1011;
             int H = 637;
-               Log($"Printing Image W={W}, H={H}");
+               //Log($"Printing Image W={W}, H={H}");
             uint r3 = SOY_PR_PrintImage2A(hDC, 0, 0, W, H, imagePath);
-            Log($"PrintImage2A returned {r3} (hex: 0x{r3:X})");
+            //Log($"PrintImage2A returned {r3} (hex: 0x{r3:X})");
             if (r3 != 0)
             {
-                Log("ERROR: Image OUTSIDE printable area (0x11013)");
+                //Log("ERROR: Image OUTSIDE printable area (0x11013)");
                 return $"PrintImage Error {r3}";
             }
             // -----------------------------------
             // 6) END PAGE + END PRINT
             // -----------------------------------
             uint r4 = SOY_PR_EndPage2(hDC);
-            Log($"EndPage2 returned {r4}");
+            //Log($"EndPage2 returned {r4}");
             uint r5 = SOY_PR_EndPrinting2(hDC, false);
-            Log($"EndPrinting2 returned {r5}");
+            //Log($"EndPrinting2 returned {r5}");
             return "OK";
         }
     }
