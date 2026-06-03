@@ -60,7 +60,7 @@ namespace MiniApp.Views
         private bool _isFetchingQr = false;
 
         // CONSTRUCTOR
-        public ScanQrView(string jwtToken, long shopLoginId, long printerId,string printerName, string qrUrl, decimal printerPrice,int printerStatus,string expiry,int printerPaymentEnabled)
+        public ScanQrView(string jwtToken, long shopLoginId, long printerId, string printerName, string qrUrl, decimal printerPrice, int printerStatus, string expiry, int printerPaymentEnabled)
         {
             InitializeComponent();
 
@@ -190,11 +190,6 @@ namespace MiniApp.Views
 
             // START IDLE TIMER
             SetupIdleTimer();
-
-            // ANY INPUT RESETS TIMER
-            this.PreviewMouseDown += ResetIdleTimer;
-            this.PreviewTouchDown += ResetIdleTimer;
-            this.PreviewKeyDown += ResetIdleTimer;
         }
 
         // SCAN QR VIEW UNLOADED
@@ -499,8 +494,8 @@ namespace MiniApp.Views
                 if ((!string.IsNullOrEmpty(status) && status.Contains("0x000000AA")) ||
              (!string.IsNullOrEmpty(warning) && warning.Contains("0x000000AA")))
                 {
-                    SetPrinterBusyUI(); 
-                    return; 
+                    SetPrinterBusyUI();
+                    return;
                 }
 
                 // Use existing _orderQueue instance instead of creating new one
@@ -665,11 +660,11 @@ namespace MiniApp.Views
                 // Await the async API call
                 var orderDetail = await LoginView.GetOrderDetailByOrderId(lastJob.OrderId);
 
-                 if (orderDetail == null)
-                 {
-                     AppLogger.Log($"Order details not found for Order ID {lastJob.OrderId}. Retry aborted.");
-                     return;
-                 }
+                if (orderDetail == null)
+                {
+                    AppLogger.Log($"Order details not found for Order ID {lastJob.OrderId}. Retry aborted.");
+                    return;
+                }
 
                 // SAFETY CHECK — BACKEND REFUND PROTECTION
                 if (orderDetail.OrderStatus == 3 && orderDetail.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint

@@ -27,6 +27,7 @@ namespace MiniApp.Views
         private int seconds = 30;
         private DispatcherTimer? timer;
         private bool timerCompleted = false;
+        private TaskCompletionSource<bool>? timerCompletionSource;
 
         // Constructor
         public PrintProgressView()
@@ -68,6 +69,8 @@ namespace MiniApp.Views
         // Start the countdown timer
         private void StartTimer()
         {
+            timerCompleted = false;
+            timerCompletionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -88,6 +91,7 @@ namespace MiniApp.Views
             {
                 timer?.Stop();
                 timerCompleted = true;
+                timerCompletionSource?.TrySetResult(true);
                 LoaderVideo.Stop();
             }
         }
@@ -122,6 +126,7 @@ namespace MiniApp.Views
                 }
 
                 timerCompleted = true;
+                timerCompletionSource?.TrySetResult(true);
 
                 if (LoaderVideo != null)
                     LoaderVideo.Stop();
@@ -132,6 +137,21 @@ namespace MiniApp.Views
             {
                 AppLogger.Log("StopTimer Exception: " + ex.Message);
             }
+        }
+
+        // Wait for the progress timer to complete
+        public Task WaitForCompletionAsync()
+        {
+            if (timerCompletionSource == null)
+            {
+                timerCompletionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                if (timerCompleted)
+                {
+                    timerCompletionSource.TrySetResult(true);
+                }
+            }
+
+            return timerCompletionSource.Task;
         }
 
     }

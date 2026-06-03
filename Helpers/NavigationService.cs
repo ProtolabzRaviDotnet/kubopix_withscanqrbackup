@@ -43,9 +43,59 @@ namespace MiniApp.Helpers
             }
         }
 
+        public static bool CanGoBack(int steps = 1)
+        {
+            if (_mainFrame == null)
+                return false;
+
+            bool enoughHistory = false;
+            _mainFrame.Dispatcher.Invoke(() =>
+            {
+                var entries = _mainFrame.BackStack;
+                if (entries == null)
+                {
+                    enoughHistory = false;
+                    return;
+                }
+
+                int count = 0;
+                foreach (var _ in entries)
+                {
+                    count++;
+                    if (count >= steps)
+                        break;
+                }
+
+                enoughHistory = count >= steps;
+            });
+
+            return enoughHistory;
+        }
+
+        public static void GoBack(int steps)
+        {
+            if (_mainFrame == null)
+                return;
+
+            _mainFrame.Dispatcher.Invoke(() =>
+            {
+                for (int i = 0; i < steps && _mainFrame.CanGoBack; i++)
+                {
+                    _mainFrame.GoBack();
+                }
+            });
+        }
+
         // Get the current page
         public static Page? GetCurrentPage()
         {
+            if (_mainFrame == null)
+                return null;
+
+            var currentFramePage = _mainFrame.Content as Page;
+            if (currentFramePage != null)
+                _currentPage = currentFramePage;
+
             return _currentPage;
         }
     }
