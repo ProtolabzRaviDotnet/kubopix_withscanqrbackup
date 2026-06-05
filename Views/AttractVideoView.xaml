@@ -1,4 +1,4 @@
-﻿<Page x:Class="MiniApp.Views.AttractVideoView"
+﻿<!--<Page x:Class="MiniApp.Views.AttractVideoView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="Black"
@@ -11,6 +11,24 @@
         <MediaElement x:Name="LoopVideo"
                       LoadedBehavior="Manual"
                       UnloadedBehavior="Manual"
+                      Stretch="UniformToFill"
+                      IsHitTestVisible="False"
+                      MediaEnded="LoopVideo_MediaEnded"
+                      MediaFailed="LoopVideo_MediaFailed"/>
+    </Grid>
+</Page>-->
+
+<Page x:Class="MiniApp.Views.AttractVideoView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="Black"
+      Focusable="True">
+
+    <Grid Background="Black">
+
+        <MediaElement x:Name="LoopVideo"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Stop"
                       Stretch="UniformToFill"
                       IsHitTestVisible="False"
                       MediaEnded="LoopVideo_MediaEnded"
