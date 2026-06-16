@@ -32,7 +32,9 @@ namespace MiniApp.Services
         private readonly string _printerName;
         private readonly HttpClient _client;
 
-        private bool _isProcessing = false;
+        // SemaphoreSlim(1,1) used instead of a plain bool so the "is running" check
+        // is atomic — a non-volatile bool can be read as false by two threads simultaneously.
+        private readonly SemaphoreSlim _processSemaphore = new SemaphoreSlim(1, 1);
 
         private bool _isStarted = false;
 
@@ -81,8 +83,11 @@ namespace MiniApp.Services
                 {
                     try
                     {
-                        if (!_isProcessing)
-                            await ProcessPendingOrders();
+                        if (await _processSemaphore.WaitAsync(0))
+                        {
+                            try { await ProcessPendingOrders(); }
+                            finally { _processSemaphore.Release(); }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -193,7 +198,6 @@ namespace MiniApp.Services
         {
             try
             {
-                _isProcessing = true;
                 //AppLogger.Log("Checking for pending orders...");
 
                 var pendingOrders = await GetPendingOrders();
@@ -217,22 +221,25 @@ namespace MiniApp.Services
                 {
                     //AppLogger.Log($"Processing Order #{order.OrderId}");
 
+                    // Check BEFORE navigating — prevents a stale PrintProgressView from being
+                    // left on the navigation stack when a duplicate order is skipped with continue.
+                    // Previously this check came AFTER Navigate(), so GoBack(2) would land on the
+                    // orphaned progress screen instead of ScanQrView (26-minute freeze bug).
+                    if (_processedOrderIds.Contains(order.OrderId))
+                    {
+                        AppLogger.Log($"This Order is Already Processed {order.OrderId}");
+                        continue;
+                    }
+
+                    // MARK as processed
+                    _processedOrderIds.Add(order.OrderId);
+
                     PrintProgressView? printProgressView = null;
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         printProgressView = new PrintProgressView();
                         NavigationService.Navigate(printProgressView);  // Set the current page as PrintProgressView
                     });
-
-                    if (_processedOrderIds.Contains(order.OrderId))
-                    {
-                        AppLogger.Log($"This Order is Already Processed {order.OrderId}");
-
-                        continue;
-                    }
-
-                    // MARK as processed
-                    _processedOrderIds.Add(order.OrderId);
 
                     var processedIdsString = string.Join(", ", _processedOrderIds);
                     //AppLogger.Log($"Processed Order Ids First: {processedIdsString}");
@@ -281,30 +288,7 @@ namespace MiniApp.Services
 
                             //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
 
-                            // ← TRY-CATCH 
-                            try
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    // Reuse the existing ScanQrView instance rather than creating a new one.
-                                    Helpers.NavigationService.GoBack(2);
-                                });
-
-                                //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — ScanQrView navigation done successfully");
-                            }
-                            catch (Exception navEx)
-                            {
-                                AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — Navigation failed: {navEx.Message}");
-                                // FALLBACK: Load Data From Session and Navigate
-                                try
-                                {
-                                    NavigateBackToScanQR();
-                                }
-                                catch (Exception ex)
-                                {
-                                    AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — Fallback also failed: {ex.Message}");
-                                }
-                            }
+                            NavigateBackToScanQR();
 
                         }
                         else
@@ -326,29 +310,7 @@ namespace MiniApp.Services
 
                             //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
 
-                            // TRY-CATCH for free order navigation back
-                            try
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    // Reuse the existing ScanQrView instance rather than creating a new one.
-                                    Helpers.NavigationService.GoBack(2);
-                                });
-
-                                //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — ScanQrView navigation done successfully");
-                            }
-                            catch (Exception navEx)
-                            {
-                                AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — Navigation failed: {navEx.Message}");
-                                try
-                                {
-                                    NavigateBackToScanQR();
-                                }
-                                catch (Exception ex)
-                                {
-                                    AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — Fallback also failed: {ex.Message}");
-                                }
-                            }
+                            NavigateBackToScanQR();
                         }
                     }
                     else
@@ -419,10 +381,6 @@ namespace MiniApp.Services
             catch (Exception ex)
             {
                 AppLogger.Log("Queue Processing Error: " + ex.Message);
-            }
-            finally
-            {
-                _isProcessing = false;
             }
         }
 
@@ -1728,29 +1686,17 @@ namespace MiniApp.Services
         // Navigate Back to Scan QR View
         private void NavigateBackToScanQR()
         {
-            //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — entering Dispatcher.Invoke");
-
             Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {
-                    // Avoid duplicate navigation
                     var currentPage = NavigationService.GetCurrentPage();
-
-                    //AppLogger.Log($"[STUCK-DEBUG] NavigateBackToScanQR — current page: {currentPage?.GetType().Name ?? "null"}");
-
                     if (currentPage is ScanQrView)
-                    {
-                        //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — already on ScanQrView, skipping");
                         return;
-                    }
 
-                    if (NavigationService.CanGoBack(2))
-                    {
-                        Helpers.NavigationService.GoBack(2);
-                        return;
-                    }
-
+                    // Always navigate to a fresh ScanQrView — GoBack(n) is fragile when the
+                    // back stack has unexpected extra entries (e.g. from a prior duplicate-order
+                    // or concurrent loop run), causing it to land on a frozen PrintProgressView.
                     Helpers.NavigationService.Navigate(
                         new ScanQrView(
                             _jwtToken,
@@ -1764,18 +1710,13 @@ namespace MiniApp.Services
                             _printerPaymentEnabled
                         )
                     );
-
-                    //AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — ScanQrView navigation done successfully");
-
                 }
                 catch (Exception ex)
                 {
                     AppLogger.Log($"[STUCK-DEBUG] NavigateBackToScanQR ERROR: {ex}");
                 }
             });
-
             AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — Dispatcher.Invoke completed");
-
         }
 
         // Track Print Failure via API -- Refund Order Tracking

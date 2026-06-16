@@ -27,7 +27,10 @@ namespace MiniApp.Views
         private int seconds = 30;
         private DispatcherTimer? timer;
         private bool timerCompleted = false;
-        private TaskCompletionSource<bool>? timerCompletionSource;
+        // Initialized here (not in StartTimer/Page_Loaded) so WaitForCompletionAsync()
+        // called from a background thread can never race against Page_Loaded firing late.
+        private readonly TaskCompletionSource<bool> timerCompletionSource =
+            new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         // Constructor
         public PrintProgressView()
@@ -70,7 +73,6 @@ namespace MiniApp.Views
         private void StartTimer()
         {
             timerCompleted = false;
-            timerCompletionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -91,7 +93,7 @@ namespace MiniApp.Views
             {
                 timer?.Stop();
                 timerCompleted = true;
-                timerCompletionSource?.TrySetResult(true);
+                timerCompletionSource.TrySetResult(true);
                 LoaderVideo.Stop();
             }
         }
@@ -126,7 +128,7 @@ namespace MiniApp.Views
                 }
 
                 timerCompleted = true;
-                timerCompletionSource?.TrySetResult(true);
+                timerCompletionSource.TrySetResult(true);
 
                 if (LoaderVideo != null)
                     LoaderVideo.Stop();
@@ -142,15 +144,6 @@ namespace MiniApp.Views
         // Wait for the progress timer to complete
         public Task WaitForCompletionAsync()
         {
-            if (timerCompletionSource == null)
-            {
-                timerCompletionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                if (timerCompleted)
-                {
-                    timerCompletionSource.TrySetResult(true);
-                }
-            }
-
             return timerCompletionSource.Task;
         }
 
