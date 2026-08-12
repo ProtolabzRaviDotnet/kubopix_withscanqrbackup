@@ -1,7 +1,8 @@
-﻿using MiniApp.Helpers;
-using MiniApp.Services;
-using MiniApp.ViewModels;
-using MiniApp.Wrapper;
+using com.epson.label.driver;
+using kuboPix.Helpers;
+using kuboPix.Services;
+using kuboPix.ViewModels;
+using kuboPix.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for UnderMaintenancePage.xaml
@@ -91,7 +92,7 @@ namespace MiniApp.Views
             if (dialog.ShowDialog() != true)
                 return;
 
-            MiniAppSessionManager.Clear();
+            kuboPixSessionManager.Clear();
 
             if (printerId > 0 && shoploginId > 0)
             {
@@ -135,24 +136,50 @@ namespace MiniApp.Views
 
             try
             {
-                var session = MiniAppSessionManager.Load();
+                var session = kuboPixSessionManager.Load();
                 if (session == null)
                     return;
 
                 if (string.IsNullOrWhiteSpace(session.PrinterName))
                     return;
 
-                string status;
+                string status = "";
+                string brand = session.PrinterBrand ?? LoginView.SelectedPrinterBrand ?? "Seaory";
 
                 try
                 {
-                    // Read REAL hardware status
-                    status = SeaoryPrinterPrint.CheckPrinterStatus(session.PrinterName);
+                    if (brand == "Epson")
+                    {
+                        ENS2Control ensControl = ENS2Control.GetInstance();
+                        try
+                        {
+                            ensControl.Initialize(session.PrinterName, "");
+                            StatusCode sc = ensControl.GetStatusInformation();
+
+                            if (sc == StatusCode.ST_Idle)
+                            {
+                                status = "Ready";
+                            }
+                            else
+                            {
+                                status = sc.ToString().Replace("ST_", "");
+                            }
+                        }
+                        finally
+                        {
+                            ensControl.Release();
+                        }
+                    }
+                    else
+                    {
+                        // Read REAL hardware status
+                        status = SeaoryPrinterPrint.CheckPrinterStatus(session.PrinterName);
+                    }
                 }
                 catch (Exception ex)
                 {
                     // SDK / driver level failure
-                    AppLogger.Log($"[UM] Failed to read printer status: {ex}");
+                    AppLogger.Log($"[UM] Failed to read printer status for {brand}: {ex}");
                     return;
                 }
 
@@ -179,31 +206,10 @@ namespace MiniApp.Views
                 AppLogger.Log($"[UM] Printer recovery check failed: {ex}");
             }
         }
-        private async Task HandlePrinterRecovered(MiniAppSession session)
+        private async Task HandlePrinterRecovered(kuboPixSession session)
         {
-            bool tokenValid = await LoginView.VerifyToken(session.Token);
-            if (!tokenValid) return;
-
-            var qrDetails = await LoginView.FetchQrDetailsForMiniApp(session.PrinterId);
-            if (qrDetails == null) return;
-
-            // Fetch LIVE printer state
-            var printerState = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
-            if (printerState == null) return; // <-- null check
-
-            NavigationService?.Navigate(
-                new ScanQrView(
-                    session.Token,
-                    session.ShopLoginId,
-                    session.PrinterId,
-                    printerState.PrinterName,
-                    qrDetails.qrUrl,
-                    printerState.PrinterPrice,
-                    printerState.PrinterStatus,
-                    qrDetails.expiry,
-                    printerState.PrinterPaymentEnabled
-                )
-            );
+            NavigationService?.Navigate(new Capture());
+            await Task.CompletedTask;
         }
                 
         // -------------------------------

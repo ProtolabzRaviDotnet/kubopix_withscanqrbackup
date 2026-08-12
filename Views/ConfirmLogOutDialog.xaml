@@ -1,4 +1,4 @@
-﻿<Window x:Class="MiniApp.Views.ConfirmLogOutDialog"
+<Window x:Class="kuboPix.Views.ConfirmLogOutDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStartupLocation="CenterOwner"
@@ -8,6 +8,10 @@
         Background="Transparent"
         Height="360" Width="430">
 
+    <!-- Viewbox + fixed canvas: the dialog is resized to match the UI scale (DialogScaler),
+         and this scales the contents to fit. Canvas size = the design size on the Window. -->
+    <Viewbox Stretch="Uniform">
+      <Grid Width="430" Height="360">
     <Border CornerRadius="18" Background="White" Padding="20" BorderBrush="#CCCCCC" BorderThickness="1">
         <StackPanel VerticalAlignment="Center" >
 
@@ -108,4 +112,6 @@
 
         </StackPanel>
     </Border>
+      </Grid>
+    </Viewbox>
 </Window>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for ConfirmLogOutDialog.xaml
@@ -22,6 +22,8 @@ namespace MiniApp.Views
         public ConfirmLogOutDialog()
         {
             InitializeComponent();
+            // Match the dialog's size to the UI scale (see Helpers/DialogScaler.cs).
+            SourceInitialized += (_, _) => kuboPix.Helpers.DialogScaler.ScaleToOwner(this);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -76,6 +78,5 @@ namespace MiniApp.Views
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
-
     }
 }

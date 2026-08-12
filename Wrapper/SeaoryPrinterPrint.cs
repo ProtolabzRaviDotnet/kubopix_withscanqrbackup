@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp.Wrapper
+namespace kuboPix.Wrapper
 {
     public static class SeaoryPrinterPrint
     {

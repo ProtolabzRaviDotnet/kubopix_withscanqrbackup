@@ -1,0 +1,232 @@
+<Page x:Class="kuboPix.Views.PrintPreview"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:kuboPix.Views"
+      mc:Ignorable="d"
+      Background="#FFFFFF"
+      FontFamily="Poppins, Segoe UI"
+      Title="PrintPreview">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Logo/Header -->
+            <RowDefinition Height="*"/>    <!-- Stepper + Viewport (Middle) -->
+            <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
+        <StackPanel Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Margin="0,80,0,0"
+                    HorizontalAlignment="Center">
+            <!-- Logo -->
+            <Image Source="/Assets/logo.png" 
+                   Width="180" 
+                   Stretch="Uniform" 
+                   HorizontalAlignment="Center"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
+
+            <!-- Tagline -->
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="9" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- ===== 2. MIDDLE CONTENT (Stepper + Viewport) ===== -->
+        <StackPanel Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,20"
+                    Width="420">
+
+            <!-- Stepper Progress Indicator -->
+            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+                <!-- Connector Track Line behind circles -->
+                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#FF1C244B"/>
+                    <Border Grid.Column="1" Background="#FF1C244B"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/> <!-- Step 1: Capture -->
+                        <ColumnDefinition Width="*"/> <!-- Step 2: Edit -->
+                        <ColumnDefinition Width="*"/> <!-- Step 3: Print -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Step 1: Capture (Completed with Tick) -->
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                        <Grid Width="56" Height="56">
+                            <Ellipse Fill="#FF1C244B" Width="56" Height="56"/>
+                            <Path Data="M 20,28 L 26,34 L 38,22" Stroke="White" StrokeThickness="3.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Grid>
+                        <TextBlock Text="Capture" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="14" 
+                                   Foreground="#FF1C244B" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- Step 2: Edit (Completed with Tick) -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                        <Grid Width="56" Height="56">
+                            <Ellipse Fill="#FF1C244B" Width="56" Height="56"/>
+                            <Path Data="M 20,28 L 26,34 L 38,22" Stroke="White" StrokeThickness="3.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Grid>
+                        <TextBlock Text="Edit" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="14" 
+                                   Foreground="#FF1C244B" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- Step 3: Print (Active) -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                        <Ellipse Stroke="#FF1C244B" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
+                        <TextBlock Text="Print" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="14" 
+                                   Foreground="#FF1C244B" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Viewport & Header -->
+            <StackPanel>
+                <!-- Confirm Photo Header -->
+                <TextBlock Text="Confirm your photo" 
+                           FontFamily="Poppins" 
+                           FontWeight="Bold" 
+                           FontSize="24" 
+                           Foreground="#FF1C244B" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,25"/>
+  
+                <!-- 2. Image Viewport displaying final photo with frame and background -->
+                <Border x:Name="PhotoBorder"
+                        Width="320" 
+                        Height="320" 
+                        Background="#FFF9FAFB" 
+                        BorderBrush="#FFE5E7EB" 
+                        BorderThickness="1.5" 
+                        CornerRadius="16"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,30"
+                        ClipToBounds="True">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="25" 
+                                          ShadowDepth="4" 
+                                          Opacity="0.08" 
+                                          Color="#000000"/>
+                    </Border.Effect>
+
+                    <Grid>
+                        <!-- The captured photo display -->
+                        <Image x:Name="CapturedPhoto" 
+                               HorizontalAlignment="Stretch" 
+                               VerticalAlignment="Stretch" 
+                               Stretch="UniformToFill"/>
+
+                        <!-- Frame Overlay -->
+                        <Image x:Name="FrameOverlay" 
+                               HorizontalAlignment="Stretch" 
+                               VerticalAlignment="Stretch" 
+                               Stretch="Fill"
+                               Visibility="Collapsed"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
+        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/> <!-- Gap -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Back Button -->
+            <Button Grid.Column="0"
+                    x:Name="BackButton"
+                    Click="BackButton_Click"
+                    Background="#FFEFEFEF"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="10">
+                            <TextBlock Text="BACK" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="Bold" 
+                                       FontSize="18" 
+                                       Foreground="#FF4B5563" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- Next Button -->
+            <Button Grid.Column="2"
+                    x:Name="NextButton"
+                    Click="NextButton_Click"
+                    Background="#FF5C6BFF"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="10">
+                            <TextBlock Text="NEXT" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="Bold" 
+                                       FontSize="18" 
+                                       Foreground="White" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
+    </Grid>
+</Page>

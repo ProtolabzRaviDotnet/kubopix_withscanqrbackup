@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp
+namespace kuboPix
 {
     public static class AppLogger
     {
-        private static readonly string logFilePath = Path.Combine(Path.GetTempPath(), "MiniApp_Logs.txt");
+        private static readonly string logFilePath = Path.Combine(Path.GetTempPath(), "kuboPix_Logs.txt");
         public static void Log(string message)
         {
             try

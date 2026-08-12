@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp.ViewModels
+namespace kuboPix.ViewModels
 {
-    public class MiniAppSession
+    public class kuboPixSession
     {
         public string Token { get; set; } = string.Empty;
         public string? Password { get; set; }
@@ -17,5 +17,6 @@ namespace MiniApp.ViewModels
         public decimal PrinterPrice { get; set; }
         public int PrinterStatus { get; set; }
         public int PrinterPaymentEnabled { get; set; }
+        public string PrinterBrand { get; set; } = "Seaory";
     }
 }

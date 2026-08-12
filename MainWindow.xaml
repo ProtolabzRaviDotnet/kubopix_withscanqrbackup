@@ -1,20 +1,32 @@
-﻿<!--<Window x:Class="MiniApp.MainWindow"
+<Window x:Class="kuboPix.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MiniApp"
-        Icon="pack://application:,,,/MiniApp;component/Assets/KuboMediaFavIcon.ico"
+        Title="kuboPix"
+        
+        Icon="pack://application:,,,/kuboPix;component/Assets/KuboMediaFavIcon.ico"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Background="White">
 
-    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-</Window>-->
+    <!-- Scaling host: derives the UI scale from the window size at runtime,
+         so the same build fills any portrait panel. See docs/UI_PORTRAIT_RESPONSIVE_PLAN.md -->
+    <Grid x:Name="ScaleHost"
+          Background="White"
+          UseLayoutRounding="True"
+          SizeChanged="ScaleHost_SizeChanged">
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden">
+            <Frame.LayoutTransform>
+                <ScaleTransform x:Name="UiScale" ScaleX="1" ScaleY="1"/>
+            </Frame.LayoutTransform>
+        </Frame>
+    </Grid>
+</Window>
 
-<Window x:Class="MiniApp.MainWindow"
+<!--<Window x:Class="kuboPix.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MiniApp"
-        Icon="pack://application:,,,/MiniApp;component/Assets/KuboMediaFavIcon.ico"
+        Title="kuboPix"
+        Icon="pack://application:,,,/kuboPix;component/Assets/KuboMediaFavIcon.ico"
         WindowStyle="None" 
         WindowState="Maximized"
         ShowInTaskbar="False"
@@ -24,7 +36,7 @@
 
 
     <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
-</Window>
+</Window>-->
 
     
 

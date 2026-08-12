@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniApp", "MiniApp.csproj", "{DF12A6D3-01D7-4AC9-87BB-1F1CD91EDC09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KuboPix", "KuboPix.csproj", "{DF12A6D3-01D7-4AC9-87BB-1F1CD91EDC09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

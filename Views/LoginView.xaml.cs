@@ -1,7 +1,8 @@
-﻿using MiniApp.Helpers;
-using MiniApp.Services;
-using MiniApp.ViewModels;
-using MiniApp.Wrapper;
+using com.epson.label.driver;
+using kuboPix.Helpers;
+using kuboPix.Services;
+using kuboPix.ViewModels;
+using kuboPix.Wrapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -24,13 +25,14 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using static System.Net.WebRequestMethods;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
     public partial class LoginView : Page
     {
+
         private string? _printerDeviceId;
         private string? _connectedPrinterName;
         private string? _printerName;
@@ -55,6 +57,7 @@ namespace MiniApp.Views
         private static int _currentSessionPrinterPaymentEnabled; // store paymentenabled for session
 
         public static bool IsOfflineReported { get; set; } = false;
+        public static string SelectedPrinterBrand { get; set; } = "Seaory S22K";
 
         public LoginView()
         {
@@ -75,8 +78,19 @@ namespace MiniApp.Views
             try
             {
 
-                LoadingOverlay.Visibility = Visibility.Visible;
-                LoginCard.Visibility = Visibility.Collapsed;
+                //LoadingOverlay.Visibility = Visibility.Visible;
+                //LoginCard.Visibility = Visibility.Collapsed;
+
+                // Load existing session (if any) to set the correct SelectedPrinterBrand
+                var session = kuboPixSessionManager.Load();
+                if (session != null && !string.IsNullOrEmpty(session.PrinterBrand))
+                {
+                    SelectedPrinterBrand = session.PrinterBrand;
+                }
+                else
+                {
+                    SelectedPrinterBrand = "Seaory S22K"; // Default
+                }
 
                 var printerResult = await CheckPrinterOnStart();
 
@@ -87,8 +101,8 @@ namespace MiniApp.Views
                     // Printer issue → Login page with error
                     txtPrinterStatus.Text = $"Printer not ready : {_rawStatus}";
                     btnLogin.IsEnabled = false;
-                    LoadingOverlay.Visibility = Visibility.Collapsed;
-                    LoginCard.Visibility = Visibility.Visible;
+                    //LoadingOverlay.Visibility = Visibility.Collapsed;
+                    //LoginCard.Visibility = Visibility.Visible;
 
                     StartSilentPrinterRetry(); //Re-Render The Printer DLL Status
                     return;
@@ -101,8 +115,6 @@ namespace MiniApp.Views
                 txtPrinterStatus.Text = $"Printer is Ready (Device ID: {_printerDeviceId})";
 
                 //AUTO LOGIN CHECK (AFTER PRINTER OK)
-                var session = MiniAppSessionManager.Load();
-
                 if (session != null)
                 {
                     bool tokenValid = await VerifyToken(session.Token);
@@ -111,7 +123,7 @@ namespace MiniApp.Views
 
                     if (livePrinter == null)
                     {
-                        MiniAppSessionManager.Clear();
+                        kuboPixSessionManager.Clear();
                         MessageBox.Show("Printer not available.", "Error");
                         return;
                     }
@@ -121,6 +133,21 @@ namespace MiniApp.Views
                     _printerStatus = livePrinter.PrinterStatus;
                     _printerPaymentEnabled = livePrinter.PrinterPaymentEnabled;
                     _printerPrice = livePrinter.PrinterPrice;
+                    // Set internal printer brand based on printer name or connected printer name
+                    string brandCheckName = _printerName ?? string.Empty;
+                    if (!string.IsNullOrEmpty(_connectedPrinterName))
+                    {
+                        brandCheckName += " " + _connectedPrinterName;
+                    }
+                    if (brandCheckName.Contains("Epson", StringComparison.OrdinalIgnoreCase) ||
+                        brandCheckName.Contains("CW-", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SelectedPrinterBrand = "Epson";
+                    }
+                    else
+                    {
+                        SelectedPrinterBrand = "Seaory";
+                    }
 
                     if (tokenValid)
                     {
@@ -130,6 +157,11 @@ namespace MiniApp.Views
                         _sessionprinterPrice = session.PrinterPrice;
                         _sessionprinterStatus = session.PrinterStatus;
 
+                        // Update session brand on disk to fix any legacy brand mismatches
+                        session.PrinterBrand = SelectedPrinterBrand;
+                        session.PrinterName = _connectedPrinterName ?? string.Empty;
+                        kuboPixSessionManager.Save(session);
+
                         // Restore password (if using)
                         _currentSessionPassword = session.Password;
                         _currentSessionPrinterName = session.PrinterName;
@@ -138,20 +170,7 @@ namespace MiniApp.Views
                         _currentSessionPrinterId = session.PrinterId;
                         _currentSessionPrinterPaymentEnabled = session.PrinterPaymentEnabled;
 
-                        var qrDetails = await FetchQrDetailsForMiniApp(_printerId);
-
-                        NavigationService.Navigate(
-                          new ScanQrView(
-                              _jwtToken,
-                              _shopLoginId,
-                              _printerId,
-                              _printerName,
-                              qrDetails.qrUrl,
-                              _printerPrice,
-                              _printerStatus,
-                              qrDetails.expiry,
-                              _printerPaymentEnabled
-                          ));
+                        NavigationService.Navigate(new Capture());
 
                         return; // SUCCESS AUTO LOGIN
                     }
@@ -159,14 +178,14 @@ namespace MiniApp.Views
                     {
                         LoadingOverlay.Visibility = Visibility.Collapsed;
                         LoginCard.Visibility = Visibility.Visible;
-                        MiniAppSessionManager.Clear(); // invalid token
+                        kuboPixSessionManager.Clear(); // invalid token
                     }
                 }
 
                 //SHOW LOGIN PAGE (AS BEFORE)
                 btnLogin.IsEnabled = true;
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-                LoginCard.Visibility = Visibility.Visible;
+                //LoadingOverlay.Visibility = Visibility.Collapsed;
+                //LoginCard.Visibility = Visibility.Visible;
 
             }
             catch (Exception ex)
@@ -177,7 +196,6 @@ namespace MiniApp.Views
             }
         }
 
-        // DLL-based printer check
         private Task<(bool IsReady, string? DeviceId, string? PrinterName)> CheckPrinterOnStart()
         {
             return Task.Run<(bool IsReady, string? DeviceId, string? PrinterName)>(() =>
@@ -186,20 +204,148 @@ namespace MiniApp.Views
                 {
                     var physicalPrinters = PrinterSettings.InstalledPrinters
                         .Cast<string>()
+                        .ToList();
+
+                    string preferredBrand = SelectedPrinterBrand ?? "Seaory";
+                    string otherBrand = preferredBrand == "Epson" ? "Seaory" : "Epson";
+
+                    // 1. Try preferred brand
+                    var result = CheckPrinterBrandInternal(preferredBrand, physicalPrinters);
+                    if (result.IsReady)
+                    {
+                        SelectedPrinterBrand = preferredBrand;
+                        _rawStatus = result.RawStatus;
+                        return (true, result.DeviceId, result.PrinterName);
+                    }
+
+                   
+
+                    // 2. Try the other brand
+                    var otherResult = CheckPrinterBrandInternal(otherBrand, physicalPrinters);
+                    if (otherResult.IsReady)
+                    {
+                        SelectedPrinterBrand = otherBrand;
+                        _rawStatus = otherResult.RawStatus;
+                        return (true, otherResult.DeviceId, otherResult.PrinterName);
+                    }
+
+                    // If neither is ready, decide which error status to show based on what printer was found.
+                    if (otherResult.PrinterName != null)
+                    {
+                        SelectedPrinterBrand = otherBrand;
+                        _rawStatus = otherResult.RawStatus;
+                    }
+                    else if (result.PrinterName != null)
+                    {
+                        SelectedPrinterBrand = preferredBrand;
+                        _rawStatus = result.RawStatus;
+                    }
+                    else
+                    {
+                        _rawStatus = result.RawStatus; // Default to preferred brand's error status (e.g. "Not Detected")
+                    }
+
+                    // AppLogger.Log($"CheckPrinterOnStart failed. Determined brand: {SelectedPrinterBrand}, Status: {_rawStatus}");
+                    return (false, null, null);
+                }
+                catch (Exception ex)
+                {
+                    _rawStatus = $"System Error: {ex.Message}";
+                    AppLogger.Log($"CheckPrinterOnStart system error: {ex}");
+                    return (false, null, null);
+                }
+            });
+        }
+
+        private (bool IsReady, string? DeviceId, string? PrinterName, string RawStatus) CheckPrinterBrandInternal(string brand, List<string> physicalPrinters)
+        {
+            try
+            {
+                if (brand == "Epson")
+                {
+                    string? firstEpsonName = null;
+                    string? firstEpsonStatus = null;
+                    foreach (var name in physicalPrinters)
+                    {
+                        if (!IsEpsonPrinter(name))
+                            continue;
+                        try
+                        {
+                            if (IsEpsonPrinter(name))
+                            {
+                                ENS2Control ensControl = ENS2Control.GetInstance();
+                                try
+                                {
+                                    ensControl.Initialize(name, "");
+                                    StatusCode sc = ensControl.GetStatusInformation();
+                                    string serial = ensControl.GetSerialNumber();
+
+                                    string statusStr = sc.ToString().Replace("ST_", "");
+
+                                    if (firstEpsonName == null)
+                                    {
+                                        firstEpsonName = name;
+                                        firstEpsonStatus = statusStr;
+                                    }
+
+                                    if (sc == StatusCode.ST_Idle)
+                                    {
+                                        AppLogger.Log($"Epson printer '{name}' is ready. Serial: {serial}");
+                                        return (true, serial, name, "Ready");
+                                    }
+                                    else
+                                    {
+                                        AppLogger.Log($"Epson printer '{name}' is not Ready. Status: {statusStr}");
+                                    }
+                                }
+                                finally
+                                {
+                                    ensControl.Release();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string errStr = $"Epson Error: {ex.Message}";
+                            AppLogger.Log($"Error checking Epson printer '{name}': {ex}");
+                            if (firstEpsonName == null)
+                            {
+                                firstEpsonName = name;
+                                firstEpsonStatus = errStr;
+                            }
+                        }
+                    }
+
+                    if (firstEpsonName != null)
+                    {
+                        return (false, null, firstEpsonName, firstEpsonStatus ?? "Not Detected");
+                    }
+                }
+                else // Seaory
+                {
+                    var defaultPrinters = physicalPrinters
                         .Where(printerName =>
                         {
                             var printerSettings = new PrinterSettings { PrinterName = printerName };
                             return printerSettings.IsValid && printerSettings.IsDefaultPrinter;
                         })
                         .ToList();
+                    string? firstSeaoryName = null;
+                    string? firstSeaoryStatus = null;
 
-                    foreach (var name in physicalPrinters)
+                    foreach (var name in defaultPrinters)
                     {
+                        if (IsEpsonPrinter(name))
+                            continue;
                         try
                         {
                             var (friendlyStatus, rawStatus) = SeaoryPrinterAPI.GetPrinterStatus(name);
 
-                            _rawStatus = friendlyStatus;
+                            if (firstSeaoryName == null)
+                            {
+                                firstSeaoryName = name;
+                                firstSeaoryStatus = friendlyStatus;
+                            }
 
                             if (!string.IsNullOrEmpty(friendlyStatus) &&
                                 friendlyStatus.IndexOf("Ready", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -208,24 +354,51 @@ namespace MiniApp.Views
                                     name,
                                     SeaoryPrinterAPI.INFO_SERIAL_NUMBER
                                 );
+                                AppLogger.Log($"Seaory printer '{name}' is ready. Serial: {deviceId}");
 
-                                return (true, deviceId, name);
+                                return (true, deviceId, name, friendlyStatus);
                             }
+                            else
+                            {
 
+                                AppLogger.Log($"Seaory printer '{name}' is not Ready. Status: {friendlyStatus}");
+
+                            }
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            // Ignore individual printer error
+                            string errStr = $"Seaory Error: {ex.Message}";
+                            AppLogger.Log($"Error checking Seaory printer '{name}': {ex}");
+                            if (firstSeaoryName == null)
+                            {
+                                firstSeaoryName = name;
+                                firstSeaoryStatus = errStr;
+                            }
                         }
                     }
+                    if (firstSeaoryName != null)
+                    {
+                        return (false, null, firstSeaoryName, firstSeaoryStatus ?? "Not Detected");
+                    }
 
-                    return (false, null, null);
+
                 }
-                catch
-                {
-                    return (false, null, null);
-                }
-            });
+
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"CheckPrinterBrandInternal error for {brand}: {ex}");
+                return (false, null, null, $"System Error: {ex.Message}");
+            }
+
+            return (false, null, null, "Not Detected");
+        }
+
+        private static bool IsEpsonPrinter(string name)
+        {
+            return !string.IsNullOrEmpty(name) &&
+                   (name.Contains("EPSON", StringComparison.OrdinalIgnoreCase) ||
+                    name.Contains("CW-", StringComparison.OrdinalIgnoreCase));
         }
 
         // Retry printer check silently
@@ -308,6 +481,7 @@ namespace MiniApp.Views
             try
             {
                 LoadingOverlay.Visibility = Visibility.Visible;
+                LoginCard.Visibility = Visibility.Collapsed;
 
                 bool loginSuccess = await AuthenticateUser(email, password, _printerDeviceId);
 
@@ -319,30 +493,13 @@ namespace MiniApp.Views
                     _currentSessionPassword = password;
 
 
-                    // Fetch QR Details
-                    var qrDetails = await FetchQrDetailsForMiniApp(_printerId);
-
-                    string qrUrl = qrDetails.qrUrl;
-                    string expiry = qrDetails.expiry;
-
-                    // Navigate with QR URL + Expiry
-                    var scanQrPage = new ScanQrView(
-                        _jwtToken ?? string.Empty,
-                        _shopLoginId,
-                        _printerId,
-                        _printerName ?? string.Empty,
-                        qrUrl,
-                        _printerPrice,
-                        _printerStatus,
-                        expiry,
-                        _printerPaymentEnabled
-                    );
-
-                    NavigationService.Navigate(scanQrPage);
+                    NavigationService.Navigate(new Capture());
 
                 }
                 else
                 {
+                    LoadingOverlay.Visibility = Visibility.Collapsed;
+                    LoginCard.Visibility = Visibility.Visible;
                     MessageBox.Show("Invalid email or password.", "Login Failed",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -350,13 +507,14 @@ namespace MiniApp.Views
             catch (Exception ex)
             {
                 LoadingOverlay.Visibility = Visibility.Collapsed;
+                LoginCard.Visibility = Visibility.Visible;
                 MessageBox.Show($"Error: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // Fetch QR Details for Mini App
-        public static async Task<dynamic> FetchQrDetailsForMiniApp(Int64 printerId)
+        public static async Task<dynamic> FetchQrDetailsForkuboPix(Int64 printerId)
         {
             try
             {
@@ -388,7 +546,7 @@ namespace MiniApp.Views
             }
             catch (Exception ex)
             {
-                AppLogger.Log($"FetchQrDetailsForMiniApp Error:: {ex}");
+                AppLogger.Log($"FetchQrDetailsForkuboPix Error:: {ex}");
                 return false;
             }
         }
@@ -428,6 +586,24 @@ namespace MiniApp.Views
                 _shopLoginId = result.user.Id;
                 _printerId = result.user.PrinterId;
                 _printerName = result.user.PrinterName;
+
+                    // Set internal printer brand based on printer name or connected printer name
+                    string brandCheckName = _printerName ?? string.Empty;
+                    if (!string.IsNullOrEmpty(_connectedPrinterName))
+                    {
+                        brandCheckName += " " + _connectedPrinterName;
+                    }
+
+                    if (brandCheckName.Contains("Epson", StringComparison.OrdinalIgnoreCase) ||
+                        brandCheckName.Contains("CW-", StringComparison.OrdinalIgnoreCase))
+                    {
+                    SelectedPrinterBrand = "Epson";
+                    }
+            
+                else
+                {
+                    SelectedPrinterBrand = "Seaory";
+                }
                 _printerQRCode = result.user.PrinterQRCode;
                 _printerPrice = result.user.PrintingPrice;
                 _printerStatus = result.user.PrinterStatus;
@@ -440,7 +616,7 @@ namespace MiniApp.Views
                 _currentSessionPrinterId = _printerId;
 
                 // NEW ADDITION (AUTO LOGIN – 6 MONTH)
-                MiniAppSessionManager.Save(new MiniAppSession
+                kuboPixSessionManager.Save(new kuboPixSession
                 {
                     Token = _jwtToken,
                     ShopLoginId = _shopLoginId,
@@ -450,6 +626,7 @@ namespace MiniApp.Views
                     PrinterPrice = _printerPrice,
                     PrinterStatus = _printerStatus,
                     PrinterPaymentEnabled = _printerPaymentEnabled,
+                    PrinterBrand = SelectedPrinterBrand,
                     SavedAt = DateTime.UtcNow
                 });
 
@@ -487,12 +664,12 @@ namespace MiniApp.Views
         }
 
         //  Placeholder logic 
-        private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            txtEmailPlaceholder.Visibility = string.IsNullOrEmpty(txtEmail.Text)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-        }
+        //private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    txtEmailPlaceholder.Visibility = string.IsNullOrEmpty(txtEmail.Text)
+        //        ? Visibility.Visible
+        //        : Visibility.Collapsed;
+        //}
 
         // Password Placeholder logic
         private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
@@ -564,7 +741,7 @@ namespace MiniApp.Views
 
             if (result == true)
             {
-                MiniAppSessionManager.Clear();
+                kuboPixSessionManager.Clear();
                 _currentSessionPassword = null;
 
                 if (_printerId > 0 && _shopLoginId > 0)

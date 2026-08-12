@@ -1,7 +1,8 @@
-﻿using MiniApp.Helpers;
-using MiniApp.Services;
-using MiniApp.ViewModels;
-using MiniApp.Wrapper;
+using com.epson.label.driver;
+using kuboPix.Helpers;
+using kuboPix.Services;
+using kuboPix.ViewModels;
+using kuboPix.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for PrintErrorView.xaml
@@ -90,10 +91,10 @@ namespace MiniApp.Views
             }
 
             // SESSION / SERVICES
-            var session = MiniAppSessionManager.Load();
+            var session = kuboPixSessionManager.Load();
             if (session == null)
             {
-                AppLogger.Log("MiniApp session missing in PrintErrorView");
+                AppLogger.Log("kuboPix session missing in PrintErrorView");
                 return;
             }
 
@@ -106,7 +107,8 @@ namespace MiniApp.Views
                 string.Empty,
                 session.PrinterPrice,
                 DateTime.MinValue,
-                session.PrinterPaymentEnabled
+                session.PrinterPaymentEnabled,
+                session.PrinterBrand ?? LoginView.SelectedPrinterBrand
             );
 
             Loaded += Page_Loaded;
@@ -213,14 +215,47 @@ namespace MiniApp.Views
         {
             try
             {
-                var session = MiniAppSessionManager.Load();
+                var session = kuboPixSessionManager.Load();
                 if (session == null) return;
 
                 string printerName = session.PrinterName;
                 if (string.IsNullOrEmpty(printerName)) return;
 
-                string status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
-                string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
+                string brand = session.PrinterBrand ?? LoginView.SelectedPrinterBrand ?? "Seaory";
+                string status = "";
+
+                if (brand == "Epson")
+                {
+                    ENS2Control ensControl = ENS2Control.GetInstance();
+                    try
+                    {
+                        ensControl.Initialize(printerName, "");
+                        StatusCode sc = ensControl.GetStatusInformation();
+
+                        if (sc == StatusCode.ST_Idle)
+                        {
+                            status = "Ready";
+                        }
+                        else
+                        {
+                            status = sc.ToString().Replace("ST_", "");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.Log($"Epson CheckPrinterRecovery error: {ex.Message}");
+                        status = "Error";
+                    }
+                    finally
+                    {
+                        ensControl.Release();
+                    }
+                }
+                else
+                {
+                    status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
+                    string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
+                }
 
                 if (!status.Equals("Ready", StringComparison.OrdinalIgnoreCase))
                     return;
@@ -246,31 +281,10 @@ namespace MiniApp.Views
         }
 
         // Handle Printer Recovered
-        private async Task HandlePrinterRecovered(MiniAppSession session)
+        private async Task HandlePrinterRecovered(kuboPixSession session)
         {
-            bool tokenValid = await LoginView.VerifyToken(session.Token);
-            if (!tokenValid) return;
-
-            var qrDetails = await LoginView.FetchQrDetailsForMiniApp(session.PrinterId);
-            if (qrDetails == null) return;
-
-            // Fetch LIVE printer state
-            var printerState = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
-            if (printerState == null) return; // <-- null check
-
-            NavigationService?.Navigate(
-                new ScanQrView(
-                    session.Token,
-                    session.ShopLoginId,
-                    session.PrinterId,
-                    printerState.PrinterName,
-                    qrDetails.qrUrl,
-                    printerState.PrinterPrice,
-                    printerState.PrinterStatus,
-                    qrDetails.expiry,
-                    printerState.PrinterPaymentEnabled
-                )
-            );
+            NavigationService?.Navigate(new Capture());
+            await Task.CompletedTask;
         }
 
         // Logo Click Error Handler
@@ -436,6 +450,20 @@ namespace MiniApp.Views
             _printFailureTrackedOnce = true; // SET BEFORE await
 
             await _orderQueueService.TrackPrintFailureAsync(_failedOrder);
+        }
+
+        // Retry Button Click Handler
+        private async void RetryButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                AppLogger.Log("RetryButton_Click — manual printer check triggered");
+                await CheckPrinterRecoveryAsync();
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"RetryButton_Click error: {ex.Message}");
+            }
         }
 
         // Refund TWINT If Required -- Working Old

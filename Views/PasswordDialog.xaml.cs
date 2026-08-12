@@ -1,5 +1,6 @@
-﻿using MiniApp.Services;
-using MiniApp.Wrapper;
+using com.epson.label.driver;
+using kuboPix.Services;
+using kuboPix.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for PasswordDialog.xaml
@@ -32,6 +33,8 @@ namespace MiniApp.Views
         public PasswordDialog()
         {
             InitializeComponent();
+            // Match the dialog's size to the UI scale (see Helpers/DialogScaler.cs).
+            SourceInitialized += (_, _) => kuboPix.Helpers.DialogScaler.ScaleToOwner(this);
         }
 
         // EVENTS
@@ -62,11 +65,36 @@ namespace MiniApp.Views
             }
         }
 
+     
         // Load Ribbon Count
         private void LoadRibbonCount(string printer)
         {
-            string ribbon = SeaoryPrinterAPI.GetPrinterInfo(printer, SeaoryPrinterAPI.INFO_RIBBON_COUNT);
-            lblRibbon.Text = $"Ribbon Remaining : {ribbon}";
+            string brand = LoginView.SelectedPrinterBrand ?? "Seaory";
+            if (brand.Equals("Epson", StringComparison.OrdinalIgnoreCase))
+            {
+                string inkStatus = "Unknown";
+                ENS2Control ensControl = ENS2Control.GetInstance();
+                try
+                {
+                    ensControl.Initialize(printer, "");
+                    inkStatus = ensControl.GetInkRemaining();
+                }
+                catch (Exception ex)
+                {
+                    inkStatus = $"Error: {ex.Message}";
+                }
+                finally
+                {
+                    try { ensControl.Release(); } catch { }
+                }
+
+                lblRibbon.Text = $"Ink Remaining : {inkStatus}";
+            }
+            else
+            {
+                string ribbon = SeaoryPrinterAPI.GetPrinterInfo(printer, SeaoryPrinterAPI.INFO_RIBBON_COUNT);
+                lblRibbon.Text = $"Ribbon Remaining : {ribbon}";
+            }
         }
 
         // OK BUTTON CLICK
@@ -181,6 +209,5 @@ namespace MiniApp.Views
                 await Task.Delay(2000);
             }
         }
-
     }
 }

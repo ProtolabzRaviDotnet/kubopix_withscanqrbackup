@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp.ViewModels
+namespace kuboPix.ViewModels
 {
     public class PrinterState
     {

@@ -1,13 +1,13 @@
-using MiniApp.Services;
-using MiniApp.Views;
+using kuboPix.Services;
+using kuboPix.Views;
 using System.Configuration;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using MiniApp.Helpers;
+using kuboPix.Helpers;
 
-namespace MiniApp
+namespace kuboPix
 {
     /// <summary>
     /// Interaction logic for App.xaml

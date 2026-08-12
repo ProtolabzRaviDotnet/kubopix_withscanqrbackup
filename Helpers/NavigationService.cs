@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace MiniApp.Helpers
+namespace kuboPix.Helpers
 {
     public static class NavigationService
     {
@@ -15,6 +15,24 @@ namespace MiniApp.Helpers
         public static void Initialize(Frame frame)
         {
             _mainFrame = frame;
+
+            // Memory fix (M-2): after each navigation completes, drop all back-history entries so
+            // old pages — and their heavy MediaElement/video buffers — are released and garbage-
+            // collected instead of piling up in the Frame journal over long runtime (the EP
+            // White-Kiosk resource-exhaustion cause). Safe: back/forward navigation is never used
+            // in this app (GoBack has no callers; the Frame nav UI is hidden).
+            frame.Navigated += (s, e) =>
+            {
+                try
+                {
+                    while (frame.CanGoBack)
+                        frame.RemoveBackEntry();
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log("Navigation journal cleanup error: " + ex.Message);
+                }
+            };
         }
 
         public static void Navigate(Page page)

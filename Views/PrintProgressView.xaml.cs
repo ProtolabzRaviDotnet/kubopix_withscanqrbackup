@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Path = System.IO.Path;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for PrintProgressView.xaml
@@ -43,6 +43,27 @@ namespace MiniApp.Views
         {
             InitializeVideo();
             StartTimer();
+            // Memory fix (M-3): release the video when this page leaves the screen.
+            // Only touches the MediaElement — the countdown timer / completion signal are untouched.
+            Unloaded -= Page_Unloaded;
+            Unloaded += Page_Unloaded;
+        }
+
+        // Release the MediaElement so its video buffers are freed promptly (M-3).
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LoaderVideo.MediaEnded -= LoaderVideo_MediaEnded;
+                LoaderVideo.MediaFailed -= LoaderVideo_MediaFailed;
+                LoaderVideo.Stop();
+                LoaderVideo.Close();
+                LoaderVideo.Source = null;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("PrintProgressView video cleanup error: " + ex.Message);
+            }
         }
 
         // Initialize and play the video
@@ -88,9 +109,11 @@ namespace MiniApp.Views
             {
                 seconds--;
                 TimerText.Text = "00:" + seconds.ToString("D2");
+                progressBar.Value = ((30.0 - seconds) / 30.0) * 100.0;
             }
             else
             {
+                progressBar.Value = 100.0;
                 timer?.Stop();
                 timerCompleted = true;
                 timerCompletionSource.TrySetResult(true);
@@ -106,7 +129,7 @@ namespace MiniApp.Views
         }
 
         // Video media failed event handler
-        private void LoaderVideo_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void LoaderVideo_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
         {
             AppLogger.Log($"Video playback failed: {e.ErrorException?.Message}");
         }

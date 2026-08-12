@@ -1,7 +1,8 @@
-﻿using MiniApp.Helpers;
-using MiniApp.Services;
-using MiniApp.ViewModels;
-using MiniApp.Wrapper;
+using com.epson.label.driver;
+using kuboPix.Helpers;
+using kuboPix.Services;
+using kuboPix.ViewModels;
+using kuboPix.Wrapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using QRCoder;
@@ -29,7 +30,7 @@ using System.Windows.Threading;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for ScanQrView.xaml
@@ -48,7 +49,7 @@ namespace MiniApp.Views
 
         private DateTime _qrExpiry;
 
-        private MiniApp.Services.OrderQueueService _orderQueue;
+        private kuboPix.Services.OrderQueueService _orderQueue;
 
         private DispatcherTimer? _expiryTimer;
 
@@ -58,6 +59,8 @@ namespace MiniApp.Views
         private DispatcherTimer? _printerStatusTimer;
 
         private bool _isFetchingQr = false;
+        private int _lastReportedStatus = -1; // -1 means unknown/unreported status on startup
+
 
         // CONSTRUCTOR
         public ScanQrView(string jwtToken, long shopLoginId, long printerId, string printerName, string qrUrl, decimal printerPrice, int printerStatus, string expiry, int printerPaymentEnabled)
@@ -93,86 +96,23 @@ namespace MiniApp.Views
             this.PreviewKeyDown += ResetIdleTimer;
 
             // Create Queue Service (DO NOT start here, start in Loaded)
-            _orderQueue = new MiniApp.Services.OrderQueueService(
+            _orderQueue = new kuboPix.Services.OrderQueueService(
                 _jwtToken,
                 _shopLoginId,
                 _printerId,
-                _printerName,
+                LoginView.GetCurrentSessionPrinterName() ?? _printerName,
                 _printerStatus,
                 _qrCodeData,
                 _printerPrice,
                 _qrExpiry,
-                _printerPaymentEnabled
+                _printerPaymentEnabled,
+                LoginView.SelectedPrinterBrand
             );
 
             Loaded += ScanQrView_Loaded;
             Unloaded += ScanQrView_Unloaded;
         }
 
-        // ADMIN EXIT BUTTON CLICK
-        private async void AdminExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            var passwordDialog = new PasswordDialog();
-            passwordDialog.Owner = Window.GetWindow(this);
-
-            bool? result = passwordDialog.ShowDialog();
-            if (result != true)
-                return;
-
-            // ACTION BASED LOGIC 
-            if (passwordDialog.SelectedAction == "EXIT")
-            {
-                // MAKE PRINTER OFFLINE BEFORE EXIT
-                if (_printerId > 0 && _shopLoginId > 0)
-                {
-                    await OrderQueueService.SetPrinterOffline(
-                        _printerId,
-                        _shopLoginId
-                    );
-                }
-
-                // Close only Mini-App
-                Application.Current.MainWindow.Close();
-            }
-            else if (passwordDialog.SelectedAction == "SHUTDOWN")
-            {
-                // MAKE PRINTER OFFLINE BEFORE  SHUTDOWN
-                if (_printerId > 0 && _shopLoginId > 0)
-                {
-                    await OrderQueueService.SetPrinterOffline(
-                        _printerId,
-                        _shopLoginId
-                    );
-                }
-
-                // Shutdown Windows
-                System.Diagnostics.Process.Start("shutdown", "/s /t 0");
-            }
-            else if (passwordDialog.SelectedAction == "MAINTENANCE")
-            {
-                var maintenancePage = new UnderMaintenancePage(false);
-                NavigationService?.Navigate(maintenancePage);
-            }
-            else if (passwordDialog.SelectedAction == "LOGOUTPROFILE")
-            {
-                // MAKE PRINTER OFFLINE BEFORE EXIT
-                if (_printerId > 0 && _shopLoginId > 0)
-                {
-                    await OrderQueueService.SetPrinterOffline(
-                        _printerId,
-                        _shopLoginId
-                    );
-                }
-
-                MiniAppSessionManager.Clear();
-                var LoginPage = new LoginView();
-                NavigationService?.Navigate(LoginPage);
-            }
-            else if (passwordDialog.SelectedAction == "PRINT_FAILED_JOBS")
-            {
-                await RetryFailedPrintJobsAsync();
-            }
-        }
 
         // SCAN QR VIEW LOADED 
         private void ScanQrView_Loaded(object sender, RoutedEventArgs e)
@@ -200,6 +140,15 @@ namespace MiniApp.Views
 
             _expiryTimer?.Stop();
             _idleTimer?.Stop();
+
+            // Stop this view's order-queue + printer-monitor loops so they don't leak.
+            // Each ScanQrView owns its own OrderQueueService; without this, every new
+            // ScanQrView (created after each print / screensaver return) left the previous
+            // queue running forever → N concurrent polling loops sharing static state.
+            // Cancelling here does not abort an in-flight print (the print awaits don't
+            // honor the token); the current order finishes and the fresh ScanQrView on
+            // return starts exactly one new queue.
+            _orderQueue?.StopQueue();
         }
 
         // QR CODE GENERATION AND EXPIRY CHECKER
@@ -367,7 +316,7 @@ namespace MiniApp.Views
         // FETCH QR DETAILS AGAIN
         private async Task<dynamic> FetchQrDetailsAgain()
         {
-            return await LoginView.FetchQrDetailsForMiniApp(_printerId);
+            return await LoginView.FetchQrDetailsForkuboPix(_printerId);
         }
 
         // ------------------ IDLE TIMER SETUP ------------------
@@ -443,11 +392,6 @@ namespace MiniApp.Views
             // intentionally left blank or navigate to PrintProgress if required
         }
 
-        // LOGO CLICK - TRIGGERS ADMIN EXIT
-        private void Logo_Click(object sender, MouseButtonEventArgs e)
-        {
-            AdminExitButton_Click(sender, e);  // Trigger the existing exit logic when the logo is clicked
-        }
 
         // PRINTER STATUS POLLING AND UI UPDATES
         private void StartPrinterStatusPolling()
@@ -486,38 +430,112 @@ namespace MiniApp.Views
                 }
 
                 // DLL raw status & warning
-                string status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
-                string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
+                string status = "";
+                string warning = "";
+                string parsedMessage = "";
 
+                var session = kuboPixSessionManager.Load();
+                string brand = session?.PrinterBrand ?? LoginView.SelectedPrinterBrand ?? "Seaory";
 
-                // Check if printer is busy (0x000000AA) → show Busy 
-                if ((!string.IsNullOrEmpty(status) && status.Contains("0x000000AA")) ||
-             (!string.IsNullOrEmpty(warning) && warning.Contains("0x000000AA")))
+                if (brand == "Epson")
                 {
-                    SetPrinterBusyUI();
-                    return;
-                }
+                    StatusCode sc = StatusCode.ST_Idle;
+                    ErrorCode ec = ErrorCode.ERR_FatalError;
+                    WARNING_INFO wc = new WARNING_INFO();
+                    bool queryOk = false;
 
-                // Use existing _orderQueue instance instead of creating new one
-                string parsedMessage = _orderQueue.GetMessageFromErrorCodes(status, warning) ?? "";
+                    ENS2Control ensControl = ENS2Control.GetInstance();
+                    try
+                    {
+                        ensControl.Initialize(printerName, "");
+                        sc = ensControl.GetStatusInformation();
+                        ec = ensControl.GetErrorInformation();
+                        wc = ensControl.GetWarningInformation();
+                        queryOk = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.Log($"Epson ScanQrView query error: {ex.Message}");
+                    }
+                    finally
+                    {
+                        ensControl.Release();
+                    }
+
+                    if (queryOk)
+                    {
+                        if (sc == StatusCode.ST_Busy || sc == StatusCode.ST_Wait || sc == StatusCode.ST_Cleaning || sc == StatusCode.ST_TestPrint)
+                        {
+                            SetPrinterBusyUI();
+                            return;
+                        }
+                        status = (sc == StatusCode.ST_Idle) ? "Ready" : sc.ToString().Replace("ST_", "");
+                        parsedMessage = _orderQueue.GetEpsonMessageFromErrorCodes(sc, ec, wc) ?? "";
+                        warning = $"InkLow={wc.InkLowWarning}, Other={wc.OtherWarning}";
+                    }
+
+                    else
+                    {
+                        status = "Error";
+                        parsedMessage = "Printer connection failed";
+                    }
+                }
+                else
+                {
+                    status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
+                    warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
+                    parsedMessage = _orderQueue.GetMessageFromErrorCodes(status, warning) ?? "";
+
+                    // Check if printer is busy (0x000000AA) → show Busy 
+                    if ((!string.IsNullOrEmpty(status) && status.Contains("0x000000AA")) ||
+                        (!string.IsNullOrEmpty(warning) && warning.Contains("0x000000AA")))
+                    {
+                        SetPrinterBusyUI();
+                        return;
+                    }
+                }
 
                 // Determine UI status
                 if (status.Equals("Ready", StringComparison.OrdinalIgnoreCase))
                 {
                     SetPrinterReadyUI();
+
+                    if (_lastReportedStatus != 1)
+                    {
+                        _lastReportedStatus = 1;
+                        if (printerId > 0 && shoploginId > 0)
+                        {
+                            try
+                            {
+                                using (HttpClient client = new HttpClient())
+                                {
+                                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+                                    string url = $"{AppConfig.ApiBaseUrl}api/update/printerstatus?printerId={printerId}&shopLoginId={shoploginId}&status=1&message={Uri.EscapeDataString("Your printer is online and ready for printing.")}";
+                                    await client.GetAsync(url);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                AppLogger.Log($"Error reporting printer online to server: {ex.Message}");
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     SetPrinterNotReadyUI(parsedMessage);
 
-                    if (printerId > 0 && shoploginId > 0)
+                    if (_lastReportedStatus != 0)
                     {
-                        await OrderQueueService.SetPrinterOffline(
-                            printerId,
-                            shoploginId
-                        );
+                        _lastReportedStatus = 0;
+                        if (printerId > 0 && shoploginId > 0)
+                        {
+                            await OrderQueueService.SetPrinterOffline(
+                                printerId,
+                                shoploginId
+                            );
+                        }
                     }
-
                     //var ErrorPage = new PrintErrorView(parsedMessage);
                     var ErrorPage = new PrintErrorView(
                     parsedMessage,
@@ -533,14 +551,17 @@ namespace MiniApp.Views
                 AppLogger.Log($"Error updating printer status: {ex.Message}");
                 SetPrinterNotReadyUI("Not Connected");
 
-                if (printerId > 0 && shoploginId > 0)
+                if (_lastReportedStatus != 0)
                 {
-                    await OrderQueueService.SetPrinterOffline(
-                        printerId,
-                        shoploginId
-                    );
+                    _lastReportedStatus = 0;
+                    if (printerId > 0 && shoploginId > 0)
+                    {
+                        await OrderQueueService.SetPrinterOffline(
+                            printerId,
+                            shoploginId
+                        );
+                    }
                 }
-
                 // Exception occurred → also go to login page
 
                 //var ErrorPage = new PrintErrorView($"Error updating printer status: {ex.Message}");
@@ -629,7 +650,7 @@ namespace MiniApp.Views
 
             if (result == true)
             {
-                MiniAppSessionManager.Clear();
+                kuboPixSessionManager.Clear();
 
                 if (_printerId > 0 && _shopLoginId > 0)
                 {
@@ -644,60 +665,6 @@ namespace MiniApp.Views
             }
         }
 
-        // RETRY FAILED PRINT JOBS --Last Order Print Only
-        private async Task RetryFailedPrintJobsAsync()
-        {
-            try
-            {
-                var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
-
-                if (lastJob == null)
-                {
-                    AppLogger.Log("No failed print jobs available.");
-                    return;
-                }
-
-                // Await the async API call
-                var orderDetail = await LoginView.GetOrderDetailByOrderId(lastJob.OrderId);
-
-                if (orderDetail == null)
-                {
-                    AppLogger.Log($"Order details not found for Order ID {lastJob.OrderId}. Retry aborted.");
-                    return;
-                }
-
-                // SAFETY CHECK — BACKEND REFUND PROTECTION
-                if (orderDetail.OrderStatus == 3 && orderDetail.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
-                {
-                    FailedPrintSession.Remove(lastJob.OrderId);
-                    AppLogger.Log(
-                        $"Order {lastJob.OrderId} already refunded by backend. Retry blocked."
-                    );
-                    return;
-                }
-
-                AppLogger.Log($"Retrying LAST failed Order {lastJob.OrderId}");
-
-
-                // success/fail
-                var isSuccess = await _orderQueue.ProcessSingleOrderAsync(lastJob, isRetry: true);
-
-                if (isSuccess)
-                {
-                    FailedPrintSession.Remove(lastJob.OrderId);
-                    AppLogger.Log($"Retry completed successfully for LAST failed Order {lastJob.OrderId}");
-                }
-                else
-                {
-                    AppLogger.Log($"Retry FAILED again for Order {lastJob.OrderId}, keeping it in FailedPrintSession");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                AppLogger.Log($"RetryFailedPrintJobsAsync Exception: {ex}");
-            }
-        }
 
         // Refresh Live Printer State
         private async Task RefreshLivePrinterState()
@@ -744,6 +711,11 @@ namespace MiniApp.Views
             }
         }
 
+        // Cancel Button Click
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Capture());
+        }
 
     }
 }

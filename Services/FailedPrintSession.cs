@@ -1,11 +1,11 @@
-﻿using MiniApp.ViewModels;
+﻿using kuboPix.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp.Services
+namespace kuboPix.Services
 {
     public static class FailedPrintSession
     {

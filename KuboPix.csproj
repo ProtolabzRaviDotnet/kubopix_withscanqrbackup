@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -21,28 +21,24 @@
 	</ItemGroup>
 	
   <ItemGroup>
+    <None Remove="Assets\0330_PosterImage.png" />
     <None Remove="Assets\AppIcon.ico" />
     <None Remove="Assets\arrow.png" />
+    <None Remove="Assets\AttractVideo.mp4" />
     <None Remove="Assets\bg.png" />
+    <None Remove="Assets\CameraIcon.png" />
     <None Remove="Assets\groupimage.png" />
     <None Remove="Assets\KuboMediaFavIcon.ico" />
-    <None Remove="Assets\leftside.png" />
-    <None Remove="Assets\leftside2.png" />
+    <None Remove="Assets\KuboPix.png" />
     <None Remove="Assets\logo.png" />
     <None Remove="Assets\logout.png" />
     <None Remove="Assets\Maintenance.png" />
     <None Remove="Assets\MaintenancePopup.png" />
     <None Remove="Assets\PrintError.png" />
     <None Remove="Assets\PrintingError.png" />
-    <None Remove="Assets\printprogress.mp4" />
-    <None Remove="Assets\printsuccess.mp4" />
-    <None Remove="Assets\qr.png" />
-    <None Remove="Assets\qrborder.png" />
-    <None Remove="Assets\qrborder2.png" />
-    <None Remove="Assets\rightside.png" />
-    <None Remove="Assets\rightside2.png" />
-    <None Remove="Assets\Star.png" />
+    <None Remove="Assets\PrintingProgress.png" />
     <None Remove="Assets\UnderMaintenance.png" />
+    <None Remove="Assets\UploadFromPhoto.png" />
     <None Remove="Fonts\Poppins\OFL.txt" />
     <None Remove="Fonts\Poppins\Poppins-Bold.ttf" />
     <None Remove="Fonts\Poppins\Poppins-Medium.ttf" />
@@ -59,10 +55,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\0330_PosterImage.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\arrow.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Assets\AttractVideo.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Assets\bg.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\CameraIcon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\groupimage.png">
@@ -71,10 +76,7 @@
     <Resource Include="Assets\KuboMediaFavIcon.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\leftside.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\leftside2.png">
+    <Resource Include="Assets\KuboPix.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\logo.png">
@@ -84,18 +86,15 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Content Include="Assets\AppIcon.ico" />
-    <Content Include="Assets\CoverVideo.mp4">
+    <Content Include="Assets\PrintSuccess.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\printprogress.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\printsuccess.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\TitlisScreensaver.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Assets\PrintingError.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\PrintingProgress.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\logout.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -108,28 +107,10 @@
     <Resource Include="Assets\PrintError.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\PrintingError.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\qr.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\qrborder.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\qrborder2.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\rightside.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\rightside2.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Star.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Assets\UnderMaintenance.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\UploadFromPhoto.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Fonts\Poppins\OFL.txt">

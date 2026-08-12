@@ -1,0 +1,282 @@
+<Page x:Class="kuboPix.Views.Camera"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="1920" d:DesignWidth="1080"
+      Background="#FFFFFF"
+      FontFamily="Poppins, Segoe UI"
+      Title="Camera"
+      Loaded="Page_Loaded"
+      Unloaded="Page_Unloaded"
+     >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Logo/Header -->
+            <RowDefinition Height="*"/>    <!-- Stepper + Viewport (Middle) -->
+            <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
+        <StackPanel Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Margin="0,80,0,0"
+                    HorizontalAlignment="Center">
+            <!-- Logo -->
+            <Image Source="/Assets/logo.png"
+                   Width="180"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Center"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
+
+            <!-- Tagline -->
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="9" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- ===== 2. MIDDLE CONTENT (Stepper + Camera Viewport) ===== -->
+        <StackPanel Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,20"
+                    Width="420">
+
+            <!-- Stepper Progress Indicator -->
+            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+                <!-- Connector Track Line behind circles -->
+                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#FFE5E7EB"/>
+                    <Border Grid.Column="1" Background="#FFE5E7EB"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/> <!-- Step 1: Capture -->
+                        <ColumnDefinition Width="*"/> <!-- Step 2: Edit -->
+                        <ColumnDefinition Width="*"/> <!-- Step 3: Print -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Step 1: Capture (Active) -->
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                        <Ellipse Stroke="#FF1C244B" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
+                        <TextBlock Text="Capture" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="14" 
+                                   Foreground="#FF1C244B" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- Step 2: Edit (Inactive) -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                        <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
+                        <TextBlock Text="Edit" 
+                                   FontFamily="Poppins" 
+                                   FontSize="14" 
+                                   Foreground="#FFA0A0AA" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <!-- Step 3: Print (Inactive) -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                        <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
+                        <TextBlock Text="Print" 
+                                   FontFamily="Poppins" 
+                                   FontSize="14" 
+                                   Foreground="#FFA0A0AA" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Camera Viewport Container -->
+            <Border Width="420" 
+                    Height="500"
+                    Background="#FFF9FAFB" 
+                    BorderBrush="#FFE5E7EB" 
+                    BorderThickness="1.5" 
+                    CornerRadius="24"
+                    HorizontalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" 
+                                      ShadowDepth="4" 
+                                      Opacity="0.08" 
+                                      Color="#000000"/>
+                </Border.Effect>
+
+                <Grid ClipToBounds="True">
+                    <!-- Image placeholder where live camera feed will bind at runtime -->
+                    <Image x:Name="CameraPreview" 
+                           HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Stretch" 
+                           Stretch="UniformToFill"/>
+
+                    <!-- Captured photo preview shown during processing -->
+                    <Image x:Name="CapturedPhotoPreview" 
+                           HorizontalAlignment="Stretch" 
+                           VerticalAlignment="Stretch" 
+                           Stretch="UniformToFill"
+                           Visibility="Collapsed"/>
+
+                    <!-- Placeholder UI shown when camera feed is initializing -->
+                    <Grid x:Name="CameraPlaceholder" Background="Transparent">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!-- Styled Camera Icon -->
+                            <Path Data="M19,4H15.5L14.3,2.5C14.07,2.18 13.67,2 13.25,2H10.75C10.33,2 9.93,2.18 9.7,2.5L8.5,4H5C3.34,4 2,5.34 2,7V17C2,18.66 3.34,20 5,20H19C20.66,20 22,18.66 22,17V7C22,5.34 20.66,4 19,4M12,17C9.24,17 7,14.76 7,12C7,9.24 9.24,7 12,7C14.76,7 17,9.24 17,12C17,14.76 14.76,17 12,17M12,9C10.35,9 9,10.35 9,12C9,13.65 10.35,15 12,15C13.65,15 15,13.65 15,12C15,10.35 13.65,9 12,9Z" 
+                                  Fill="#FFE5E7EB" 
+                                  Width="76" 
+                                  Height="76" 
+                                  Stretch="Uniform" 
+                                  Margin="0,0,0,16"/>
+                            <TextBlock Text="CAMERA FEED VIEWPORT" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="15" 
+                                       Foreground="#FFA0A0AA" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Live camera preview will appear here" 
+                                       FontFamily="Poppins" 
+                                       FontSize="12" 
+                                       Foreground="#FFC4C4C6" 
+                                       Margin="0,6,0,0" 
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Processing Overlay (Visible during image saving) -->
+                    <Grid x:Name="ProcessingOverlay" Background="#99111827" Visibility="Collapsed">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!-- Circular Spinner -->
+                            <Grid Width="110" Height="110" HorizontalAlignment="Center">
+                                <!-- Background Ring -->
+                                <Border BorderThickness="8" BorderBrush="#20FFFFFF" CornerRadius="55"/>
+                                <!-- Foreground Spinning Arc -->
+                                <Border BorderThickness="8,8,0,0" BorderBrush="White" CornerRadius="55" RenderTransformOrigin="0.5,0.5">
+                                    <Border.RenderTransform>
+                                        <RotateTransform x:Name="SpinnerRotate" Angle="0"/>
+                                    </Border.RenderTransform>
+                                </Border>
+                                <Grid.Triggers>
+                                    <EventTrigger RoutedEvent="Grid.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimation Storyboard.TargetName="SpinnerRotate"
+                                                                 Storyboard.TargetProperty="Angle"
+                                                                 From="0" To="360"
+                                                                 Duration="0:0:1.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Grid.Triggers>
+                            </Grid>
+
+                            <TextBlock Text="Processing Image" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="22" 
+                                       Foreground="White" 
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,24,0,0"/>
+
+                            <TextBlock Text="Please wait" 
+                                       FontFamily="Poppins" 
+                                       FontSize="14" 
+                                       Foreground="#FFE5E7EB" 
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+        </StackPanel>
+
+        <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
+        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Back Button -->
+            <Button Grid.Column="0"
+                    x:Name="BackButton"
+                    Click="BackButton_Click"
+                    Background="#FFEFEFEF"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="10">
+                            <TextBlock Text="BACK" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="Bold" 
+                                       FontSize="18" 
+                                       Foreground="#FF4B5563" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- Capture Action Button -->
+            <Button Grid.Column="2"
+                    x:Name="CaptureButton"
+                    Click="CaptureButton_Click"
+                    Background="#FF5C6BFF"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="10">
+                            <TextBlock Text="CAPTURE" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="Bold" 
+                                       FontSize="18" 
+                                       Foreground="White" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
+    </Grid>
+</Page>

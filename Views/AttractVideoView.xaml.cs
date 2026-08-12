@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.IO;
 using Path = System.IO.Path;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for AttractVideoView.xaml
@@ -289,9 +289,15 @@ namespace MiniApp.Views
         {
             try
             {
+                // Ensure event subscriptions are active (since they are unsubscribed on unload)
+                LoopVideo.MediaEnded -= LoopVideo_MediaEnded;
+                LoopVideo.MediaEnded += LoopVideo_MediaEnded;
+                LoopVideo.MediaFailed -= LoopVideo_MediaFailed;
+                LoopVideo.MediaFailed += LoopVideo_MediaFailed;
+
                 string videoPath = Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "Assets/CoverVideo.mp4"
+                    "Assets/AttractVideo.mp4"
                 );
 
                 AppLogger.Log($"[VIDEO] Initializing: {videoPath}");
@@ -322,7 +328,7 @@ namespace MiniApp.Views
         {
             try
             {
-                LoopVideo.Position = TimeSpan.Zero;
+                LoopVideo.Position = TimeSpan.FromMilliseconds(1);
                 LoopVideo.Play();
             }
             catch (Exception ex)
@@ -332,7 +338,7 @@ namespace MiniApp.Views
         }
 
         //HANDLE VIDEO FAILURE
-        private void LoopVideo_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        private void LoopVideo_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
         {
             try
             {
@@ -351,12 +357,15 @@ namespace MiniApp.Views
             }
         }
 
-        // MOST IMPORTANT: CLEANUP (prevents random freeze)
+        // MOST IMPORTANT: CLEANUP (prevents random freeze + frees video memory — M-3)
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             try
             {
+                LoopVideo.MediaEnded -= LoopVideo_MediaEnded;
+                LoopVideo.MediaFailed -= LoopVideo_MediaFailed;
                 LoopVideo.Stop();
+                LoopVideo.Close();
                 LoopVideo.Source = null;
                 //AppLogger.Log("[VIDEO] Cleaned up");
             }
@@ -409,19 +418,9 @@ namespace MiniApp.Views
                 {
                     try
                     {
-                        AppLogger.Log("ReturnToQr: Navigating to ScanQrView asynchronously.");
+                        AppLogger.Log("ReturnToQr: Navigating to Capture page asynchronously.");
 
-                        NavigationService?.Navigate(new ScanQrView(
-                            _jwtToken,
-                            _shopLoginId,
-                            _printerId,
-                            _printerName,
-                            _qrCodeData,
-                            _printerPrice,
-                            _printerStatus,
-                            _qrExpiry.ToString("yyyy-MM-dd HH:mm:ss"),
-                            _printerPaymentEnabled
-                        ));
+                        NavigationService?.Navigate(new Capture());
 
                         AppLogger.Log("ReturnToQr: Navigation completed successfully.");
                     }

@@ -1,4 +1,4 @@
-﻿using MiniApp.ViewModels;
+﻿using kuboPix.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,13 +8,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApp.Helpers
+namespace kuboPix.Helpers
 {
-    public static class MiniAppSessionManager
+    public static class kuboPixSessionManager
     {
-        private static readonly string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MiniApp", "miniapp_session.dat");
+        private static readonly string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "kuboPix", "kuboPix_session.dat");
 
-        public static void Save(MiniAppSession session)
+        public static void Save(kuboPixSession session)
         {
             var directory = Path.GetDirectoryName(FilePath);
             if (directory is not null)
@@ -31,7 +31,7 @@ namespace MiniApp.Helpers
             File.WriteAllBytes(FilePath, encrypted);
         }
 
-        public static MiniAppSession? Load()
+        public static kuboPixSession? Load()
         {
             if (!File.Exists(FilePath)) return null;
 
@@ -43,7 +43,7 @@ namespace MiniApp.Helpers
                     encrypted, null, DataProtectionScope.CurrentUser);
 
                 var json = Encoding.UTF8.GetString(bytes);
-                return JsonConvert.DeserializeObject<MiniAppSession>(json);
+                return JsonConvert.DeserializeObject<kuboPixSession>(json);
             }
             catch
             {

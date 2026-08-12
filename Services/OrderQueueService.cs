@@ -1,8 +1,9 @@
+using com.epson.label.driver;
 using Microsoft.Identity.Client;
-using MiniApp.Helpers;
-using MiniApp.ViewModels;
-using MiniApp.Views;
-using MiniApp.Wrapper;
+using kuboPix.Helpers;
+using kuboPix.ViewModels;
+using kuboPix.Views;
+using kuboPix.Wrapper;
 using Newtonsoft.Json;
 using QRCoder;
 using System;
@@ -21,15 +22,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MiniApp.Services
+namespace kuboPix.Services
 {
-    public class OrderQueueService
+    public class OrderQueueService : IDisposable
     {
         // Fields
         private readonly string _jwtToken;
         private readonly Int64 _shopLoginId;
         private readonly Int64 _printerId;
         private readonly string _printerName;
+        private readonly string _printerBrand;
         private readonly HttpClient _client;
 
         // SemaphoreSlim(1,1) used instead of a plain bool so the "is running" check
@@ -39,6 +41,12 @@ namespace MiniApp.Services
         private bool _isStarted = false;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
+
+        // Background loop handles + disposal coordination (T-4.2)
+        private Task? _queueLoopTask;
+        private Task? _monitorLoopTask;
+        private bool _disposed = false;
+        private readonly object _disposeLock = new object();
 
         private int _printerStatus = 0;
         private string _printerMessage = "";
@@ -50,14 +58,33 @@ namespace MiniApp.Services
         private int _printerPaymentEnabled;
 
         private static HashSet<long> _processedOrderIds = new HashSet<long>();
-        public OrderQueueService(string jwtToken, long shopLoginId, long printerId, string printerName, int printerStatus, string qrCodeData, decimal printerPrice, DateTime qrExpiry, int printerPaymentEnabled)
+
+        // Guards the check-then-claim of an order so two threads/instances can't both claim it (T-5.2).
+        private static readonly object _processedLock = new object();
+
+        // Seed the in-memory session set from the persistent printed-ledger on first use,
+        // so orders printed before a restart are not picked up and printed again (T-5.1).
+        static OrderQueueService()
+        {
+            try
+            {
+                foreach (var id in ProcessedOrderLedger.All())
+                    _processedOrderIds.Add(id);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("ProcessedOrderLedger seed error: " + ex.Message);
+            }
+        }
+
+        public OrderQueueService(string jwtToken, long shopLoginId, long printerId, string printerName, int printerStatus, string qrCodeData, decimal printerPrice, DateTime qrExpiry, int printerPaymentEnabled, string printerBrand = "Seaory")
         {
             _jwtToken = jwtToken;
             _shopLoginId = shopLoginId;
             _printerId = printerId;
             _printerName = printerName;
             _printerStatus = printerStatus;
-
+            _printerBrand = string.IsNullOrEmpty(printerBrand) ? (LoginView.SelectedPrinterBrand ?? "Seaory") : printerBrand;
             _qrCodeData = qrCodeData;
             _printerPrice = printerPrice;
             _qrExpiry = qrExpiry;
@@ -77,12 +104,20 @@ namespace MiniApp.Services
             AppLogger.Log("Queue started.");
 
             // Main queue loop
-            _ = Task.Run(async () =>
+            _queueLoopTask = Task.Run(async () =>
             {
+                // T-5.4 startup reconcile: push any "printed but not yet acknowledged" status
+                // updates BEFORE polling, so the backend stops reporting those orders as pending.
+                try { await FlushPendingStatusUpdatesAsync(); }
+                catch (Exception ex) { AppLogger.Log("Startup reconcile error: " + ex.Message); }
+
                 while (!_cts.Token.IsCancellationRequested)
                 {
                     try
                     {
+                        // Retry any queued status updates each cycle (T-5.3).
+                        await FlushPendingStatusUpdatesAsync();
+
                         if (await _processSemaphore.WaitAsync(0))
                         {
                             try { await ProcessPendingOrders(); }
@@ -100,7 +135,13 @@ namespace MiniApp.Services
             }, _cts.Token);
 
             // start printer monitoring
-            StartPrinterMonitoring();
+            _monitorLoopTask = StartPrinterMonitoring();
+
+            // Release CTS / HttpClient / semaphore once BOTH background loops have fully
+            // exited (i.e. after StopQueue cancels them). Disposing only after the loops
+            // finish guarantees no in-flight request touches a disposed client (T-4.2).
+            _ = Task.WhenAll(_queueLoopTask, _monitorLoopTask)
+                    .ContinueWith(_ => DisposeResources(), TaskScheduler.Default);
         }
 
         // Stop the queue and monitoring (useful for cleanup)
@@ -109,7 +150,10 @@ namespace MiniApp.Services
             try
             {
                 if (!_cts.IsCancellationRequested)
+                {
                     _cts.Cancel();
+                    AppLogger.Log("Queue stopped.");
+                }
             }
             catch (Exception ex)
             {
@@ -117,12 +161,45 @@ namespace MiniApp.Services
             }
         }
 
-        // Monitor printer status in background (debounced)
-        private void StartPrinterMonitoring()
+        // IDisposable — cancel the loops; actual resource disposal happens once both loops
+        // have exited (via the WhenAll continuation in StartQueue). If the queue was never
+        // started (e.g. a service used only for refund/track), dispose immediately (T-4.2).
+        public void Dispose()
+        {
+            StopQueue();
+
+            if (!_isStarted)
+                DisposeResources();
+        }
+
+        // Disposes shared resources exactly once. Safe to call from the loop-completion
+        // continuation or directly from Dispose() when no loops were started.
+        //
+        // NOTE: _client is intentionally NOT disposed here. The manual-retry path
+        // (ProcessSingleOrderAsync) runs OUTSIDE the queue loop and shares _client; when it
+        // navigates to PrintProgressView the page unloads → StopQueue cancels the (idle) loops
+        // → this runs. Disposing _client here would pull it out from under the in-flight retry
+        // and make the image download throw, surfacing a misleading "image expired" error.
+        // HttpClient is designed to be long-lived; leaving it to GC is the correct pattern.
+        private void DisposeResources()
+        {
+            lock (_disposeLock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+            }
+
+            try { _cts.Dispose(); } catch { }
+            try { _processSemaphore.Dispose(); } catch { }
+        }
+
+        // Monitor printer status in background (debounced). Returns the loop Task so the
+        // caller can await its completion before disposing shared resources (T-4.2).
+        private Task StartPrinterMonitoring()
         {
             //AppLogger.Log("Printer monitoring started.");
 
-            _ = Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 int consecReady = 0;
                 int consecNotReady = 0;
@@ -133,53 +210,125 @@ namespace MiniApp.Services
                 {
                     try
                     {
-
-                        string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
-                        string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
-
-                        //AppLogger.Log($"Printer Raw Status: {status}");
-                        //AppLogger.Log($"Printer Warning: {warning}");
-
-                        // We parse messages but avoid flipping state on single reads
-                        string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
-
-                        bool isReadyNow = status == "Ready";
-
-                        if (isReadyNow)
+                        if (_printerBrand == "Epson")
                         {
-                            consecReady++;
-                            consecNotReady = 0;
+                            StatusCode sc = StatusCode.ST_Idle;
+                            ErrorCode ec = ErrorCode.ERR_FatalError;
+                            WARNING_INFO wc = new WARNING_INFO();
+                            bool queryOk = false;
+                            ENS2Control ensControl = ENS2Control.GetInstance();
+                            try
+                            {
+
+                                ensControl.Initialize(_printerName, "");
+                                sc = ensControl.GetStatusInformation();
+                                ec = ensControl.GetErrorInformation();
+                                wc = ensControl.GetWarningInformation();
+
+                                queryOk = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                AppLogger.Log("Epson Monitor Status query exception: " + ex.Message);
+                            }
+                            finally
+                            {
+                                try { ensControl.Release(); } catch { }
+                            }
+                            if (queryOk)
+                            {
+                                string parsedMessage = GetEpsonMessageFromErrorCodes(sc, ec, wc);
+                                bool isReadyNow = sc == StatusCode.ST_Idle;
+
+                                if (isReadyNow)
+                                {
+                                    consecReady++;
+                                    consecNotReady = 0;
+                                }
+                                else
+                                {
+                                    consecNotReady++;
+                                    consecReady = 0;
+                                }
+
+                                // Only flip to READY if we have required consecutive ready reads
+                                if (consecReady >= requiredConsecutive && _printerStatus != 1)
+                                {
+                                    _printerStatus = 1;
+                                    _printerMessage = parsedMessage;
+                                }
+                                // Only flip to a non-ready state after required consecutive non-ready reads
+                                else if (consecNotReady >= requiredConsecutive)
+                                {
+                                    GetEpsonMessageFromErrorCodes(sc, ec, wc);
+                                    _printerMessage = parsedMessage;
+                                }
+                                else
+                                {
+                                    // Do not change _printerStatus yet
+                                    _printerMessage = parsedMessage;
+                                }
+                            }
+                            else
+                            {
+                                consecNotReady++;
+                                consecReady = 0;
+                                if (consecNotReady >= requiredConsecutive)
+                                {
+                                    _printerStatus = 0; // offline
+                                    _printerMessage = "Your printer is offline or not connected. Please check cable or power.";
+                                }
+                            }
                         }
-                        else
+                        else // Seaory
                         {
-                            consecNotReady++;
-                            consecReady = 0;
-                        }
+                            string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
+                            string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
 
-                        // Only flip to READY if we have required consecutive ready reads
-                        if (consecReady >= requiredConsecutive && _printerStatus != 1)
-                        {
-                            _printerStatus = 1;
-                            _printerMessage = parsedMessage;
-                        }
-                        // Only flip to a non-ready state after required consecutive non-ready reads
-                        else if (consecNotReady >= requiredConsecutive)
-                        {
-                            // Call GetMessageFromErrorCodes to ensure _printerStatus and _printerMessage are set consistently
-                            GetMessageFromErrorCodes(status, warning);
-                        }
-                        else
-                        {
-                            // Do not change _printerStatus yet
-                            _printerMessage = parsedMessage;
-                        }
+                            //AppLogger.Log($"Printer Raw Status: {status}");
+                            //AppLogger.Log($"Printer Warning: {warning}");
 
-                        //AppLogger.Log($"Printer Status Parsed: {_printerStatus} | {_printerMessage}");
+                            // We parse messages but avoid flipping state on single reads
+                            string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
 
-                        if (previousStatus != _printerStatus)
-                        {
-                            previousStatus = _printerStatus; // <-- 2. Updated the previous status whenever the state changes.
-                            await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, _printerMessage);
+                            bool isReadyNow = status == "Ready";
+
+                            if (isReadyNow)
+                            {
+                                consecReady++;
+                                consecNotReady = 0;
+                            }
+                            else
+                            {
+                                consecNotReady++;
+                                consecReady = 0;
+                            }
+
+                            // Only flip to READY if we have required consecutive ready reads
+                            if (consecReady >= requiredConsecutive && _printerStatus != 1)
+                            {
+                                _printerStatus = 1;
+                                _printerMessage = parsedMessage;
+                            }
+                            // Only flip to a non-ready state after required consecutive non-ready reads
+                            else if (consecNotReady >= requiredConsecutive)
+                            {
+                                // Call GetMessageFromErrorCodes to ensure _printerStatus and _printerMessage are set consistently
+                                GetMessageFromErrorCodes(status, warning);
+                            }
+                            else
+                            {
+                                // Do not change _printerStatus yet
+                                _printerMessage = parsedMessage;
+                            }
+
+                            //AppLogger.Log($"Printer Status Parsed: {_printerStatus} | {_printerMessage}");
+
+                            if (previousStatus != _printerStatus)
+                            {
+                                previousStatus = _printerStatus; // <-- 2. Updated the previous status whenever the state changes.
+                                await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, _printerMessage);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -203,9 +352,11 @@ namespace MiniApp.Services
                 var pendingOrders = await GetPendingOrders();
                 //AppLogger.Log($"Pending Orders Retrieved: {pendingOrders.Count}");
 
-                // Filter: Remove orders already processed earlier
+                // Filter: skip orders already claimed this session OR already printed
+                // (persistent ledger — survives restart).
                 var newOrders = pendingOrders
-                    .Where(o => !_processedOrderIds.Contains(o.OrderId))
+                    .Where(o => !_processedOrderIds.Contains(o.OrderId)
+                                && !ProcessedOrderLedger.IsPrinted(o.OrderId))
                     .ToList();
 
                 if (newOrders.Count == 0)
@@ -221,18 +372,26 @@ namespace MiniApp.Services
                 {
                     //AppLogger.Log($"Processing Order #{order.OrderId}");
 
-                    // Check BEFORE navigating — prevents a stale PrintProgressView from being
-                    // left on the navigation stack when a duplicate order is skipped with continue.
-                    // Previously this check came AFTER Navigate(), so GoBack(2) would land on the
-                    // orphaned progress screen instead of ScanQrView (26-minute freeze bug).
-                    if (_processedOrderIds.Contains(order.OrderId))
+                    // Atomic check-then-claim (T-5.2). Done BEFORE navigating so a duplicate /
+                    // already-printed order is skipped without leaving a stale PrintProgressView
+                    // on the navigation stack (the 26-minute freeze bug). The lock makes the
+                    // "is it claimed?" decision and the claim a single operation, so a duplicate
+                    // order — or a second concurrent loop — can never both pass and print twice.
+                    // The persistent printed-ledger check means a restart cannot reprint either.
+                    bool alreadyHandled;
+                    lock (_processedLock)
+                    {
+                        alreadyHandled = _processedOrderIds.Contains(order.OrderId)
+                                         || ProcessedOrderLedger.IsPrinted(order.OrderId);
+                        if (!alreadyHandled)
+                            _processedOrderIds.Add(order.OrderId); // claim
+                    }
+
+                    if (alreadyHandled)
                     {
                         AppLogger.Log($"This Order is Already Processed {order.OrderId}");
                         continue;
                     }
-
-                    // MARK as processed
-                    _processedOrderIds.Add(order.OrderId);
 
                     PrintProgressView? printProgressView = null;
                     Application.Current.Dispatcher.Invoke(() =>
@@ -250,6 +409,11 @@ namespace MiniApp.Services
 
                     if (isSuccess)
                     {
+                        // Record the successful HARDWARE print to the persistent ledger BEFORE
+                        // any status-update API call, so a crash / outage / restart between the
+                        // print and the status update can never cause a reprint (T-5.1).
+                        ProcessedOrderLedger.MarkPrinted(order.OrderId);
+
                         //AppLogger.Log($"Print success for Order {order.OrderId}");
 
                         if (printProgressView != null)
@@ -283,12 +447,12 @@ namespace MiniApp.Services
 
                             //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — PrintSuccessView shown, starting 5s delay");
 
-                            // Wait 5 seconds, then return to ScanQrView
+                            // Wait 5 seconds, then return to CaptureView
                             await Task.Delay(5000);
 
-                            //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
+                            //AppLogger.Log($"[STUCK-DEBUG] PAID Order #{order.OrderId} — 5s delay done, navigating to CaptureView");
 
-                            NavigateBackToScanQR();
+                            NavigateBackToCapture();
 
                         }
                         else
@@ -308,9 +472,9 @@ namespace MiniApp.Services
 
                             await Task.Delay(5000);
 
-                            //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — 5s delay done, navigating to ScanQrView");
+                            //AppLogger.Log($"[STUCK-DEBUG] FREE Order #{order.OrderId} — 5s delay done, navigating to CaptureView");
 
-                            NavigateBackToScanQR();
+                            NavigateBackToCapture();
                         }
                     }
                     else
@@ -472,7 +636,7 @@ namespace MiniApp.Services
             }
         }
 
-        // Resize Image to CR80 (1011 x 637px @ 300 DPI) - with orientation lock
+        // Resize Image to CR80 (1011x637px @ 300 DPI for Seaory, 2017x1276px @ 600 DPI for Epson) - with orientation lock        
         private string ResizeAndCropToCard(Image img)
         {
             try
@@ -480,8 +644,8 @@ namespace MiniApp.Services
 
                 //AppLogger.Log("Resizing image to CR80 card size...");
 
-                const int CardWidthPx = 1011;
-                const int CardHeightPx = 637;
+                int cardWidthPx = _printerBrand == "Epson" ? 2017 : 1011;
+                int cardHeightPx = _printerBrand == "Epson" ? 1276 : 637;
                 const int Margin = 2;
 
                 // Ensure landscape orientation before processing
@@ -491,20 +655,20 @@ namespace MiniApp.Services
                     AppLogger.Log("Image rotated to landscape.");
                 }
 
-                double cardRatio = (double)CardWidthPx / CardHeightPx;
+                double cardRatio = (double)cardWidthPx / cardHeightPx;
                 double imgRatio = (double)img.Width / img.Height;
 
                 int newWidth, newHeight;
 
                 if (imgRatio > cardRatio)
                 {
-                    newHeight = CardHeightPx;
-                    newWidth = (int)Math.Round(imgRatio * CardHeightPx);
+                    newHeight = cardHeightPx;
+                    newWidth = (int)Math.Round(imgRatio * cardHeightPx);
                 }
                 else
                 {
-                    newWidth = CardWidthPx;
-                    newHeight = (int)Math.Round(CardWidthPx / imgRatio);
+                    newWidth = cardWidthPx;
+                    newHeight = (int)Math.Round(cardWidthPx / imgRatio);
                 }
 
                 using (var bmp = new Bitmap(newWidth, newHeight))
@@ -513,20 +677,23 @@ namespace MiniApp.Services
                     g.DrawImage(img, 0, 0, newWidth, newHeight);
 
                     Rectangle cropRect = new Rectangle(
-                        Math.Max(0, (newWidth - CardWidthPx) / 2),
-                        Math.Max(0, (newHeight - CardHeightPx) / 2),
-                        CardWidthPx - Margin,
-                        CardHeightPx - Margin
+                       Math.Max(0, (newWidth - cardWidthPx) / 2),
+                        Math.Max(0, (newHeight - cardHeightPx) / 2),
+                        cardWidthPx - Margin,
+                        cardHeightPx - Margin
                     );
 
                     using (var finalBmp = bmp.Clone(cropRect, bmp.PixelFormat))
                     {
+                        string ext = _printerBrand == "Epson" ? "png" : "jpg";
                         string tempFile = Path.Combine(Path.GetTempPath(),
-                            "Seaory_PrintReady_" + Guid.NewGuid() + ".jpg");
+   $"{_printerBrand}_PrintReady_" + Guid.NewGuid() + "." + ext);
 
-                        finalBmp.SetResolution(300, 300);
-                        finalBmp.Save(tempFile, System.Drawing.Imaging.ImageFormat.Jpeg);
 
+                        int dpi = _printerBrand == "Epson" ? 600 : 300;
+                        finalBmp.SetResolution(dpi, dpi);
+                        var format = _printerBrand == "Epson" ? System.Drawing.Imaging.ImageFormat.Png : System.Drawing.Imaging.ImageFormat.Jpeg;
+                        finalBmp.Save(tempFile, format);
                         ///AppLogger.Log($"Image resized and saved: {tempFile}");
 
                         return tempFile;
@@ -540,6 +707,7 @@ namespace MiniApp.Services
             }
         }
 
+        //Print Order
         //Print Order
         public async Task<(bool, string)> PrintOrderAsync(PendingOrder order)
         {
@@ -572,38 +740,98 @@ namespace MiniApp.Services
                     AppLogger.Log($"Resized file created: {resizedPath}");
                 } // image disposed here safely
 
-                string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
+                string printResult = "";
+                bool finalSuccess = false;
+                string finalError = "";
 
-                if (warning != "No Warnings")
-                    AppLogger.Log($"Printer Warning: {warning}");
-
-                // STEP 3 — Check printer status
-                string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
-                if (status != "Ready")
+                if (_printerBrand == "Epson")
                 {
-                    string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
+                    ENS2Control ensControl = ENS2Control.GetInstance();
+                    try
+                    {
 
-                    AppLogger.Log($"Printer not ready: {status}");
-                    AppLogger.Log($"Parsed Error Message: {parsedMessage}");
-                    return (false, parsedMessage);
+                        ensControl.Initialize(_printerName, "");
+                        StatusCode sc = ensControl.GetStatusInformation();
+                        ErrorCode ec = ensControl.GetErrorInformation();
+                        WARNING_INFO wc = ensControl.GetWarningInformation();
+
+
+                        string parsedMessage = GetEpsonMessageFromErrorCodes(sc, ec, wc);
+                        if (sc != StatusCode.ST_Idle)
+                        {
+                            AppLogger.Log($"Epson Printer not ready. Status: {sc}, Error: {ec}");
+                            return (false, parsedMessage);
+                        }
+                    }
+                    catch (DllNotFoundException dllEx)
+                    {
+                        AppLogger.Log($"Epson SDK DLL Load Failed: {dllEx.Message}. Proceeding without status check.");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.Log($"Epson printer status check failed: {ex.Message}");
+                        return (false, $"Unable to read printer status: {ex.Message}");
+                    }
+                    finally
+                    {
+                        try { ensControl.Release(); } catch { }
+                    }
+
+
+                    // Print Epson
+                    AppLogger.Log($"Printing resized file (Epson): {resizedPath}");
+                    printResult = EpsonPrinterPrint.PrintImage(_printerName, "", resizedPath);
+
+                    AppLogger.Log($"Print Result: {printResult}");
+                    AppLogger.Log($"Print Result OrderId: {order.OrderId}");
+
+                    if (printResult != "OK")
+                    {
+                        AppLogger.Log($"Driver Print Failed: {printResult}");
+                        return (false, printResult);
+                    }
+
+                    // WAIT FOR REAL HARDWARE RESULT
+                    var (success, error) = await WaitForPrintCompletionAsync(_printerName);
+                    finalSuccess = success;
+                    finalError = error;
                 }
-
-                // STEP 4 — Print
-                AppLogger.Log($"Printing resized file: {resizedPath}");
-                string printResult = SeaoryPrinterPrint.PrintImage(_printerName, resizedPath);
-
-                AppLogger.Log($"Print Result: {printResult}");
-                AppLogger.Log($"Print Result OrderId: {order.OrderId}");
-
-                if (printResult != "OK")
+                else // Seaory
                 {
-                    AppLogger.Log($"Driver Print Failed: {printResult}");
-                    return (false, printResult);
-                }
+                    string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
 
-                // STEP 4 — WAIT FOR REAL HARDWARE RESULT
-                var (finalSuccess, finalError) =
-                    await WaitForPrintCompletionAsync(_printerName);
+                    if (warning != "No Warnings")
+                        AppLogger.Log($"Printer Warning: {warning}");
+
+                    // Check printer status
+                    string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
+                    if (status != "Ready")
+                    {
+                        string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
+
+                        AppLogger.Log($"Printer not ready: {status}");
+                        AppLogger.Log($"Parsed Error Message: {parsedMessage}");
+                        return (false, parsedMessage);
+                    }
+
+                    // Print
+                    AppLogger.Log($"Printing resized file: {resizedPath}");
+                    printResult = SeaoryPrinterPrint.PrintImage(_printerName, resizedPath);
+
+                    AppLogger.Log($"Print Result: {printResult}");
+                    AppLogger.Log($"Print Result OrderId: {order.OrderId}");
+
+                    if (printResult != "OK")
+                    {
+                        AppLogger.Log($"Driver Print Failed: {printResult}");
+                        return (false, printResult);
+                    }
+
+                    // WAIT FOR REAL HARDWARE RESULT
+                    var (success, error) = await WaitForPrintCompletionAsync(_printerName);
+                    finalSuccess = success;
+                    finalError = error;
+                }
 
                 if (!finalSuccess)
                 {
@@ -726,36 +954,87 @@ namespace MiniApp.Services
         // Update Order Status via API
         private async Task UpdateOrderStatus(Int64 orderId, int status, string paymentIntentId, string message = "", Int64? orderPaymentTypeId = null)
         {
+            var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={orderId}&status={status}&paymentIntentId={paymentIntentId}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
             try
             {
-                var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={orderId}&status={status}&paymentIntentId={paymentIntentId}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
-                //AppLogger.Log($"Order Status Update Request: {url}");
-
-                await _client.GetAsync(url);
-
-                //AppLogger.Log($"Order {orderId} updated with status {status}, paymentIntentId={paymentIntentId}");
+                var resp = await _client.GetAsync(url);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    AppLogger.Log($"UpdateOrderStatus non-success ({(int)resp.StatusCode}) for Order {orderId}; queuing for durable retry.");
+                    QueueStatusUpdate(orderId, status, paymentIntentId, message, orderPaymentTypeId, isFree: false);
+                }
             }
             catch (Exception ex)
             {
-                AppLogger.Log($"Failed to update status for Order {orderId}: {ex.Message}");
+                // Backend down / network lost → persist and retry later so the order stops
+                // being reported as "pending" once connectivity returns (T-5.3).
+                AppLogger.Log($"Failed to update status for Order {orderId}: {ex.Message}; queuing for durable retry.");
+                QueueStatusUpdate(orderId, status, paymentIntentId, message, orderPaymentTypeId, isFree: false);
             }
         }
 
         // Update Order Status via API For Free Orders
         private async Task UpdateOrderStatusFree(Int64 orderId, int status, string message = "", Int64? orderPaymentTypeId = null)
         {
+            var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus/free?orderId={orderId}&status={status}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
             try
             {
-                var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus/free?orderId={orderId}&status={status}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
-                //AppLogger.Log($"Free Order Status Update Request: {url}");
-
-                await _client.GetAsync(url);
-
-                //AppLogger.Log($"Free Order {orderId} updated with status {status}");
+                var resp = await _client.GetAsync(url);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    AppLogger.Log($"UpdateOrderStatusFree non-success ({(int)resp.StatusCode}) for Order {orderId}; queuing for durable retry.");
+                    QueueStatusUpdate(orderId, status, null, message, orderPaymentTypeId, isFree: true);
+                }
             }
             catch (Exception ex)
             {
-                AppLogger.Log($"Failed to update FREE ORDER {orderId}: {ex.Message}");
+                AppLogger.Log($"Failed to update FREE ORDER {orderId}: {ex.Message}; queuing for durable retry.");
+                QueueStatusUpdate(orderId, status, null, message, orderPaymentTypeId, isFree: true);
+            }
+        }
+
+        // Enqueue a failed status update for durable, persistent retry (T-5.3).
+        private static void QueueStatusUpdate(long orderId, int status, string? paymentIntentId, string? message, long? orderPaymentTypeId, bool isFree)
+        {
+            PendingStatusUpdateStore.Add(new PendingStatusUpdate
+            {
+                OrderId = orderId,
+                Status = status,
+                PaymentIntentId = paymentIntentId,
+                Message = message,
+                OrderPaymentTypeId = orderPaymentTypeId,
+                IsFree = isFree
+            });
+        }
+
+        // Retry any queued status updates; remove each one the backend acknowledges.
+        // Called on startup (reconcile, T-5.4) and once per queue cycle (T-5.3).
+        private async Task FlushPendingStatusUpdatesAsync()
+        {
+            if (!PendingStatusUpdateStore.HasAny) return;
+
+            foreach (var u in PendingStatusUpdateStore.Snapshot())
+            {
+                if (_cts.Token.IsCancellationRequested) return;
+
+                try
+                {
+                    string url = u.IsFree
+                        ? $"{AppConfig.ApiBaseUrl}api/update/orderstatus/free?orderId={u.OrderId}&status={u.Status}&message={u.Message}&orderPaymentTypeId={u.OrderPaymentTypeId}"
+                        : $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={u.OrderId}&status={u.Status}&paymentIntentId={u.PaymentIntentId}&message={u.Message}&orderPaymentTypeId={u.OrderPaymentTypeId}";
+
+                    var resp = await _client.GetAsync(url);
+                    if (resp.IsSuccessStatusCode)
+                    {
+                        PendingStatusUpdateStore.Remove(u);
+                        AppLogger.Log($"Pending status update delivered for Order {u.OrderId} (status {u.Status}).");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log($"Flush pending status update failed for Order {u.OrderId}: {ex.Message}");
+                    // keep it queued for the next attempt
+                }
             }
         }
 
@@ -1410,6 +1689,69 @@ namespace MiniApp.Services
             }
         }
 
+        public string GetEpsonMessageFromErrorCodes(StatusCode sc, ErrorCode ec, WARNING_INFO wc)
+        {
+            string finalMessage = "";
+            switch (sc)
+            {
+                case StatusCode.ST_Idle:
+                    _printerStatus = 1; // Ready
+                    finalMessage = "Your printer is online and ready for printing.";
+                    break;
+                case StatusCode.ST_Busy:
+                case StatusCode.ST_Wait:
+                case StatusCode.ST_TestPrint:
+                    _printerStatus = 40; // System busy
+                    finalMessage = "Printer is busy.";
+                    break;
+                case StatusCode.ST_Cleaning:
+                    _printerStatus = 40; // System busy
+                    finalMessage = "Printer is cleaning.";
+                    break;
+                case StatusCode.ST_Error:
+                    switch (ec)
+                    {
+                        case ErrorCode.ERR_CoverOpen:
+                            _printerStatus = 14; // Cover open
+                            finalMessage = "Cover open. Please close the cover.";
+                            break;
+                        case ErrorCode.ERR_PaperJam:
+                            _printerStatus = 2; // Jam
+                            finalMessage = "Paper jam error. Please remove jammed paper.";
+                            break;
+                        case ErrorCode.ERR_Paperout:
+                            _printerStatus = 31; // Paper out
+                            finalMessage = "Paper out. No paper detected.";
+                            break;
+                        case ErrorCode.ERR_Inkout:
+                            _printerStatus = 23; // Ink out
+                            finalMessage = "Ink cartridge error. Please replace ink.";
+                            break;
+                        default:
+                            _printerStatus = 3; // Other error
+                            finalMessage = "Other error. Please check printer.";
+                            break;
+                    }
+                    break;
+                default:
+                    _printerStatus = 3; // Unknown/Other
+                    finalMessage = "Printer is not in a ready state.";
+                    break;
+            }
+
+            if (wc.InkLowWarning)
+            {
+                finalMessage += "\n\nAdditional Info: Ink is low.";
+            }
+            if (wc.OtherWarning)
+            {
+                finalMessage += "\n\nAdditional Info: Other warning.";
+            }
+
+            return finalMessage.Trim();
+        }
+
+
         //Make Printer Offline Printer Id ShopLogin Id
         public static async Task SetPrinterOffline(long printerId, long shopLoginId)
         {
@@ -1437,54 +1779,124 @@ namespace MiniApp.Services
         {
             try
             {
-                const int MAX_WAIT = 120; // seconds
-                bool feedDetected = false;
-                int readyStableCount = 0;
-
-                for (int i = 0; i < MAX_WAIT; i++)
+                if (_printerBrand == "Epson")
                 {
-                    await Task.Delay(1000);
+                    const int MAX_WAIT = 60; // seconds
+                    bool printStarted = false;
+                    ENS2Control ensControl = ENS2Control.GetInstance();
 
-                    string status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
-                    string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
-
-                    //AppLogger.Log($"[SEAORY-MONITOR] Status={status}, Warning={warning}");
-
-                    // SDK error
-                    if (status.StartsWith("SDK Error"))
-                        return (false, status);
-
-                    // CARD FEED / PRINTING
-                    if (status.Contains("0x000000AA") || warning.Contains("0x000000AA"))
+                    for (int i = 0; i < MAX_WAIT; i++)
                     {
-                        feedDetected = true;
-                        readyStableCount = 0;
-                        continue;
-                    }
+                        await Task.Delay(1000);
 
-                    // CARD FEED ERROR / MECHANICAL ERROR
-                    if (status.Contains("0x") && !status.Contains("0x00000000"))
-                    {
-                        string err = GetMessageFromErrorCodes(status, warning);
-                        return (false, err ?? "Printer hardware error");
-                    }
-
-                    // 🟢 READY handling
-                    if (status == "Ready")
-                    {
-                        if (feedDetected)
+                        StatusCode sc;
+                        try
                         {
-                            readyStableCount++;
+                            ensControl.Initialize(printerName, "");
+                            sc = ensControl.GetStatusInformation();
 
-                            // READY stable for 3 seconds → real success
-                            if (readyStableCount >= 3)
-                                return (true, "Print completed successfully");
                         }
-                        continue;
-                    }
-                }
+                        catch (Exception ex)
+                        {
+                            AppLogger.Log($"[EPSON-MONITOR] Status query exception: {ex.Message}");
+                            continue;
+                        }
+                        finally
+                        {
+                            try { ensControl.Release(); } catch { }
+                        }
 
-                return (false, "Print timeout or printer did not complete card movement");
+                        // AppLogger.Log($"[EPSON-MONITOR] StatusCode={sc}");
+
+
+
+                        if (sc == StatusCode.ST_Busy || sc == StatusCode.ST_Wait || sc == StatusCode.ST_Cleaning)
+                        {
+                            printStarted = true;
+                            continue;
+                        }
+
+                        if (sc == StatusCode.ST_Idle)
+                        {
+                            if (printStarted || i > 5)
+                            {
+                                return (true, "Print completed successfully");
+                            }
+                        }
+
+                        if (sc == StatusCode.ST_Error)
+                        {
+                            ErrorCode ec = ErrorCode.ERR_FatalError;
+                            try
+                            {
+                                ensControl.Initialize(printerName, "");
+                                ec = ensControl.GetErrorInformation();
+
+                            }
+                            catch { }
+                            finally
+                            {
+                                try { ensControl.Release(); } catch { }
+                            }
+
+                            string err = GetEpsonMessageFromErrorCodes(sc, ec, new WARNING_INFO());
+                            return (false, err);
+                        }
+                    }
+
+                    return (true, "Print completed successfully (timeout waiting for state change)");
+                }
+                else // Seaory
+                {
+                    const int MAX_WAIT = 120; // seconds
+                    bool feedDetected = false;
+                    int readyStableCount = 0;
+
+                    for (int i = 0; i < MAX_WAIT; i++)
+                    {
+                        await Task.Delay(1000);
+
+                        string status = SeaoryPrinterPrint.CheckPrinterStatus(printerName);
+                        string warning = SeaoryPrinterPrint.CheckPrinterWarning(printerName);
+
+                        //AppLogger.Log($"[SEAORY-MONITOR] Status={status}, Warning={warning}");
+
+                        // SDK error
+                        if (status.StartsWith("SDK Error"))
+                            return (false, status);
+
+                        // CARD FEED / PRINTING
+                        if (status.Contains("0x000000AA") || warning.Contains("0x000000AA"))
+                        {
+                            feedDetected = true;
+                            readyStableCount = 0;
+                            continue;
+                        }
+
+                        // CARD FEED ERROR / MECHANICAL ERROR
+                        if (status.Contains("0x") && !status.Contains("0x00000000"))
+                        {
+                            string err = GetMessageFromErrorCodes(status, warning);
+                            return (false, err ?? "Printer hardware error");
+                        }
+
+                        // 🟢 READY handling
+                        if (status == "Ready")
+                        {
+                            if (feedDetected)
+                            {
+                                readyStableCount++;
+
+                                // READY stable for 3 seconds → real success
+                                if (readyStableCount >= 3)
+                                    return (true, "Print completed successfully");
+                            }
+                            continue;
+                        }
+                    }
+
+                    return (false, "Print timeout or printer did not complete card movement");
+                }
             }
             catch (Exception ex)
             {
@@ -1587,6 +1999,10 @@ namespace MiniApp.Services
 
                 if (isSuccess)
                 {
+                    // Record the successful hardware print before any status update (T-5.1),
+                    // so a restart can never reprint this order.
+                    ProcessedOrderLedger.MarkPrinted(order.OrderId);
+
                     if (printProgressView != null)
                     {
                         try
@@ -1620,7 +2036,7 @@ namespace MiniApp.Services
 
                     await Task.Delay(5000);
 
-                    NavigateBackToScanQR();
+                    NavigateBackToCapture();
 
                     return true; // Print Success
                 }
@@ -1683,40 +2099,25 @@ namespace MiniApp.Services
             }
         }
 
-        // Navigate Back to Scan QR View
-        private void NavigateBackToScanQR()
+        // Navigate Back to Capture View
+        private void NavigateBackToCapture()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {
                     var currentPage = NavigationService.GetCurrentPage();
-                    if (currentPage is ScanQrView)
+                    if (currentPage is Capture)
                         return;
 
-                    // Always navigate to a fresh ScanQrView — GoBack(n) is fragile when the
-                    // back stack has unexpected extra entries (e.g. from a prior duplicate-order
-                    // or concurrent loop run), causing it to land on a frozen PrintProgressView.
-                    Helpers.NavigationService.Navigate(
-                        new ScanQrView(
-                            _jwtToken,
-                            _shopLoginId,
-                            _printerId,
-                            _printerName,
-                            _qrCodeData,
-                            _printerPrice,
-                            _printerStatus,
-                            _qrExpiry.ToString("yyyy-MM-dd HH:mm:ss"),
-                            _printerPaymentEnabled
-                        )
-                    );
+                    Helpers.NavigationService.Navigate(new Capture());
                 }
                 catch (Exception ex)
                 {
-                    AppLogger.Log($"[STUCK-DEBUG] NavigateBackToScanQR ERROR: {ex}");
+                    AppLogger.Log($"[STUCK-DEBUG] NavigateBackToCapture ERROR: {ex}");
                 }
             });
-            AppLogger.Log("[STUCK-DEBUG] NavigateBackToScanQR — Dispatcher.Invoke completed");
+            AppLogger.Log("[STUCK-DEBUG] NavigateBackToCapture — Dispatcher.Invoke completed");
         }
 
         // Track Print Failure via API -- Refund Order Tracking

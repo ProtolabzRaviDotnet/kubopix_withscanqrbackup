@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls.Ribbon;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace MiniApp.Wrapper
+namespace kuboPix.Wrapper
 {
     public static class SeaoryPrinterAPI
     {

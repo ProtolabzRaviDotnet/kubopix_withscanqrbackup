@@ -1,4 +1,4 @@
-﻿using MiniApp.Services;
+using kuboPix.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MiniApp.Views
+namespace kuboPix.Views
 {
     /// <summary>
     /// Interaction logic for ConfirmExitDialogForErrorPage.xaml
@@ -26,6 +26,8 @@ namespace MiniApp.Views
         public ConfirmExitDialogForErrorPage()
         {
             InitializeComponent();
+            // Match the dialog's size to the UI scale (see Helpers/DialogScaler.cs).
+            SourceInitialized += (_, _) => kuboPix.Helpers.DialogScaler.ScaleToOwner(this);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -61,6 +63,5 @@ namespace MiniApp.Views
             DialogResult = true;
             Close();
         }
-
     }
 }
