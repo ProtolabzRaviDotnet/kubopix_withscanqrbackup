@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:kuboPix.Views"
       mc:Ignorable="d"
+      d:DesignHeight="1920" d:DesignWidth="1080"
       Background="#FFFFFF"
       FontFamily="Poppins, Segoe UI"
       Title="PrintPreview">
@@ -19,11 +20,11 @@
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png" 
-                   Width="180" 
+                   Width="240" 
                    Stretch="Uniform" 
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -32,23 +33,26 @@
             <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
                        FontFamily="Poppins" 
                        FontWeight="Bold" 
-                       FontSize="9" 
+                       FontSize="15" 
                        Foreground="#FF1C244B" 
                        HorizontalAlignment="Center" 
-                       Margin="0,5,0,0"/>
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
         <!-- ===== 2. MIDDLE CONTENT (Stepper + Viewport) ===== -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20"
-                    Width="420">
+        <Grid Grid.Row="1"
+              Margin="0,80,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Stepper -->
+                <RowDefinition Height="*"/>    <!-- Viewport Container -->
+            </Grid.RowDefinitions>
 
-            <!-- Stepper Progress Indicator -->
-            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+            <!-- Stepper Progress Indicator (880px width, 80px gap below logo tagline) -->
+            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,15" Width="880">
                 <!-- Connector Track Line behind circles -->
-                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                <Grid Height="2" Margin="130,28,130,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -73,7 +77,7 @@
                         <TextBlock Text="Capture" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -88,7 +92,7 @@
                         <TextBlock Text="Edit" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -100,7 +104,7 @@
                         <TextBlock Text="Print" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -109,26 +113,33 @@
             </Grid>
 
             <!-- Viewport & Header -->
-            <StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
                 <!-- Confirm Photo Header -->
-                <TextBlock Text="Confirm your photo" 
+                <TextBlock Grid.Row="0"
+                           Text="Confirm your photo" 
                            FontFamily="Poppins" 
                            FontWeight="Bold" 
-                           FontSize="24" 
+                           FontSize="50" 
                            Foreground="#FF1C244B" 
                            HorizontalAlignment="Center" 
-                           Margin="0,0,0,25"/>
+                           Margin="0,160,0,15"/>
   
-                <!-- 2. Image Viewport displaying final photo with frame and background -->
-                <Border x:Name="PhotoBorder"
-                        Width="320" 
-                        Height="320" 
+                <!-- Image Viewport displaying final photo with frame and background -->
+                <Border Grid.Row="1"
+                        x:Name="PhotoBorder"
+                        Width="880" 
+                        MaxHeight="900" 
                         Background="#FFF9FAFB" 
                         BorderBrush="#FFE5E7EB" 
                         BorderThickness="1.5" 
-                        CornerRadius="16"
+                        CornerRadius="24"
                         HorizontalAlignment="Center"
-                        Margin="0,0,0,30"
+                        VerticalAlignment="Stretch"
                         ClipToBounds="True">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="25" 
@@ -152,14 +163,15 @@
                                Visibility="Collapsed"/>
                     </Grid>
                 </Border>
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+
+        </Grid>
 
         <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
-        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/> <!-- Gap -->
+                <ColumnDefinition Width="28"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -174,11 +186,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="BACK" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="#FF4B5563" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>
@@ -206,11 +218,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="NEXT" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="White" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>

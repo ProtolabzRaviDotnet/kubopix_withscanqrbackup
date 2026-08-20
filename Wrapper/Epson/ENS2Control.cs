@@ -384,6 +384,12 @@ namespace com.epson.label.driver
             {
                 ENSStatus.ENSTATUS_LABEL structSTATUS = new ENSStatus.ENSTATUS_LABEL();
                 GetPrinterStatus(out structSTATUS);
+
+                if (structSTATUS.PrintStopCoverOpen != 0 || structSTATUS.ErrorCode == (byte)ErrorCode.ERR_CoverOpen)
+                {
+                    return ErrorCode.ERR_CoverOpen;
+                }
+
                 ErrorCode ec = (ErrorCode)structSTATUS.ErrorCode;
                 return ec;
             }
@@ -393,6 +399,7 @@ namespace com.epson.label.driver
                 throw;
             }
         }
+
 
         /// <summary>
         /// This is the method that get the WarningCode.

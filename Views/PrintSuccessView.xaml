@@ -3,6 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="1920" d:DesignWidth="1080"
       Title="Print Success"
       Background="#FFFFFF"
       FontFamily="Poppins, Segoe UI"
@@ -10,131 +12,132 @@
       SnapsToDevicePixels="True"
       Loaded="Page_Loaded">
 
-    <Page.Resources>
-        <FontFamily x:Key="PoppinsFamily">
-            pack://application:,,,/Fonts/Poppins/#Poppins
-        </FontFamily>
-
-        <!-- Start Again Button Style -->
-        <Style x:Key="KioskButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="72"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontFamily" Value="{StaticResource PoppinsFamily}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="16">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.72"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Page.Resources>
-
-    <!-- Root Grid: content centered + Start Again pinned to bottom -->
+    <!-- Root Grid matching standard 3-row layout -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Logo/Header -->
-            <RowDefinition Height="*"/>    <!-- Success content (Middle) -->
-            <RowDefinition Height="Auto"/> <!-- Start Again Button -->
+            <RowDefinition Height="Auto"/> <!-- Row 0: Logo Header -->
+            <RowDefinition Height="*"/>    <!-- Row 1: Middle Success Viewport Content -->
+            <RowDefinition Height="Auto"/> <!-- Row 2: Bottom Action Button -->
         </Grid.RowDefinitions>
 
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png"
-                   Width="270"
+                   Width="240"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
 
             <!-- Tagline -->
-            <TextBlock Margin="0,15,0,0"
-                       Text="INSTANT PHOTO KIOSK"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       Foreground="#1C244B"
-                       FontFamily="{StaticResource PoppinsFamily}"
-                       HorizontalAlignment="Center"/>
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="15" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
-        <!-- ===== 2. MIDDLE CONTENT (Success Circle + Messages) ===== -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20">
-            <!-- Success Circle Icon -->
-            <Border Width="220"
-                    Height="220"
-                    CornerRadius="110"
-                    Background="#D8F5E9"
-                    HorizontalAlignment="Center">
-                <!-- Inner green dot / video -->
-                <Border Width="90"
-                        Height="90"
-                        CornerRadius="45"
-                        Background="#1DD180"
+        <!-- ===== 2. MIDDLE CONTENT (Vertically Centered 880px Viewport) ===== -->
+        <Grid Grid.Row="1"
+              Margin="0,40,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+
+                <!-- Success Circle Graphic with playing PrintSuccess.mp4 Video -->
+                <Border Width="300"
+                        Height="300"
+                        CornerRadius="150"
+                        Background="#E6F9F0"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        ClipToBounds="True">
-                    <MediaElement x:Name="SuccessVideo"
-                                  LoadedBehavior="Manual"
-                                  UnloadedBehavior="Stop"
-                                  Stretch="UniformToFill"
-                                  MediaEnded="SuccessVideo_MediaEnded"
-                                  MediaFailed="SuccessVideo_MediaFailed"/>
+                        Margin="0,0,0,36">
+                    <Border Width="215"
+                            Height="215"
+                            CornerRadius="107.5"
+                            Background="#10B981"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            ClipToBounds="True">
+                        <Grid>
+                            <!-- MediaElement playing PrintSuccess.mp4 video -->
+                            <MediaElement x:Name="SuccessVideo"
+                                          LoadedBehavior="Manual"
+                                          UnloadedBehavior="Stop"
+                                          Stretch="UniformToFill"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          MediaEnded="SuccessVideo_MediaEnded"
+                                          MediaFailed="SuccessVideo_MediaFailed"/>
+                        </Grid>
+                    </Border>
                 </Border>
-            </Border>
 
-            <!-- Status Messages -->
-            <StackPanel HorizontalAlignment="Center"
-                        Margin="0,40,0,0">
-                <TextBlock Text="Print Successful!"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Foreground="#1C244B"
-                           FontFamily="{StaticResource PoppinsFamily}"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,10"/>
-                <TextBlock Text="Please collect your Photo."
-                           FontSize="18"
-                           Foreground="#555555"
-                           FontFamily="{StaticResource PoppinsFamily}"
-                           HorizontalAlignment="Center"/>
+                <!-- Status Messages (Full 880px Width Centered Text) -->
+                <StackPanel HorizontalAlignment="Stretch" Width="880">
+                    <TextBlock Text="Print Successful!"
+                               FontFamily="Poppins"
+                               FontSize="38"
+                               FontWeight="Bold"
+                               Foreground="#FF1C244B"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Stretch"
+                               Width="880"
+                               Margin="0,0,0,14"/>
+
+                    <TextBlock Text="Please collect your Photo."
+                               FontFamily="Poppins"
+                               FontSize="22"
+                               FontWeight="Medium"
+                               Foreground="#FF4B5563"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Stretch"
+                               Width="880"/>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
+        </Grid>
 
-        <!-- ===== 3. START AGAIN BUTTON — pinned to bottom ===== -->
-        <Button Grid.Row="2"
-                Style="{StaticResource KioskButtonStyle}"
-                Background="#5671FF"
-                Width="420"
-                HorizontalAlignment="Center"
-                Margin="0,0,0,60"
-                Click="StartAgain_Click">
-            <TextBlock Text="Start Again"
-                        FontSize="22"
-                        FontWeight="SemiBold"
-                        Foreground="White"
-                        FontFamily="{StaticResource PoppinsFamily}"
-                        VerticalAlignment="Center"/>
-        </Button>
+        <!-- ===== 3. START AGAIN BUTTON (500px Width Button) ===== -->
+        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
+            <Button x:Name="StartAgainButton"
+                    Click="StartAgain_Click"
+                    Background="#FF5C6BFF"
+                    Width="500"
+                    Height="80"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    HorizontalAlignment="Center">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="16">
+                            <TextBlock Text="START AGAIN" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="Bold" 
+                                       FontSize="22" 
+                                       Foreground="White" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
 
     </Grid>
 </Page>

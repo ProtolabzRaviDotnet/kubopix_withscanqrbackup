@@ -22,13 +22,13 @@ namespace kuboPix
         /// resolution. The real canvas is derived from the window at runtime, so one build
         /// fills any portrait panel with no per-kiosk configuration.
         /// </summary>
-        private const double DesignHeight = 1366;
+        private const double DesignHeight = 1920;
 
         /// <summary>
         /// Narrowest logical width the page layouts are known to fit in. Acts as the guard
         /// that makes content shrink rather than clip on a narrower-than-design panel.
         /// </summary>
-        private const double MinDesignWidth = 768;
+        private const double MinDesignWidth = 1080;
 
         public MainWindow()
         {
@@ -48,7 +48,14 @@ namespace kuboPix
                 this.Left = (SystemParameters.PrimaryScreenWidth - this.Width) / 2;
                 this.Top = (SystemParameters.PrimaryScreenHeight - this.Height) / 2;
             }
-            MainFrame.Navigate(new Views.LoginView());
+            // ── BYPASS MODE: skip Login entirely for demo recording ────────────
+            // In production this is always LoginView; set BypassPrinterForDemo=false
+            // in App.xaml.cs before the production build.
+            if (App.BypassPrinterForDemo)
+                MainFrame.Navigate(new Views.Capture());
+            else
+                MainFrame.Navigate(new Views.LoginView());
+
         }
 
         /// <summary>

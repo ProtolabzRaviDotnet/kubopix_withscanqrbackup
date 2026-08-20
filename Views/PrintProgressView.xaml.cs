@@ -118,6 +118,14 @@ namespace kuboPix.Views
                 timerCompleted = true;
                 timerCompletionSource.TrySetResult(true);
                 LoaderVideo.Stop();
+
+                // ── BYPASS MODE: auto-navigate to PrintSuccessView ─────────────
+                // In production, the caller (ScanQrView/OrderQueueService) awaits
+                // WaitForCompletionAsync() and handles navigation itself.
+                if (App.BypassPrinterForDemo)
+                {
+                    NavigationService?.Navigate(new PrintSuccessView());
+                }
             }
         }
 

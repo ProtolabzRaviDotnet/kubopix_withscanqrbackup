@@ -1692,51 +1692,58 @@ namespace kuboPix.Services
         public string GetEpsonMessageFromErrorCodes(StatusCode sc, ErrorCode ec, WARNING_INFO wc)
         {
             string finalMessage = "";
-            switch (sc)
+
+            if (ec == ErrorCode.ERR_CoverOpen)
             {
-                case StatusCode.ST_Idle:
-                    _printerStatus = 1; // Ready
-                    finalMessage = "Your printer is online and ready for printing.";
-                    break;
-                case StatusCode.ST_Busy:
-                case StatusCode.ST_Wait:
-                case StatusCode.ST_TestPrint:
-                    _printerStatus = 40; // System busy
-                    finalMessage = "Printer is busy.";
-                    break;
-                case StatusCode.ST_Cleaning:
-                    _printerStatus = 40; // System busy
-                    finalMessage = "Printer is cleaning.";
-                    break;
-                case StatusCode.ST_Error:
-                    switch (ec)
-                    {
-                        case ErrorCode.ERR_CoverOpen:
-                            _printerStatus = 14; // Cover open
-                            finalMessage = "Cover open. Please close the cover.";
-                            break;
-                        case ErrorCode.ERR_PaperJam:
-                            _printerStatus = 2; // Jam
-                            finalMessage = "Paper jam error. Please remove jammed paper.";
-                            break;
-                        case ErrorCode.ERR_Paperout:
-                            _printerStatus = 31; // Paper out
-                            finalMessage = "Paper out. No paper detected.";
-                            break;
-                        case ErrorCode.ERR_Inkout:
-                            _printerStatus = 23; // Ink out
-                            finalMessage = "Ink cartridge error. Please replace ink.";
-                            break;
-                        default:
-                            _printerStatus = 3; // Other error
-                            finalMessage = "Other error. Please check printer.";
-                            break;
-                    }
-                    break;
-                default:
-                    _printerStatus = 3; // Unknown/Other
-                    finalMessage = "Printer is not in a ready state.";
-                    break;
+                _printerStatus = 14; // Cover open
+                finalMessage = "Cover open. Please close the cover.";
+            }
+            else if (ec == ErrorCode.ERR_PaperJam)
+            {
+                _printerStatus = 2; // Jam
+                finalMessage = "Paper jam error. Please remove jammed paper.";
+            }
+            else if (ec == ErrorCode.ERR_Paperout)
+            {
+                _printerStatus = 31; // Paper out
+                finalMessage = "Paper out. No paper detected.";
+            }
+            else if (ec == ErrorCode.ERR_Inkout)
+            {
+                _printerStatus = 23; // Ink out
+                finalMessage = "Ink cartridge error. Please replace ink.";
+            }
+            else
+            {
+                switch (sc)
+                {
+                    case StatusCode.ST_Idle:
+                        _printerStatus = 1; // Ready
+                        finalMessage = "Your printer is online and ready for printing.";
+                        break;
+                    case StatusCode.ST_Busy:
+                    case StatusCode.ST_Wait:
+                    case StatusCode.ST_TestPrint:
+                        _printerStatus = 40; // System busy
+                        finalMessage = "Printer is busy.";
+                        break;
+                    case StatusCode.ST_Cleaning:
+                        _printerStatus = 40; // System busy
+                        finalMessage = "Printer is cleaning.";
+                        break;
+                    case StatusCode.ST_NotPrint:
+                        _printerStatus = 3; // Other error
+                        finalMessage = "Printer is not in a ready state.";
+                        break;
+                    case StatusCode.ST_Error:
+                        _printerStatus = 3; // Other error
+                        finalMessage = "Other error. Please check printer.";
+                        break;
+                    default:
+                        _printerStatus = 3; // Unknown/Other
+                        finalMessage = "Printer is not in a ready state.";
+                        break;
+                }
             }
 
             if (wc.InkLowWarning)
@@ -1750,6 +1757,7 @@ namespace kuboPix.Services
 
             return finalMessage.Trim();
         }
+
 
 
         //Make Printer Offline Printer Id ShopLogin Id
@@ -1824,7 +1832,7 @@ namespace kuboPix.Services
                             }
                         }
 
-                        if (sc == StatusCode.ST_Error)
+                        if (sc == StatusCode.ST_Error || sc == StatusCode.ST_NotPrint)
                         {
                             ErrorCode ec = ErrorCode.ERR_FatalError;
                             try

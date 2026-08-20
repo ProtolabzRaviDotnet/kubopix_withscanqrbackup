@@ -52,22 +52,23 @@
         <!-- 1. Header (Logo + Tagline) -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0">
+                    Margin="0,95,0,0"
+                    HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png"
-                   Width="270"
+                   Width="240"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
 
             <!-- Tagline -->
-            <TextBlock Text="INSTANT PHOTO KIOSK"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       Foreground="#1C244B"
-                       FontFamily="{StaticResource PoppinsFamily}"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,0"/>
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="15" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
         <!-- 2. Center Content (Scan Title + QR + Instructions) -->

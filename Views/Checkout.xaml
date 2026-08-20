@@ -13,18 +13,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Logo/Header -->
-            <RowDefinition Height="*"/>    <!-- Stepper + Content (Middle) -->
+            <RowDefinition Height="*"/>    <!-- Stepper + Payment Options -->
             <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
         </Grid.RowDefinitions>
 
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png" 
-                   Width="180" 
+                   Width="240" 
                    Stretch="Uniform" 
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -33,23 +33,27 @@
             <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
                        FontFamily="Poppins" 
                        FontWeight="Bold" 
-                       FontSize="9" 
+                       FontSize="15" 
                        Foreground="#FF1C244B" 
                        HorizontalAlignment="Center" 
-                       Margin="0,5,0,0"/>
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
-        <!-- ===== 2. MIDDLE CONTENT (Stepper + Viewport, Copies & Price) ===== -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20"
-                    Width="420">
+        <!-- ===== 2. MIDDLE CONTENT (Stepper + Payment Options) ===== -->
+        <Grid Grid.Row="1"
+              Margin="0,80,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Stepper -->
+                <RowDefinition Height="Auto"/> <!-- Title -->
+                <RowDefinition Height="*"/>    <!-- Payment Cards Stack -->
+            </Grid.RowDefinitions>
 
-            <!-- Stepper Progress Indicator -->
-            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+            <!-- Stepper Progress Indicator (880px width, matching Camera/Edit/PrintPreview) -->
+            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,78" Width="880">
                 <!-- Connector Track Line behind circles -->
-                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                <Grid Height="2" Margin="95,28,95,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -77,7 +81,7 @@
                         <TextBlock Text="Capture" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -92,7 +96,7 @@
                         <TextBlock Text="Edit" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -104,7 +108,7 @@
                         <TextBlock Text="Payment" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -115,7 +119,7 @@
                         <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
                         <TextBlock Text="Print" 
                                    FontFamily="Poppins" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FFA0A0AA" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -123,125 +127,150 @@
                 </Grid>
             </Grid>
 
-            <!-- Viewport, Copies & Price -->
-            <StackPanel>
-                <!-- Confirm Print Header -->
-                <TextBlock Text="Confirm Print" 
-                           FontFamily="Poppins" 
-                           FontWeight="Bold" 
-                           FontSize="24" 
-                           Foreground="#FF1C244B" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,0,0,25"/>
+            <!-- Page Title positioned directly below Stepper -->
+            <TextBlock Grid.Row="1" 
+                       Text="Choose a Payment Method" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="36" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,45"/>
 
-                <!-- 2. Image Viewport displaying final photo with frame and background -->
-                <Border x:Name="PhotoBorder"
-                        Width="320" 
-                        Height="320" 
-                        Background="#FFF9FAFB" 
-                        BorderBrush="#FFE5E7EB" 
-                        BorderThickness="1.5" 
-                        CornerRadius="16"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,25"
-                        ClipToBounds="True">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="25" 
-                                          ShadowDepth="4" 
-                                          Opacity="0.08" 
-                                          Color="#000000"/>
-                    </Border.Effect>
+            <!-- Payment Options Container positioned from top -->
+            <StackPanel Grid.Row="2" Width="880" HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                    <Grid>
-                        <!-- The captured photo display -->
-                        <Image x:Name="CapturedPhoto" 
-                               HorizontalAlignment="Stretch" 
-                               VerticalAlignment="Stretch" 
-                               Stretch="UniformToFill"/>
-
-                        <!-- Frame Overlay -->
-                        <Image x:Name="FrameOverlay" 
-                               HorizontalAlignment="Stretch" 
-                               VerticalAlignment="Stretch" 
-                               Stretch="Fill"
-                               Visibility="Collapsed"/>
-                    </Grid>
+                <!-- ===== PAYMENT OPTION 1: Debit/Credit Card (selected by default) ===== -->
+                <Border x:Name="CardPaymentBorder"
+                        Background="#EEF2FF"
+                        BorderBrush="#FF5C6BFF"
+                        BorderThickness="2"
+                        CornerRadius="24"
+                        MinHeight="255"
+                        Margin="0,0,0,30"
+                        Padding="38,30"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="CardPayment_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Icon from Assets -->
+                        <Image Source="/Assets/GPay_Card.png" 
+                               Width="120" 
+                               Height="120" 
+                               Margin="0,0,32,0" 
+                               Stretch="Uniform" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <!-- Text Details -->
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Debit/Credit Card" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="28" 
+                                       Foreground="#FF1C244B"/>
+                            <TextBlock Text="OR" 
+                                       FontFamily="Poppins" 
+                                       FontSize="13" 
+                                       Foreground="#FFA0A0AA" 
+                                       Margin="0,4,0,4"/>
+                            <TextBlock Text="Google Pay or Apple Pay" 
+                                       FontFamily="Poppins" 
+                                       FontSize="16" 
+                                       Foreground="#FF6B7280"/>
+                        </StackPanel>
+                    </StackPanel>
                 </Border>
 
-                <!-- Copies Selector -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                    <TextBlock Text="Copies :" 
-                               FontFamily="Poppins" 
-                               FontWeight="SemiBold" 
-                               FontSize="18" 
-                               Foreground="#FF4B5563" 
-                               VerticalAlignment="Center" 
-                               Margin="0,0,15,0"/>
-                    
-                    <Border Background="#FFEFEFEF" CornerRadius="12" Height="40" Width="140">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <Button Grid.Column="0" 
-                                    x:Name="BtnPlus" 
-                                    Click="BtnPlus_Click" 
-                                    Content="+" 
-                                    FontFamily="Poppins" 
-                                    FontWeight="Bold" 
-                                    FontSize="20" 
-                                    Foreground="#FF4B5563" 
-                                    Background="Transparent" 
-                                    BorderThickness="0" 
-                                    Cursor="Hand"
-                                    VerticalAlignment="Center"/>
-                            
-                            <TextBlock Grid.Column="1" 
-                                       x:Name="TxtCopies" 
-                                       Text="1" 
-                                       FontFamily="Poppins" 
-                                       FontWeight="Bold" 
-                                       FontSize="18" 
-                                       Foreground="#FF4B5563" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center"/>
-                            
-                            <Button Grid.Column="2" 
-                                    x:Name="BtnMinus" 
-                                    Click="BtnMinus_Click" 
-                                    Content="-" 
-                                    FontFamily="Poppins" 
-                                    FontWeight="Bold" 
-                                    FontSize="20" 
-                                    Foreground="#FF4B5563" 
-                                    Background="Transparent" 
-                                    BorderThickness="0" 
-                                    Cursor="Hand"
-                                    VerticalAlignment="Center"/>
-                        </Grid>
-                    </Border>
-                </StackPanel>
+                <!-- ===== PAYMENT OPTION 2: Twint ===== -->
+                <Border x:Name="TwintBorder"
+                        Background="#FFFFFF"
+                        BorderBrush="#FFE5E7EB"
+                        BorderThickness="1.5"
+                        CornerRadius="24"
+                        MinHeight="255"
+                        Margin="0,0,0,30"
+                        Padding="38,30"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="Twint_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Icon from Assets -->
+                        <Image Source="/Assets/Twint.png" 
+                               Width="120" 
+                               Height="120" 
+                               Margin="0,0,32,0" 
+                               Stretch="Uniform" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Twint" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="28" 
+                                   Foreground="#FF1C244B" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
 
-                <!-- Price Text -->
-                <TextBlock x:Name="TxtPrice" 
-                           Text="Price: 50$" 
-                           FontFamily="Poppins" 
-                           FontWeight="Bold" 
-                           FontSize="28" 
-                           Foreground="#FF1C244B" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,0,0,30"/>
+                <!-- ===== PAYMENT OPTION 3: Pay with Coupon ===== -->
+                <Border x:Name="CouponBorder"
+                        Background="#FFFFFF"
+                        BorderBrush="#FFE5E7EB"
+                        BorderThickness="1.5"
+                        CornerRadius="24"
+                        MinHeight="255"
+                        Margin="0,0,0,30"
+                        Padding="38,30"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="Coupon_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Icon from Assets -->
+                        <Image Source="/Assets/Coupon.png" 
+                               Width="120" 
+                               Height="120" 
+                               Margin="0,0,32,0" 
+                               Stretch="Uniform" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Pay with Coupon" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="28" 
+                                   Foreground="#FF1C244B" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- ===== PAYMENT OPTION 4: Terminal (Card Reader) ===== -->
+                <Border x:Name="TerminalBorder"
+                        Background="#FFFFFF"
+                        BorderBrush="#FFE5E7EB"
+                        BorderThickness="1.5"
+                        CornerRadius="24"
+                        MinHeight="255"
+                        Margin="0,0,0,0"
+                        Padding="38,30"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="Terminal_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Icon from Assets -->
+                        <Image Source="/Assets/Terminal.png" 
+                               Width="120" 
+                               Height="120" 
+                               Margin="0,0,32,0" 
+                               Stretch="Uniform" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Terminal (Card Reader)" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="SemiBold" 
+                                   FontSize="28" 
+                                   Foreground="#FF1C244B" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
-        </StackPanel>
+
+        </Grid>
 
         <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
-        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/> <!-- Gap -->
+                <ColumnDefinition Width="28"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -256,11 +285,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="BACK" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="#FF4B5563" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>
@@ -277,7 +306,7 @@
                 </Button.Template>
             </Button>
 
-            <!-- Next Button -->
+            <!-- Pay Now Action Button -->
             <Button Grid.Column="2"
                     x:Name="NextButton"
                     Click="NextButton_Click"
@@ -288,11 +317,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
-                            <TextBlock Text="NEXT" 
+                                CornerRadius="16">
+                            <TextBlock Text="PAY NOW" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="White" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>

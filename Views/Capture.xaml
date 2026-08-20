@@ -126,18 +126,19 @@
                     Margin="0,80,0,0"
                     HorizontalAlignment="Center">
             <Image Source="/Assets/logo.png"
-                   Width="270"
+                   Width="180"
                    Stretch="Uniform"
                    RenderOptions.BitmapScalingMode="HighQuality"
                    MouseDown="Logo_Click"
                    Cursor="Hand"/>
 
-            <TextBlock Margin="0,15,0,0"
-                       Text="INSTANT PHOTO KIOSK"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       Foreground="#1C244B"
-                       HorizontalAlignment="Center"/>
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="9" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- ================= 2. CARD (Middle Content) ================= -->

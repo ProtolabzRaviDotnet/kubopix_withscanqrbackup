@@ -14,6 +14,12 @@ namespace kuboPix
     /// </summary>
     public partial class App : Application
     {
+        // ── DEMO / RECORDING MODE ──────────────────────────────────────────────────
+        // Set to TRUE only when recording a UI demo/walkthrough video.
+        // Printer calls are completely skipped; flow goes straight to PrintProgressView.
+        // ⚠️  Set back to FALSE before building the production release.
+        public static bool BypassPrinterForDemo { get; } = true;
+
         public App()
         {
             // TOUCH → MOUSE CLICK CONVERSION (KIOSK FIX)

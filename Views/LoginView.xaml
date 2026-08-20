@@ -146,17 +146,17 @@
             <StackPanel Margin="0,0,0,80"
                         HorizontalAlignment="Center">
                 <Image Source="/Assets/logo.png" 
-                       Width="270" 
+                       Width="180" 
                        Stretch="Uniform" 
                        HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                <TextBlock Text="INSTANT PHOTO KIOSK" 
+                <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
                            FontFamily="Poppins" 
-                           FontWeight="SemiBold" 
-                           FontSize="22" 
+                           FontWeight="Bold" 
+                           FontSize="9" 
                            Foreground="#FF1C244B" 
                            HorizontalAlignment="Center" 
-                           Margin="0,15,0,0"/>
+                           Margin="0,5,0,0"/>
             </StackPanel>
  
             <!-- ================= CARD ================= -->

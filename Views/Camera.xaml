@@ -14,19 +14,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Logo/Header -->
-            <RowDefinition Height="*"/>    <!-- Stepper + Viewport (Middle) -->
-            <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
+            <RowDefinition Height="Auto"/> <!-- Row 0: Header (Logo) -->
+            <RowDefinition Height="*"/>    <!-- Row 1: Stepper + Viewport -->
+            <RowDefinition Height="Auto"/> <!-- Row 2: Action Buttons -->
         </Grid.RowDefinitions>
 
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png"
-                   Width="180"
+                   Width="240"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -35,23 +35,26 @@
             <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
                        FontFamily="Poppins" 
                        FontWeight="Bold" 
-                       FontSize="9" 
+                       FontSize="15" 
                        Foreground="#FF1C244B" 
                        HorizontalAlignment="Center" 
-                       Margin="0,5,0,0"/>
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
         <!-- ===== 2. MIDDLE CONTENT (Stepper + Camera Viewport) ===== -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20"
-                    Width="420">
+        <Grid Grid.Row="1"
+              Margin="0,80,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Stepper -->
+                <RowDefinition Height="*"/>    <!-- Camera Viewport Container -->
+            </Grid.RowDefinitions>
 
-            <!-- Stepper Progress Indicator -->
-            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+            <!-- Stepper Progress Indicator (Wider 880px width, increased 80px gap from logo tagline) -->
+            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,40" Width="880">
                 <!-- Connector Track Line behind circles -->
-                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                <Grid Height="2" Margin="130,28,130,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -73,7 +76,7 @@
                         <TextBlock Text="Capture" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -84,7 +87,7 @@
                         <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
                         <TextBlock Text="Edit" 
                                    FontFamily="Poppins" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FFA0A0AA" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -95,7 +98,7 @@
                         <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
                         <TextBlock Text="Print" 
                                    FontFamily="Poppins" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FFA0A0AA" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -103,14 +106,16 @@
                 </Grid>
             </Grid>
 
-            <!-- Camera Viewport Container -->
-            <Border Width="420" 
-                    Height="500"
+            <!-- Camera Viewport Container (880px Width, matching progress bar & buttons) -->
+            <Border Grid.Row="1"
+                    Width="880" 
+                    MaxHeight="920"
                     Background="#FFF9FAFB" 
                     BorderBrush="#FFE5E7EB" 
                     BorderThickness="1.5" 
                     CornerRadius="24"
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="25" 
                                       ShadowDepth="4" 
@@ -138,21 +143,21 @@
                             <!-- Styled Camera Icon -->
                             <Path Data="M19,4H15.5L14.3,2.5C14.07,2.18 13.67,2 13.25,2H10.75C10.33,2 9.93,2.18 9.7,2.5L8.5,4H5C3.34,4 2,5.34 2,7V17C2,18.66 3.34,20 5,20H19C20.66,20 22,18.66 22,17V7C22,5.34 20.66,4 19,4M12,17C9.24,17 7,14.76 7,12C7,9.24 9.24,7 12,7C14.76,7 17,9.24 17,12C17,14.76 14.76,17 12,17M12,9C10.35,9 9,10.35 9,12C9,13.65 10.35,15 12,15C13.65,15 15,13.65 15,12C15,10.35 13.65,9 12,9Z" 
                                   Fill="#FFE5E7EB" 
-                                  Width="76" 
-                                  Height="76" 
+                                  Width="110" 
+                                  Height="110" 
                                   Stretch="Uniform" 
-                                  Margin="0,0,0,16"/>
+                                  Margin="0,0,0,20"/>
                             <TextBlock Text="CAMERA FEED VIEWPORT" 
                                        FontFamily="Poppins" 
                                        FontWeight="SemiBold" 
-                                       FontSize="15" 
+                                       FontSize="22" 
                                        Foreground="#FFA0A0AA" 
                                        HorizontalAlignment="Center"/>
                             <TextBlock Text="Live camera preview will appear here" 
                                        FontFamily="Poppins" 
-                                       FontSize="12" 
+                                       FontSize="15" 
                                        Foreground="#FFC4C4C6" 
-                                       Margin="0,6,0,0" 
+                                       Margin="0,8,0,0" 
                                        HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
@@ -203,13 +208,13 @@
                 </Grid>
             </Border>
 
-        </StackPanel>
+        </Grid>
 
         <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
-        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="28"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -224,11 +229,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="BACK" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="#FF4B5563" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>
@@ -256,11 +261,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="CAPTURE" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="White" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>

@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
+      d:DesignHeight="1920" d:DesignWidth="1080"
       Title="Print Error"
       Background="#FFFFFF"
       FontFamily="Poppins, Segoe UI"
@@ -60,20 +61,20 @@
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png"
-                   Width="270"
+                   Width="180"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"
                    MouseDown="Logo_Click_Error"/>
 
             <!-- Tagline -->
-            <TextBlock Margin="0,15,0,0"
-                       Text="INSTANT PHOTO KIOSK"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       Foreground="#1C244B"
-                       FontFamily="{StaticResource PoppinsFamily}"
-                       HorizontalAlignment="Center"/>
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="9" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- ===== 2. MIDDLE CONTENT (Error Illustration + Messages) ===== -->

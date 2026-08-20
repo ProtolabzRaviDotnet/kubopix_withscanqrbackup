@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
+      d:DesignHeight="1920" d:DesignWidth="1080"
       Title="Print Progress"
       Loaded="Page_Loaded"
       Background="#FFFFFF"
@@ -14,7 +15,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Logo/Header -->
-            <RowDefinition Height="*"/>    <!-- Main Card Content -->
+            <RowDefinition Height="*"/>    <!-- Main Viewport Content -->
         </Grid.RowDefinitions>
 
         <!-- Keep the LoaderVideo and TimerText hidden to satisfy code-behind logic without affecting UI -->
@@ -30,78 +31,85 @@
         <!-- ================= HEADER (Logo + Tagline) ================= -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <Image Source="/Assets/logo.png"
-                   Width="270"
-                   Stretch="Uniform"
-                   RenderOptions.BitmapScalingMode="HighQuality"/>
-
-            <TextBlock Margin="0,15,0,0"
-                       Text="INSTANT PHOTO KIOSK"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       Foreground="#1C244B"
-                       HorizontalAlignment="Center"/>
-        </StackPanel>
-
-        <!-- ================= Progress Content (No Card Border) ================= -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20">
-
-            <!-- Illustration -->
-            <Image Source="/Assets/PrintingProgress.png"
-                   Width="200"
-                   Height="200"
+                   Width="240"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
-                   RenderOptions.BitmapScalingMode="HighQuality"
-                   Margin="0,0,0,40"/>
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <!-- Status Text -->
-            <TextBlock Text="Printing in progress..."
-                       FontSize="20"
-                       FontWeight="Medium"
-                       Foreground="#4C6FFF"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,25"/>
-
-            <!-- Progress Bar -->
-            <ProgressBar x:Name="progressBar"
-                         Height="8"
-                         Width="320"
-                         Minimum="0"
-                         Maximum="100"
-                         Value="0"
-                         Background="#F0F2F5"
-                         Foreground="#4C6FFF"
-                         BorderThickness="0"
-                         HorizontalAlignment="Center">
-                <ProgressBar.Style>
-                    <Style TargetType="ProgressBar">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ProgressBar">
-                                    <Grid x:Name="TemplateRoot">
-                                        <!-- Background track -->
-                                        <Border Background="{TemplateBinding Background}"
-                                                CornerRadius="4" />
-                                        <!-- Track container that ProgressBar uses to measure width -->
-                                        <Grid x:Name="PART_Track">
-                                            <Border x:Name="PART_Indicator"
-                                                    Background="{TemplateBinding Foreground}"
-                                                    CornerRadius="4"
-                                                    HorizontalAlignment="Left" />
-                                        </Grid>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ProgressBar.Style>
-            </ProgressBar>
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="15" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,8,0,0"/>
         </StackPanel>
+
+        <!-- ================= Progress Content Viewport ================= -->
+        <Grid Grid.Row="1"
+              Margin="0,80,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+
+                <!-- Illustration -->
+                <Image Source="/Assets/PrintingProgress.png"
+                       Width="240"
+                       Height="240"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Margin="0,0,0,36"/>
+
+                <!-- Status Text -->
+                <TextBlock Text="Printing in progress..."
+                           FontFamily="Poppins"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Foreground="#FF5C6BFF"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,30"/>
+
+                <!-- Progress Bar -->
+                <ProgressBar x:Name="progressBar"
+                             Height="10"
+                             Width="680"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="0"
+                             Background="#FFE5E7EB"
+                             Foreground="#FF5C6BFF"
+                             BorderThickness="0"
+                             HorizontalAlignment="Center">
+                    <ProgressBar.Style>
+                        <Style TargetType="ProgressBar">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Grid x:Name="TemplateRoot">
+                                            <!-- Background track -->
+                                            <Border Background="{TemplateBinding Background}"
+                                                    CornerRadius="5" />
+                                            <!-- Track container that ProgressBar uses to measure width -->
+                                            <Grid x:Name="PART_Track">
+                                                <Border x:Name="PART_Indicator"
+                                                        Background="{TemplateBinding Foreground}"
+                                                        CornerRadius="5"
+                                                        HorizontalAlignment="Left" />
+                                            </Grid>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ProgressBar.Style>
+                </ProgressBar>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

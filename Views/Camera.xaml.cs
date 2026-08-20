@@ -15,6 +15,12 @@ namespace kuboPix.Views
     /// </summary>
     public partial class Camera : Page
     {
+        // ─────────────────────────────────────────────────────────────
+        // BYPASS FLAG — set to true to skip campro.dll for UI testing.
+        // Set to false when the real camera hardware is connected.
+        // ─────────────────────────────────────────────────────────────
+        private readonly bool BYPASS_CAMERA = false;
+
         private CamHelp.VideoStreamCallBack? _videoStreamCallBack;
         private WriteableBitmap? _previewBitmap;
         private int _currentWidth = 0;
@@ -28,6 +34,45 @@ namespace kuboPix.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            if (BYPASS_CAMERA)
+            {
+                // ── BYPASS MODE: skip all campro.dll calls ──
+                // Show a visible label inside the camera placeholder so the
+                // tester knows the live feed is intentionally absent.
+                if (CameraPlaceholder != null)
+                {
+                    CameraPlaceholder.Visibility = Visibility.Visible;
+
+                    // Append a small bypass notice to the placeholder content
+                    var bypassNote = new System.Windows.Controls.TextBlock
+                    {
+                        Text = "[BYPASS MODE — no camera DLL]",
+                        FontFamily = new System.Windows.Media.FontFamily("Poppins"),
+                        FontSize = 11,
+                        Foreground = new System.Windows.Media.SolidColorBrush(
+                            (System.Windows.Media.Color)System.Windows.Media.ColorConverter
+                                .ConvertFromString("#FFFF8C00")),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Margin = new Thickness(0, 8, 0, 0)
+                    };
+
+                    if (CameraPlaceholder.Children[0] is System.Windows.Controls.StackPanel sp)
+                        sp.Children.Add(bypassNote);
+                }
+
+                if (ProcessingOverlay != null) ProcessingOverlay.Visibility = Visibility.Collapsed;
+                if (CapturedPhotoPreview != null)
+                {
+                    CapturedPhotoPreview.Visibility = Visibility.Collapsed;
+                    CapturedPhotoPreview.Source = null;
+                }
+                if (CaptureButton != null) CaptureButton.IsEnabled = true;
+                if (BackButton != null) BackButton.IsEnabled = true;
+
+                _isCameraRunning = true; // allow capture button to work
+                return;
+            }
+
             // Initialize SDK
             int ret = CamHelp.HIGH_InitSDK();
             if (ret != 0)
@@ -86,6 +131,13 @@ namespace kuboPix.Views
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (BYPASS_CAMERA)
+            {
+                // ── BYPASS MODE: no DLL resources to release ──
+                _isCameraRunning = false;
+                return;
+            }
+
             // Clean up camera stream and release SDK resources
             if (_isCameraRunning)
             {
@@ -181,6 +233,67 @@ namespace kuboPix.Views
             }
             if (CaptureButton != null) CaptureButton.IsEnabled = false;
             if (BackButton != null) BackButton.IsEnabled = false;
+
+            if (BYPASS_CAMERA)
+            {
+                // ── BYPASS MODE: use a dummy image instead of the real camera ──
+                try
+                {
+                    string capturesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Captures");
+                    if (!Directory.Exists(capturesFolder))
+                        Directory.CreateDirectory(capturesFolder);
+
+                    string fileName = $"Capture_{DateTime.Now:yyyyMMdd_HHmmss}.jpg";
+                    string filePath = Path.Combine(capturesFolder, fileName);
+
+                    // Copy groupimage.png from Assets as the dummy captured photo
+                    string dummySource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "groupimage.png");
+                    if (File.Exists(dummySource))
+                    {
+                        File.Copy(dummySource, filePath, overwrite: true);
+                    }
+                    else
+                    {
+                        // Fallback: create a 1×1 white JPEG if the asset is missing
+                        var wb = new WriteableBitmap(400, 500, 96, 96, PixelFormats.Bgr24, null);
+                        using var fs = new FileStream(filePath, FileMode.Create);
+                        var encoder = new JpegBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(wb));
+                        encoder.Save(fs);
+                    }
+
+                    // Show preview of the dummy image
+                    if (CapturedPhotoPreview != null && File.Exists(filePath))
+                    {
+                        try
+                        {
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.UriSource = new Uri(filePath);
+                            bitmap.EndInit();
+                            CapturedPhotoPreview.Source = bitmap;
+                            CapturedPhotoPreview.Visibility = Visibility.Visible;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Error loading bypass preview: " + ex.Message);
+                        }
+                    }
+
+                    // Simulate short processing delay then move to Edit screen
+                    await Task.Delay(2000);
+                    NavigationService?.Navigate(new Edit(filePath));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Bypass capture failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (ProcessingOverlay != null) ProcessingOverlay.Visibility = Visibility.Collapsed;
+                    if (CaptureButton != null) CaptureButton.IsEnabled = true;
+                    if (BackButton != null) BackButton.IsEnabled = true;
+                }
+                return; // skip real camera path below
+            }
 
             try
             {

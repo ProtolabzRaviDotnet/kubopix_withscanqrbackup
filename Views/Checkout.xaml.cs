@@ -5,7 +5,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using kuboPix.Helpers;
 using kuboPix.Services;
+using kuboPix.ViewModels;
 
 namespace kuboPix.Views
 {
@@ -18,8 +20,23 @@ namespace kuboPix.Views
         private string _selectedFrame = "none";
         private string _selectedBackground = "none";
         private int _copies = 1;
-        //private double PricePerCopy => kuboPixSessionManager.CurrentSession != null ? (double)kuboPixSessionManager.CurrentSession.PrinterPrice : 50.0;
 
+        // Payment method selection (default: card)
+        private string _selectedPaymentMethod = "card";
+
+        // Brush constants for payment card states
+        private static readonly System.Windows.Media.SolidColorBrush SelectedBorderBrush
+            = new System.Windows.Media.SolidColorBrush(
+                (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FF5C6BFF"));
+        private static readonly System.Windows.Media.SolidColorBrush DefaultBorderBrush
+            = new System.Windows.Media.SolidColorBrush(
+                (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#FFE5E7EB"));
+        private static readonly System.Windows.Media.SolidColorBrush SelectedBackground
+            = new System.Windows.Media.SolidColorBrush(
+                (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#EEF2FF"));
+        private static readonly System.Windows.Media.SolidColorBrush DefaultBackground
+            = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
+        
         public Checkout()
         {
             InitializeComponent();
@@ -36,85 +53,26 @@ namespace kuboPix.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            // 1. Load captured image safely from disk
-            if (!string.IsNullOrEmpty(_capturedPhotoPath) && File.Exists(_capturedPhotoPath))
-            {
-                try
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(_capturedPhotoPath);
-                    bitmap.EndInit();
-                    CapturedPhoto.Source = bitmap;
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("Error loading checkout photo: " + ex.Message);
-                }
-            }
+            // Photo preview is not shown on this page (Choose Payment Method UI).
+            // Keep _capturedPhotoPath stored for navigation/printing.
 
-            // 2. Apply background selection color & opacity tint
-            ApplyBackgroundChoice(_selectedBackground);
-
-            // 3. Apply frame overlay selection
-            ApplyFrameChoice(_selectedFrame);
-
-            // 4. Initialize display
-            UpdateCopiesAndPrice();
+           
         }
 
+        /// <summary>
+        /// Retained for compatibility. Background is not shown in the payment selection UI.
+        /// </summary>
         private void ApplyBackgroundChoice(string bgName)
         {
-            if (PhotoBorder == null) return;
-
-            if (bgName == "none")
-            {
-                PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF9FAFB"));
-                if (CapturedPhoto != null) CapturedPhoto.Opacity = 1.0;
-            }
-            else if (bgName == "winter")
-            {
-                PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFE0F2FE"));
-                if (CapturedPhoto != null) CapturedPhoto.Opacity = 0.85;
-            }
-            else if (bgName == "xmas")
-            {
-                PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FEE2E2"));
-                if (CapturedPhoto != null) CapturedPhoto.Opacity = 0.85;
-            }
-            else if (bgName == "summer")
-            {
-                PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FEF3C7"));
-                if (CapturedPhoto != null) CapturedPhoto.Opacity = 0.85;
-            }
+            // No photo border in the Choose Payment Method UI — no-op.
         }
 
+        /// <summary>
+        /// Retained for compatibility. Frame overlay is not shown in the payment selection UI.
+        /// </summary>
         private void ApplyFrameChoice(string frameName)
         {
-            if (FrameOverlay == null) return;
-
-            try
-            {
-                if (frameName == "none")
-                {
-                    FrameOverlay.Visibility = Visibility.Collapsed;
-                }
-                else if (frameName == "ellipse")
-                {
-                    FrameOverlay.Source = LoadAssetImage("Ellipse 5@2x.png");
-                    FrameOverlay.Visibility = Visibility.Visible;
-                }
-                else if (frameName == "bottle")
-                {
-                    FrameOverlay.Source = LoadAssetImage("750mL Bottles (3)@2x.png");
-                    FrameOverlay.Visibility = Visibility.Visible;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error loading checkout frame overlay: " + ex.Message);
-            }
+            // No frame overlay in the Choose Payment Method UI — no-op.
         }
 
         private BitmapImage LoadAssetImage(string fileName)
@@ -137,32 +95,46 @@ namespace kuboPix.Views
             return bitmap;
         }
 
-        private void BtnPlus_Click(object sender, RoutedEventArgs e)
+      
+
+      
+
+        // ===== Payment Method Selection Handlers =====
+
+        private void CardPayment_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _copies++;
-            UpdateCopiesAndPrice();
+            SelectPaymentMethod("card");
         }
 
-        private void BtnMinus_Click(object sender, RoutedEventArgs e)
+        private void Twint_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_copies > 1)
-            {
-                _copies--;
-                UpdateCopiesAndPrice();
-            }
+            SelectPaymentMethod("twint");
         }
 
-        private void UpdateCopiesAndPrice()
+        private void Coupon_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (TxtCopies != null)
-            {
-                TxtCopies.Text = _copies.ToString();
-            }
+            SelectPaymentMethod("coupon");
+        }
 
-            if (TxtPrice != null)
-            {
-                //TxtPrice.Text = $"Price: {(_copies * PricePerCopy):0.##}$";
-            }
+        private void Terminal_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            SelectPaymentMethod("terminal");
+        }
+
+        private void SelectPaymentMethod(string method)
+        {
+            _selectedPaymentMethod = method;
+            HighlightPaymentCard(CardPaymentBorder, method == "card");
+            HighlightPaymentCard(TwintBorder,       method == "twint");
+            HighlightPaymentCard(CouponBorder,      method == "coupon");
+            HighlightPaymentCard(TerminalBorder,    method == "terminal");
+        }
+
+        private void HighlightPaymentCard(System.Windows.Controls.Border border, bool isSelected)
+        {
+            if (border == null) return;
+            border.BorderBrush = isSelected ? SelectedBorderBrush : DefaultBorderBrush;
+            border.Background  = isSelected ? SelectedBackground   : DefaultBackground;
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -177,82 +149,86 @@ namespace kuboPix.Views
             }
         }
 
-        private void NextButton_Click(object sender, RoutedEventArgs e)
+        private async void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(_capturedPhotoPath) && File.Exists(_capturedPhotoPath))
+            // ── BYPASS MODE (demo recording only) ─────────────────────────────────
+            if (App.BypassPrinterForDemo)
             {
-                string printerName = LoginView.GetCurrentSessionPrinterName() ?? "";
-                
-                if (string.IsNullOrEmpty(printerName))
-                {
-                    MessageBox.Show("No active printer configuration found for this session. Please check your shop configuration.", 
-                                    "Printer Connection Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else
-                {
-                    int successCount = 0;
-                    string lastError = "";
-
-                    for (int i = 1; i <= _copies; i++)
-                    {
-                        string result = ExecutePrinterPrint(printerName, _capturedPhotoPath);
-                        if (result == "OK")
-                        {
-                            successCount++;
-                        }
-                        else
-                        {
-                            lastError = result;
-                        }
-                    }
-
-                    if (successCount == _copies)
-                    {
-                        MessageBox.Show($"Successfully printed {_copies} copy/copies of the photo!", 
-                                        "Printing Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else if (successCount > 0)
-                    {
-                        MessageBox.Show($"Successfully printed {successCount} of {_copies} copy/copies. Last error: {lastError}", 
-                                        "Partial Print Output", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Failed to print card: {lastError}", 
-                                        "Printing Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return; // Keep user on the screen if printing fails completely
-                    }
-                }
+                NavigationService?.Navigate(new PrintProgressView());
+                return;
             }
 
-          
-        }
-
-        /// <summary>
-        /// Routes the image path to the appropriate printer library based on the printer name.
-        /// </summary>
-        private string ExecutePrinterPrint(string printerName, string imagePath)
-        {
-            try
+            // ── NORMAL PRODUCTION PATH ─────────────────────────────────────────────
+            if (string.IsNullOrEmpty(_capturedPhotoPath) || !File.Exists(_capturedPhotoPath))
             {
-                if (printerName.Contains("Seaory", StringComparison.OrdinalIgnoreCase))
-                {
-                    return kuboPix.Wrapper.SeaoryPrinterPrint.PrintImage(printerName, imagePath);
-                }
-                else if (printerName.Contains("Epson", StringComparison.OrdinalIgnoreCase) || 
-                         printerName.Contains("CW-C40", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Epson printer uses printer name and optional spooler port (empty for default)
-                    return kuboPix.Wrapper.EpsonPrinterPrint.PrintImage(printerName, "", imagePath);
-                }
-                else
-                {
-                    return $"Unsupported printer model type: '{printerName}'";
-                }
+                MessageBox.Show("No captured photo found. Please take a photo first.", 
+                                "Photo Missing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            catch (Exception ex)
+
+            var session = kuboPixSessionManager.Load();
+            if (session == null)
             {
-                return $"Printer DLL execution error: {ex.Message}";
+                MessageBox.Show("No active session found. Please log in again.", 
+                                "Session Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            string printerName = LoginView.GetCurrentSessionPrinterName() ?? session.PrinterName ?? "";
+            if (string.IsNullOrEmpty(printerName))
+            {
+                MessageBox.Show("No active printer configuration found for this session. Please check your shop configuration.", 
+                                "Printer Connection Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // 1. Upload photo to backend
+            string uploadedImageUrl = await PrintPreview.UploadKioskPhotoAsync(session.Token, _capturedPhotoPath);
+            if (string.IsNullOrEmpty(uploadedImageUrl))
+            {
+                MessageBox.Show("Failed to upload photo to server.", "Upload Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // 2. Create order or process order via OQS
+            long orderId = await PrintPreview.CreateFreeOrderAsync(session, uploadedImageUrl);
+            if (orderId <= 0)
+            {
+                orderId = DateTime.Now.Ticks % 1000000;
+            }
+
+            using var oqs = new OrderQueueService(
+                session.Token,
+                session.ShopLoginId,
+                session.PrinterId,
+                printerName,
+                session.PrinterStatus,
+                "",
+                session.PrinterPrice,
+                DateTime.UtcNow,
+                session.PrinterPaymentEnabled,
+                session.PrinterBrand
+            );
+
+            // Determine payment type id based on selected payment method ("card", "twint", "coupon", "terminal")
+            int paymentTypeId = 1; // Default card (Stripe)
+            if (_selectedPaymentMethod == "twint") paymentTypeId = 3;
+            else if (_selectedPaymentMethod == "coupon") paymentTypeId = 4;
+            else if (_selectedPaymentMethod == "terminal") paymentTypeId = 5;
+
+            var order = new PendingOrder
+            {
+                OrderId = orderId,
+                Image = uploadedImageUrl,
+                ShopLoginId = session.ShopLoginId,
+                PrinterId = session.PrinterId,
+                IsPaidOrder = 1,
+                OrderPaymentTypeId = paymentTypeId
+            };
+
+            for (int i = 0; i < _copies; i++)
+            {
+                await oqs.ProcessSingleOrderAsync(order, isRetry: false);
             }
         }
     }

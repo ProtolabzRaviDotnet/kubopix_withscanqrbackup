@@ -21,11 +21,11 @@
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,80,0,0"
+                    Margin="0,95,0,0"
                     HorizontalAlignment="Center">
             <!-- Logo -->
             <Image Source="/Assets/logo.png" 
-                   Width="180" 
+                   Width="240" 
                    Stretch="Uniform" 
                    HorizontalAlignment="Center"
                    RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -34,23 +34,26 @@
             <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
                        FontFamily="Poppins" 
                        FontWeight="Bold" 
-                       FontSize="9" 
+                       FontSize="15" 
                        Foreground="#FF1C244B" 
                        HorizontalAlignment="Center" 
-                       Margin="0,5,0,0"/>
+                       Margin="0,8,0,0"/>
         </StackPanel>
 
         <!-- ===== 2. MIDDLE CONTENT (Stepper + Viewport/Selectors) ===== -->
-        <StackPanel Grid.Row="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,20"
-                    Width="420">
+        <Grid Grid.Row="1"
+              Margin="0,80,0,40"
+              HorizontalAlignment="Center"
+              Width="880">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Stepper -->
+                <RowDefinition Height="*"/>    <!-- Viewport & Selectors -->
+            </Grid.RowDefinitions>
 
-            <!-- Stepper Progress Indicator -->
-            <Grid Height="90" HorizontalAlignment="Center" Margin="0,0,0,100" Width="420">
+            <!-- Stepper Progress Indicator (880px width, 80px gap below logo tagline) -->
+            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,40" Width="880">
                 <!-- Connector Track Line behind circles -->
-                <Grid Height="2" Margin="60,28,60,0" VerticalAlignment="Top">
+                <Grid Height="2" Margin="130,28,130,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -75,7 +78,7 @@
                         <TextBlock Text="Capture" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -87,7 +90,7 @@
                         <TextBlock Text="Edit" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FF1C244B" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -98,7 +101,7 @@
                         <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
                         <TextBlock Text="Print" 
                                    FontFamily="Poppins" 
-                                   FontSize="14" 
+                                   FontSize="15" 
                                    Foreground="#FFA0A0AA" 
                                    HorizontalAlignment="Center" 
                                    Margin="0,8,0,0"/>
@@ -106,18 +109,18 @@
                 </Grid>
             </Grid>
 
-            <!-- Viewport & Selectors -->
-            <StackPanel>
-                <!-- 2. Image Viewport with Gridlines, Corner brackets, and Frame overlay -->
+            <!-- Viewport & Selectors (880px width) -->
+            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                <!-- Image Viewport with Gridlines, Corner brackets, and Frame overlay -->
                 <Border x:Name="PhotoBorder"
-                        Width="320" 
-                        Height="320" 
+                        Width="580" 
+                        Height="580" 
                         Background="#FFF9FAFB" 
                         BorderBrush="#FFE5E7EB" 
                         BorderThickness="1.5" 
-                        CornerRadius="16"
+                        CornerRadius="20"
                         HorizontalAlignment="Center"
-                        Margin="0,0,0,20"
+                        Margin="0,0,0,24"
                         ClipToBounds="True">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="25" 
@@ -172,171 +175,46 @@
                     </Grid>
                 </Border>
 
-                <!-- 3. Dynamic Frame & Background Selector Panel -->
-                <Border Width="420" 
-                        Background="White" 
-                        BorderBrush="#FFF3F4F6" 
-                        BorderThickness="1" 
-                        CornerRadius="24"
-                        HorizontalAlignment="Center"
-                        Padding="25,15,25,15"
-                        Margin="0,0,0,20">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="25" 
-                                          ShadowDepth="4" 
-                                          Opacity="0.06" 
-                                          Color="#000000"/>
-                    </Border.Effect>
+                <!-- Dynamic Frame & Background Selector Panel -->
+                <!-- Card border/shadow removed to match exact UI design -->
+                <StackPanel Width="880" HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <!-- Frame Section -->
+                    <TextBlock Text="Select a Frame" 
+                               FontFamily="Poppins" 
+                               FontWeight="SemiBold" 
+                               FontSize="15" 
+                               Foreground="#FF4B5563" 
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Left"/>
                     
-                    <StackPanel>
-                        <!-- Frame Section -->
-                        <TextBlock Text="Select a Frame" 
-                                   FontFamily="Poppins" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="15" 
-                                   Foreground="#FF5C6BFF" 
-                                   Margin="0,0,0,10"/>
-                        
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15" HorizontalAlignment="Center">
-                            <!-- Frame Item: None -->
-                            <StackPanel Margin="0,0,20,0" HorizontalAlignment="Center">
-                                <Border x:Name="FrameNoneBorder" 
-                                        BorderBrush="#FF5C6BFF" 
-                                        BorderThickness="2.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="FrameNone_Click">
-                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Ellipse Stroke="#FFA0A0AA" StrokeThickness="1.5" Width="30" Height="30"/>
-                                        <Path Data="M 12,28 L 28,12" Stroke="#FFA0A0AA" StrokeThickness="1.5"/>
-                                    </Grid>
-                                </Border>
-                                <TextBlock Text="none" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
+                    <WrapPanel x:Name="FrameWrapPanel" Orientation="Horizontal" Margin="0,0,0,20" HorizontalAlignment="Left">
+                        <!-- Populated dynamically in code-behind -->
+                    </WrapPanel>
 
-                            <!-- Frame Item: Ellipse -->
-                            <StackPanel Margin="0,0,20,0" HorizontalAlignment="Center">
-                                <Border x:Name="FrameEllipseBorder" 
-                                        BorderBrush="#FFE5E7EB" 
-                                        BorderThickness="1.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="FrameEllipse_Click">
-                                    <Image Source="/Assets/Ellipse 5@2x.png" Stretch="Uniform" Margin="8"/>
-                                </Border>
-                                <TextBlock Text="Ellipse" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
+                    <!-- Background Section -->
+                    <TextBlock x:Name="BackgroundSectionHeader"
+                               Text="Select a Background" 
+                               FontFamily="Poppins" 
+                               FontWeight="SemiBold" 
+                               FontSize="15" 
+                               Foreground="#FF4B5563" 
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Left"
+                               Visibility="Visible"/>
 
-                            <!-- Frame Item: Bottle -->
-                            <StackPanel Margin="0,0,20,0" HorizontalAlignment="Center">
-                                <Border x:Name="FrameBottleBorder" 
-                                        BorderBrush="#FFE5E7EB" 
-                                        BorderThickness="1.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="FrameBottle_Click">
-                                    <Image Source="/Assets/750mL Bottles (3)@2x.png" Stretch="Uniform" Margin="8"/>
-                                </Border>
-                                <TextBlock Text="Bottle" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <!-- Background Section -->
-                        <TextBlock Text="Select a Background" 
-                                   FontFamily="Poppins" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="15" 
-                                   Foreground="#FF1C244B" 
-                                   Margin="0,0,0,10"/>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <!-- Background Item: None -->
-                            <StackPanel Margin="0,0,15,0" HorizontalAlignment="Center">
-                                <Border x:Name="BgNoneBorder" 
-                                        BorderBrush="#FF5C6BFF" 
-                                        BorderThickness="2.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="BgNone_Click">
-                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Ellipse Stroke="#FFA0A0AA" StrokeThickness="1.5" Width="30" Height="30"/>
-                                        <Path Data="M 12,28 L 28,12" Stroke="#FFA0A0AA" StrokeThickness="1.5"/>
-                                    </Grid>
-                                </Border>
-                                <TextBlock Text="none" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <!-- Background Item: Winter -->
-                            <StackPanel Margin="0,0,15,0" HorizontalAlignment="Center">
-                                <Border x:Name="BgWinterBorder" 
-                                        BorderBrush="#FFE5E7EB" 
-                                        BorderThickness="1.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="BgWinter_Click">
-                                    <Border Background="#FFE0F2FE" CornerRadius="4" Margin="8"/>
-                                </Border>
-                                <TextBlock Text="Winter" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <!-- Background Item: Xmas -->
-                            <StackPanel Margin="0,0,15,0" HorizontalAlignment="Center">
-                                <Border x:Name="BgXmasBorder" 
-                                        BorderBrush="#FFE5E7EB" 
-                                        BorderThickness="1.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="BgXmas_Click">
-                                    <Border Background="#FEE2E2" CornerRadius="4" Margin="8"/>
-                                </Border>
-                                <TextBlock Text="X-Mas" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
-
-                            <!-- Background Item: Summer -->
-                            <StackPanel Margin="0,0,15,0" HorizontalAlignment="Center">
-                                <Border x:Name="BgSummerBorder" 
-                                        BorderBrush="#FFE5E7EB" 
-                                        BorderThickness="1.5" 
-                                        CornerRadius="8" 
-                                        Width="76" 
-                                        Height="76" 
-                                        Background="White" 
-                                        Cursor="Hand" 
-                                        MouseLeftButtonDown="BgSummer_Click">
-                                    <Border Background="#FEF3C7" CornerRadius="4" Margin="8"/>
-                                </Border>
-                                <TextBlock Text="Summer" FontFamily="Poppins" FontSize="11" Foreground="#FFA0A0AA" HorizontalAlignment="Center" Margin="0,6,0,0"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+                    <WrapPanel x:Name="BackgroundWrapPanel" Orientation="Horizontal" Margin="0,0,0,10" HorizontalAlignment="Left" Visibility="Visible">
+                        <!-- Populated dynamically in code-behind -->
+                    </WrapPanel>
+                </StackPanel>
             </StackPanel>
 
-        </StackPanel>
+        </Grid>
 
         <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
-        <Grid Grid.Row="2" Width="420" Height="65" HorizontalAlignment="Center" Margin="0,0,0,50">
+        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="28"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -351,11 +229,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="BACK" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="#FF4B5563" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>
@@ -383,11 +261,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder" 
                                 Background="{TemplateBinding Background}" 
-                                CornerRadius="10">
+                                CornerRadius="16">
                             <TextBlock Text="NEXT" 
                                        FontFamily="Poppins" 
                                        FontWeight="Bold" 
-                                       FontSize="18" 
+                                       FontSize="20" 
                                        Foreground="White" 
                                        HorizontalAlignment="Center" 
                                        VerticalAlignment="Center"/>
