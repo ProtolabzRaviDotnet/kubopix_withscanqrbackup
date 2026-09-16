@@ -1,3 +1,5 @@
+using kuboPix;
+using kuboPix.Helpers;
 using System;
 using System.Runtime.InteropServices;
 
@@ -64,209 +66,7 @@ namespace com.epson.label.driver
                 throw;
             }
         }
-        /// Retrieves ink levels formatted as a string.
 
-        /// </summary>
-
-        public string GetInkRemaining()
-
-        {
-
-            try
-
-            {
-
-                ENSStatus.ENSTATUS_LABEL structSTATUS;
-
-                GetPrinterStatus(out structSTATUS);
-
-
-
-                System.Collections.Generic.List<string> levels = new System.Collections.Generic.List<string>();
-
-                if (structSTATUS.CartridgeStatus != null)
-
-                {
-
-                    foreach (var cartridge in structSTATUS.CartridgeStatus)
-
-                    {
-
-                        // Filter out unused/empty slots (where CartridgeRemain is 255, CartridgeType is 255/0, or ColorType is -1)
-
-                        if (cartridge.CartridgeType != 0 &&
-
-                            cartridge.CartridgeType != 255 &&
-
-                            cartridge.ColorType != -1 &&
-
-                            cartridge.CartridgeRemain >= 0 &&
-
-                            cartridge.CartridgeRemain <= 100)
-
-                        {
-
-                            string colorName = GetColorName(cartridge.ColorType);
-
-                            string levelStr;
-
-
-
-                            // Interpret remaining index code (e.g. 1 = OK, 2 = Low, 3 = Empty) 
-
-                            // to avoid displaying confusing "1%" for full ink.
-
-                            if (cartridge.CartridgeRemain == 1)
-
-                            {
-
-                                levelStr = "OK";
-
-                            }
-
-                            else if (cartridge.CartridgeRemain == 2)
-
-                            {
-
-                                levelStr = "Low";
-
-                            }
-
-                            else if (cartridge.CartridgeRemain == 3)
-
-                            {
-
-                                levelStr = "Empty";
-
-                            }
-
-                            else
-
-                            {
-
-                                levelStr = $"{cartridge.CartridgeRemain}%";
-
-                            }
-
-
-
-                            levels.Add($"{colorName}: {levelStr}");
-
-                        }
-
-                    }
-
-                }
-
-
-
-                if (levels.Count > 0)
-
-                {
-
-                    return string.Join(", ", levels);
-
-                }
-
-
-
-                if (structSTATUS.InkRemainInfo != null)
-
-                {
-
-                    System.Collections.Generic.List<string> rawRemaining = new System.Collections.Generic.List<string>();
-
-                    for (int i = 0; i < structSTATUS.InkRemainInfo.Length; i++)
-
-                    {
-
-                        byte remain = structSTATUS.InkRemainInfo[i];
-
-                        if (remain != 0 && remain != 255 && remain <= 100)
-
-                        {
-
-                            string levelStr;
-
-                            if (remain == 1)
-
-                                levelStr = "OK";
-
-                            else if (remain == 2)
-
-                                levelStr = "Low";
-
-                            else if (remain == 3)
-
-                                levelStr = "Empty";
-
-                            else
-
-                                levelStr = $"{remain}%";
-
-
-
-                            rawRemaining.Add($"Slot {i + 1}: {levelStr}");
-
-                        }
-
-                    }
-
-                    if (rawRemaining.Count > 0)
-
-                    {
-
-                        return string.Join(", ", rawRemaining);
-
-                    }
-
-                }
-
-
-
-                return "Unknown";
-
-            }
-
-            catch (Exception ex)
-
-            {
-
-                return $"Error: {ex.Message}";
-
-            }
-
-        }
-
-
-
-        private string GetColorName(int colorType)
-
-        {
-
-            switch (colorType)
-
-            {
-
-                case 1: return "Black";
-
-                case 2: return "Cyan";
-
-                case 3: return "Magenta";
-
-                case 4: return "Yellow";
-
-                case 8: return "Magenta"; // ColorType 8 represents Magenta (bitmask flag 0x08)
-
-                default: return $"Color {colorType}";
-
-            }
-
-        }
-
-
-
-        /// <summary>
         /// <summary>
         /// This is the method that get the staus of selected printer.
         /// </summary>
@@ -321,7 +121,7 @@ namespace com.epson.label.driver
                 {
                     throw new ENSException(errCode);
                 }
-                
+
                 ptrGetBuff = Marshal.AllocCoTaskMem(buffLen);
 
                 // ENSGetInformation 2nd call.
@@ -332,7 +132,7 @@ namespace com.epson.label.driver
                 }
 
                 // Get ENSSTATUS structure object. 
-                structSTATUS = (ENSStatus.ENSTATUS_LABEL)Marshal.PtrToStructure(ptrGetBuff, typeof(ENSStatus.ENSTATUS_LABEL));
+                structSTATUS = (ENSStatus.ENSTATUS_LABEL)Marshal.PtrToStructure(ptrGetBuff, typeof(ENSStatus.ENSTATUS_LABEL))!;
 
                 // Handling of to call ENSCloseCommunication.
                 errCode = EpsonNetSDKv2.API.ENSCloseCommunication_v2(_ptrHandle);
@@ -359,7 +159,7 @@ namespace com.epson.label.driver
         /// </summary>
         /// <returns>StatusCode information.</returns>
         public StatusCode GetStatusInformation()
-        {  
+        {
             try
             {
                 ENSStatus.ENSTATUS_LABEL structSTATUS = new ENSStatus.ENSTATUS_LABEL();
@@ -385,7 +185,12 @@ namespace com.epson.label.driver
                 ENSStatus.ENSTATUS_LABEL structSTATUS = new ENSStatus.ENSTATUS_LABEL();
                 GetPrinterStatus(out structSTATUS);
 
-                if (structSTATUS.PrintStopCoverOpen != 0 || structSTATUS.ErrorCode == (byte)ErrorCode.ERR_CoverOpen)
+                if (structSTATUS.PrintStopCoverOpen != 0 ||
+                    structSTATUS.ErrorCode == (byte)ErrorCode.ERR_CoverOpen ||
+                    structSTATUS.ErrorCode == 1 ||
+                    structSTATUS.ErrorCode == 2 ||
+                    (structSTATUS.ErrorCode & 0x02) != 0 ||
+                    (structSTATUS.ErrorCode & 0x01) != 0)
                 {
                     return ErrorCode.ERR_CoverOpen;
                 }
@@ -399,7 +204,6 @@ namespace com.epson.label.driver
                 throw;
             }
         }
-
 
         /// <summary>
         /// This is the method that get the WarningCode.
@@ -439,6 +243,59 @@ namespace com.epson.label.driver
         }
 
         /// <summary>
+        /// Retrieves StatusCode, ErrorCode, and WARNING_INFO in a single SDK communication call.
+        /// </summary>
+        public void GetPrinterFullStatus(out StatusCode sc, out ErrorCode ec, out WARNING_INFO wc)
+        {
+            try
+            {
+                ENSStatus.ENSTATUS_LABEL structSTATUS = new ENSStatus.ENSTATUS_LABEL();
+                GetPrinterStatus(out structSTATUS);
+
+                sc = (StatusCode)structSTATUS.StatusCode;
+
+                if (sc != StatusCode.ST_Idle)
+                {
+                    AppLogger.Log($"[EPSON-STATUS] StatusCode={structSTATUS.StatusCode} ({(StatusCode)structSTATUS.StatusCode}), ErrorCode={structSTATUS.ErrorCode}, PrintStopCoverOpen={structSTATUS.PrintStopCoverOpen}, FatalErrorCode={structSTATUS.FatalErrorCode}");
+                }
+
+                if (structSTATUS.PrintStopCoverOpen != 0 ||
+                    structSTATUS.ErrorCode == (byte)ErrorCode.ERR_CoverOpen ||
+                    structSTATUS.ErrorCode == 1 ||
+                    structSTATUS.ErrorCode == 2 ||
+                    (structSTATUS.ErrorCode & 0x02) != 0 ||
+                    (structSTATUS.ErrorCode & 0x01) != 0)
+                {
+                    ec = ErrorCode.ERR_CoverOpen;
+                }
+                else
+                {
+                    ec = (ErrorCode)structSTATUS.ErrorCode;
+                }
+
+                wc = new WARNING_INFO();
+                for (int i = 0; i < 16; i++)
+                {
+                    if ((structSTATUS.WarningCode[i] == (int)WarningCode.WAR_InkLow_B) ||
+                        (structSTATUS.WarningCode[i] == (int)WarningCode.WAR_InkLow_C) ||
+                        (structSTATUS.WarningCode[i] == (int)WarningCode.WAR_InkLow_M) ||
+                        (structSTATUS.WarningCode[i] == (int)WarningCode.WAR_InkLow_Y))
+                    {
+                        wc.InkLowWarning = true;
+                    }
+                    else if (structSTATUS.WarningCode[i] != 0 && structSTATUS.WarningCode[i] != 255)
+                    {
+                        wc.OtherWarning = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Retrieves the Device ID (MFG, MDL, CMD, CLS) from the EpsonNet SDK DLL and returns a simplified printer model name.
         /// </summary>
         public string GetDeviceID()
@@ -463,7 +320,7 @@ namespace com.epson.label.driver
                     throw new ENSException(errCode);
                 }
 
-                EpsonNetSDKv2.V2DEVICEID01 devId = (EpsonNetSDKv2.V2DEVICEID01)Marshal.PtrToStructure(ptrTemp, typeof(EpsonNetSDKv2.V2DEVICEID01));
+                EpsonNetSDKv2.V2DEVICEID01 devId = (EpsonNetSDKv2.V2DEVICEID01)Marshal.PtrToStructure(ptrTemp, typeof(EpsonNetSDKv2.V2DEVICEID01))!;
                 string mfg = devId.MFG != null ? new string(devId.MFG).Split('\0')[0].Trim() : "";
                 string mdl = devId.MDL != null ? new string(devId.MDL).Split('\0')[0].Trim() : "";
 
@@ -518,6 +375,90 @@ namespace com.epson.label.driver
         }
 
         /// <summary>
+        /// Retrieves overall ink status: "Ink is OK", "Ink Low", or "Ink Empty".
+        /// </summary>
+        public string GetInkRemaining()
+        {
+            try
+            {
+                ENSStatus.ENSTATUS_LABEL structSTATUS;
+                GetPrinterStatus(out structSTATUS);
+
+                bool isLow = false;
+                bool isEmpty = false;
+                bool hasValidCartridge = false;
+
+                if (structSTATUS.CartridgeStatus != null)
+                {
+                    foreach (var cartridge in structSTATUS.CartridgeStatus)
+                    {
+                        // Filter out unused slots (same condition as original working code)
+                        if (cartridge.CartridgeType != 0 &&
+                            cartridge.CartridgeType != 255 &&
+                            cartridge.ColorType != -1 &&
+                            cartridge.CartridgeRemain >= 0 &&
+                            cartridge.CartridgeRemain <= 100)
+                        {
+                            hasValidCartridge = true;
+
+                            // 1 = OK, 2 = Low, 3 = Empty
+                            if (cartridge.CartridgeRemain == 3)
+                            {
+                                isEmpty = true;
+                            }
+                            else if (cartridge.CartridgeRemain == 2)
+                            {
+                                isLow = true;
+                            }
+                        }
+                    }
+                }
+
+                // If any ink is Empty
+                if (isEmpty)
+                {
+                    return "Ink Empty";
+                }
+
+                // If any ink is Low
+                if (isLow)
+                {
+                    return "Ink Low";
+                }
+
+                // All inks are OK
+                if (hasValidCartridge)
+                {
+                    return "Ink is OK";
+                }
+
+                return "Ink is OK";
+            }
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// This is method in future shows the color name of the ink cartridge based on the ColorType value.
+        /// </summary>
+        /// <param name="colorType"></param>
+        /// <returns></returns>
+        private string GetColorName(int colorType)
+        {
+            switch (colorType)
+            {
+                case 1: return "Black";
+                case 2: return "Cyan";
+                case 3: return "Magenta";
+                case 4: return "Yellow";
+                case 8: return "Magenta"; // ColorType 8 represents Magenta (bitmask flag 0x08)
+                default: return $"Color {colorType}";
+            }
+        }
+
+        /// <summary>
         /// This is the method that implement ENSRelease.
         /// </summary>
         public void Release()
@@ -530,18 +471,14 @@ namespace com.epson.label.driver
                     throw new ENSException(errCode);
                 }
             }
-
             catch (Exception)
             {
                 // Error handling.
                 throw;
             }
             finally
-
             {
-
                 System.Threading.Monitor.Exit(_lockObject);
-
             }
         }
 

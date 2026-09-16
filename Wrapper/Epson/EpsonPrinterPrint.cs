@@ -7,6 +7,7 @@ using kuboPix;
 using com.epson.label.driver;
 using kuboPix.Helpers;
 
+
 namespace kuboPix.Wrapper
 {
     public static class EpsonPrinterPrint

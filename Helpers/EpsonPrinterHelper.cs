@@ -1,5 +1,9 @@
+using kuboPix;
+using kuboPix.Views;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Management;
 using System.Printing;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -133,17 +137,10 @@ namespace kuboPix.Helpers
             if (string.IsNullOrEmpty(printerName) || pngBytes == null || pngBytes.Length == 0)
                 return false;
 
-            // 1. Delete previous image to keep DRAM clean before downloading (Using StringBuilder)
-            var clearBuilder = new StringBuilder();
-            clearBuilder.AppendLine("^XA");
-            clearBuilder.AppendLine("^IDR:UPLOAD.PNG^FS");
-            clearBuilder.AppendLine("^XZ");
-            byte[] clearBytes = Encoding.ASCII.GetBytes(clearBuilder.ToString());
-
-            // 2. Download the PNG image to DRAM (R: drive)
+            // 1. Download the PNG image directly to DRAM (R: drive) - ~DY automatically overwrites existing image
             byte[] headerBytes = Encoding.ASCII.GetBytes($"~DYR:UPLOAD.PNG,B,P,{pngBytes.Length},0,");
 
-            // 3. Print the image using ^IL (Image Load) and trigger Autocut (Using StringBuilder)
+            // 2. Print the image using ^IL (Image Load) and trigger Autocut
             var printBuilder = new StringBuilder();
             printBuilder.AppendLine("^XA");
             printBuilder.AppendLine("^S(CLR,R,600");
@@ -162,12 +159,11 @@ namespace kuboPix.Helpers
 
             byte[] printBytes = Encoding.ASCII.GetBytes(printBuilder.ToString());
 
-            // Combine all byte segments into a single raw transaction payload
-            byte[] payload = new byte[clearBytes.Length + headerBytes.Length + pngBytes.Length + printBytes.Length];
-            Buffer.BlockCopy(clearBytes, 0, payload, 0, clearBytes.Length);
-            Buffer.BlockCopy(headerBytes, 0, payload, clearBytes.Length, headerBytes.Length);
-            Buffer.BlockCopy(pngBytes, 0, payload, clearBytes.Length + headerBytes.Length, pngBytes.Length);
-            Buffer.BlockCopy(printBytes, 0, payload, clearBytes.Length + headerBytes.Length + pngBytes.Length, printBytes.Length);
+            // Combine byte segments into a single raw transaction payload
+            byte[] payload = new byte[headerBytes.Length + pngBytes.Length + printBytes.Length];
+            Buffer.BlockCopy(headerBytes, 0, payload, 0, headerBytes.Length);
+            Buffer.BlockCopy(pngBytes, 0, payload, headerBytes.Length, pngBytes.Length);
+            Buffer.BlockCopy(printBytes, 0, payload, headerBytes.Length + pngBytes.Length, printBytes.Length);
 
             return SendRawBytesToUsbSpooler(printerName, payload);
         }
@@ -182,7 +178,106 @@ namespace kuboPix.Helpers
 
             return await Task.Run(() => PrintPngImage(printerName, pngBytes));
         }
+        [DllImport("winspool.Drv", EntryPoint = "SetJobA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern bool SetJob(IntPtr hPrinter, int JobId, int Level, IntPtr pJob, int Command);
 
+        /// <summary>
+        /// Purges (cancels) all pending print jobs for the specified printer and all installed Epson printers
+        /// and sends ESC/Label cancel commands to clear hardware printer DRAM buffer.
+        /// </summary>
+        public static void PurgePrinterQueue(string? printerName)
+        {
+            var targetPrinters = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+            try
+            {
+                var installedList = new List<string>();
+                foreach (string installed in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+                {
+                    installedList.Add(installed);
+                }
+
+                string? sessionName = LoginView.GetCurrentSessionPrinterName();
+                if (!string.IsNullOrWhiteSpace(sessionName))
+                {
+                    var match = installedList.FirstOrDefault(p => p.Equals(sessionName.Trim(), StringComparison.OrdinalIgnoreCase));
+                    if (match != null) targetPrinters.Add(match);
+                }
+
+                if (!string.IsNullOrWhiteSpace(printerName))
+                {
+                    var match = installedList.FirstOrDefault(p => p.Equals(printerName.Trim(), StringComparison.OrdinalIgnoreCase))
+                             ?? installedList.FirstOrDefault(p => p.IndexOf(printerName.Trim(), StringComparison.OrdinalIgnoreCase) >= 0 || printerName.Trim().IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0);
+                    if (match != null) targetPrinters.Add(match);
+                }
+
+                // Match any installed Epson / CW- label printers
+                foreach (string installed in installedList)
+                {
+                    if (installed.IndexOf("Epson", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        installed.IndexOf("CW-", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        targetPrinters.Add(installed);
+                    }
+                }
+            }
+            catch { }
+
+            foreach (string pName in targetPrinters)
+            {
+                ClearSinglePrinterQueue(pName);
+            }
+        }
+
+        private static void ClearSinglePrinterQueue(string printerName)
+        {
+            if (string.IsNullOrEmpty(printerName)) return;
+
+            AppLogger.Log($"[EPSON] Clearing print jobs for '{printerName}'...");
+
+            // 1. WMI Delete Print Jobs (cancels and deletes pending/stuck spooler jobs first)
+            try
+            {
+                using (var searcher = new ManagementObjectSearcher($"SELECT * FROM Win32_PrintJob WHERE Name LIKE '%{printerName.Replace("'", "''")}%'"))
+                {
+                    foreach (ManagementObject job in searcher.Get())
+                    {
+                        try
+                        {
+                            job.Delete();
+                            AppLogger.Log($"[EPSON] Successfully deleted active print job for '{printerName}'.");
+                        }
+                        catch (Exception exJob)
+                        {
+                            AppLogger.Log($"[EPSON] Error deleting print job via WMI: {exJob.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception exWmi)
+            {
+                AppLogger.Log($"[EPSON] WMI print job search exception for '{printerName}': {exWmi.Message}");
+            }
+
+            // 2. Send immediate ESC/Label runtime cancel (~JA) and unpause (~PS).
+            // Do NOT send ^XA...^XZ because empty format blocks cause the printer to feed out blank labels.
+            try
+            {
+                var cancelBuilder = new StringBuilder();
+                cancelBuilder.AppendLine("~JA"); // Cancel All active/buffered format jobs immediately in firmware
+                cancelBuilder.AppendLine("~PS"); // Ensure printer is unpaused and ready
+
+                byte[] cancelBytes = Encoding.ASCII.GetBytes(cancelBuilder.ToString());
+                bool sent = SendRawBytesToUsbSpooler(printerName, cancelBytes);
+                if (sent)
+                {
+                    AppLogger.Log($"[EPSON] Sent pure ESC/Label runtime Cancel All & Resume (~JA, ~PS) to '{printerName}'.");
+                }
+            }
+            catch (Exception exCmd)
+            {
+                AppLogger.Log($"[EPSON] Failed to send cancel commands for '{printerName}': {exCmd.Message}");
+            }
+        }
     }
 }

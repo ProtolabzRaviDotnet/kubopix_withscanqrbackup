@@ -1,9 +1,9 @@
 using com.epson.label.driver;
-using Microsoft.Identity.Client;
 using kuboPix.Helpers;
 using kuboPix.ViewModels;
 using kuboPix.Views;
 using kuboPix.Wrapper;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using QRCoder;
 using System;
@@ -59,8 +59,26 @@ namespace kuboPix.Services
 
         private static HashSet<long> _processedOrderIds = new HashSet<long>();
 
+        // Warning codes that trigger an email notification to shop & admin.
+        // Printing is NOT affected — add/remove codes here to control future warnings.
+        private static readonly HashSet<string> _emailNotifyWarningCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "0x00020002", // Card low 3 (first level)
+            "0x00020005", // Card low 2 (medium-low)
+            "0x00020006", // Card low 1 (very low)
+            // "0x00020001", // Ribbon low  ← uncomment to enable ribbon-low emails
+        };
+
         // Guards the check-then-claim of an order so two threads/instances can't both claim it (T-5.2).
         private static readonly object _processedLock = new object();
+
+        // Process-wide gate: exactly one OrderQueueService instance may run its loops at any
+        // time. A new ScanQrView is created after every print/error/recovery; without this
+        // gate the old instance's loops (sleeping in Task.Delay) can still be alive when the
+        // new instance's StartQueue fires — producing two concurrent polling loops that both
+        // print the same order (the Courmayeur card-feed duplicate bug, 2026-08-20).
+        // Released inside the WhenAll continuation once BOTH loops have fully exited (Fix A).
+        private static readonly SemaphoreSlim _queueGate = new SemaphoreSlim(1, 1);
 
         // Seed the in-memory session set from the persistent printed-ledger on first use,
         // so orders printed before a restart are not picked up and printed again (T-5.1).
@@ -99,6 +117,18 @@ namespace kuboPix.Services
         public void StartQueue()
         {
             if (_isStarted) return;
+            // Fix A — Acquire the process-wide gate before launching loops.
+            // Each ScanQrView creates a new OrderQueueService and calls StartQueue.
+            // If the previous instance's loops (queue + monitor) haven't exited yet
+            // (they sleep in Task.Delay(15 000) and Task.Delay(60 000)), this call
+            // blocks until they fully stop — or up to 5 seconds, after which we bail.
+            // This prevents two concurrent polling loops from both printing the same
+            // order (Courmayeur card-feed duplicate bug, 2026-08-20).
+            if (!_queueGate.Wait(TimeSpan.FromSeconds(5)))
+            {
+                AppLogger.Log("Queue start skipped: another queue instance is still running.");
+                return;
+            }
             _isStarted = true;
 
             AppLogger.Log("Queue started.");
@@ -141,7 +171,11 @@ namespace kuboPix.Services
             // exited (i.e. after StopQueue cancels them). Disposing only after the loops
             // finish guarantees no in-flight request touches a disposed client (T-4.2).
             _ = Task.WhenAll(_queueLoopTask, _monitorLoopTask)
-                    .ContinueWith(_ => DisposeResources(), TaskScheduler.Default);
+                    .ContinueWith(_ =>
+                    {
+                        DisposeResources();
+                        _queueGate.Release(); // Release the process-wide gate (Fix A).
+                    }, TaskScheduler.Default);
         }
 
         // Stop the queue and monitoring (useful for cleanup)
@@ -221,10 +255,7 @@ namespace kuboPix.Services
                             {
 
                                 ensControl.Initialize(_printerName, "");
-                                sc = ensControl.GetStatusInformation();
-                                ec = ensControl.GetErrorInformation();
-                                wc = ensControl.GetWarningInformation();
-
+                                ensControl.GetPrinterFullStatus(out sc, out ec, out wc);
                                 queryOk = true;
                             }
                             catch (Exception ex)
@@ -260,8 +291,7 @@ namespace kuboPix.Services
                                 // Only flip to a non-ready state after required consecutive non-ready reads
                                 else if (consecNotReady >= requiredConsecutive)
                                 {
-                                    GetEpsonMessageFromErrorCodes(sc, ec, wc);
-                                    _printerMessage = parsedMessage;
+                                    _printerMessage = GetEpsonMessageFromErrorCodes(sc, ec, wc);
                                 }
                                 else
                                 {
@@ -396,7 +426,8 @@ namespace kuboPix.Services
                     PrintProgressView? printProgressView = null;
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        printProgressView = new PrintProgressView();
+                        int countdownSeconds = _printerBrand == "Epson" ? 20 : 30;
+                        printProgressView = new PrintProgressView(countdownSeconds);
                         NavigationService.Navigate(printProgressView);  // Set the current page as PrintProgressView
                     });
 
@@ -420,11 +451,11 @@ namespace kuboPix.Services
                         {
                             try
                             {
-                                await printProgressView.WaitForCompletionAsync();
+                                printProgressView.StopTimer();
                             }
                             catch (Exception ex)
                             {
-                                AppLogger.Log($"PrintProgress wait failed: {ex}");
+                                AppLogger.Log($"PrintProgress StopTimer failed: {ex}");
                             }
                         }
 
@@ -509,6 +540,15 @@ namespace kuboPix.Services
                         //Send Email on Print Fail and Update Status
                         await UpdatePrinterStatus(_printerId, _shopLoginId, _printerStatus, message);
 
+                        // Fix B — Release the in-memory claim so the "Print last failed job"
+                        // retry path can reclaim this order cleanly. The order was NOT
+                        // successfully printed, so ProcessedOrderLedger is NOT written.
+                        // Without this, ProcessSingleOrderAsync would see the order as
+                        // "already claimed" and silently abort the retry.
+                        lock (_processedLock)
+                        {
+                            _processedOrderIds.Remove(order.OrderId);
+                        }
                         // Immediately stop timer and navigate to error view on UI thread
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -751,9 +791,8 @@ namespace kuboPix.Services
                     {
 
                         ensControl.Initialize(_printerName, "");
-                        StatusCode sc = ensControl.GetStatusInformation();
-                        ErrorCode ec = ensControl.GetErrorInformation();
-                        WARNING_INFO wc = ensControl.GetWarningInformation();
+                        ensControl.GetPrinterFullStatus(out StatusCode sc, out ErrorCode ec, out WARNING_INFO wc);
+
 
 
                         string parsedMessage = GetEpsonMessageFromErrorCodes(sc, ec, wc);
@@ -801,10 +840,31 @@ namespace kuboPix.Services
                     string warning = SeaoryPrinterPrint.CheckPrinterWarning(_printerName);
 
                     if (warning != "No Warnings")
+                    { 
                         AppLogger.Log($"Printer Warning: {warning}");
 
-                    // Check printer status
-                    string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
+                    // Send email notification if the warning code is in the notify list.
+                    // Uses current _printerStatus so the Ready state is NOT overwritten.
+                    // GetWarningEmailMessage() is used — NOT GetMessageFromErrorCodes —
+                    // so this message never appears on the print error screen.
+                    if (_emailNotifyWarningCodes.Any(code => warning.Contains(code)))
+                    {
+                        string warningMsg = GetWarningEmailMessage(warning);
+                        AppLogger.Log($"[WARNING-EMAIL] Sending warning email — Status=3 (warning), Msg={warningMsg}");
+                        // Pass status=3 (not _printerStatus=1) so the backend condition
+                        // (status != 1 && status != 112 && previousDbStatus != status) triggers the email.
+                        // The monitor loop will restore the DB back to status=1 (Ready) within ~60 seconds.
+                        await UpdatePrinterStatus(_printerId, _shopLoginId, 3, warningMsg);
+                        AppLogger.Log("[WARNING-EMAIL] Warning email sent via UpdatePrinterStatus.");
+                    }
+                    else
+                    {
+                        AppLogger.Log($"[WARNING-EMAIL] Warning '{warning}' not in notify list — no email sent.");
+                    }
+                }
+
+                // Check printer status
+                string status = SeaoryPrinterPrint.CheckPrinterStatus(_printerName);
                     if (status != "Ready")
                     {
                         string parsedMessage = GetMessageFromErrorCodes(status, warning) ?? "";
@@ -835,6 +895,10 @@ namespace kuboPix.Services
 
                 if (!finalSuccess)
                 {
+                    if (_printerBrand == "Epson")
+                    {
+                        EpsonPrinterHelper.PurgePrinterQueue(_printerName);
+                    }
                     AppLogger.Log($"Hardware Print Failed: {finalError}");
                     return (false, finalError);
                 }
@@ -1056,6 +1120,24 @@ namespace kuboPix.Services
             {
                 AppLogger.Log("Printer Status Update Error: " + ex.Message);
             }
+        }
+        // Builds the email body message for warning notifications ONLY.
+        // This is intentionally separate from GetMessageFromErrorCodes so that
+        // warning messages are NEVER shown on the print error screen.
+        // To add a new warning email: add the code to _emailNotifyWarningCodes AND add a case here.
+        private string GetWarningEmailMessage(string warningText)
+        {
+            if (warningText.Contains("0x00020002"))
+                return "Card Low Warning: The printer card supply is getting low. No need to refill right now, but please keep cards ready.";
+            if (warningText.Contains("0x00020005"))
+                return "Card Low Warning: The printer card supply is running low. Please refill the cards soon.";
+            if (warningText.Contains("0x00020006"))
+                return "Card Low Warning: The printer card supply is critically low. Please refill the cards immediately.";
+            if (warningText.Contains("0x00020001"))
+                return "Printer ribbon is low. Please replace the ribbon soon.";
+
+            // Fallback for any future warning codes added to _emailNotifyWarningCodes
+            return $"Printer Warning Detected: {warningText}";
         }
 
         // Map Error Codes To Friendly Messages and Status Code 
@@ -1671,10 +1753,11 @@ namespace kuboPix.Services
                 {
                     if (warningText.Contains("0x00020001"))
                         finalMessage += "\n\nAdditional Info: Ribbon is low.";
-                    else if (warningText.Contains("0x00020004"))
-                        finalMessage += "\n\nAdditional Info: Card tray is almost empty.";
+                   
                     else if (warningText.StartsWith("SDK Error"))
                         finalMessage += $"\n\n{warningText}";
+                    // Card-low codes (0x00020002/5/6) are intentionally NOT shown here.
+                    // They are handled exclusively via GetWarningEmailMessage() → email only.
                 }
                 //AppLogger.Log($"Final Printer Message: {finalMessage}");
                 return finalMessage.Trim();
@@ -1693,22 +1776,22 @@ namespace kuboPix.Services
         {
             string finalMessage = "";
 
-            if (ec == ErrorCode.ERR_CoverOpen)
+            if (ec == ErrorCode.ERR_CoverOpen || (int)ec == 2 || (int)ec == 1)
             {
                 _printerStatus = 14; // Cover open
                 finalMessage = "Cover open. Please close the cover.";
             }
-            else if (ec == ErrorCode.ERR_PaperJam)
+            else if (ec == ErrorCode.ERR_PaperJam || (int)ec == 4)
             {
                 _printerStatus = 2; // Jam
                 finalMessage = "Paper jam error. Please remove jammed paper.";
             }
-            else if (ec == ErrorCode.ERR_Paperout)
+            else if (ec == ErrorCode.ERR_Paperout || (int)ec == 6)
             {
                 _printerStatus = 31; // Paper out
                 finalMessage = "Paper out. No paper detected.";
             }
-            else if (ec == ErrorCode.ERR_Inkout)
+            else if (ec == ErrorCode.ERR_Inkout || (int)ec == 5)
             {
                 _printerStatus = 23; // Ink out
                 finalMessage = "Ink cartridge error. Please replace ink.";
@@ -1732,27 +1815,18 @@ namespace kuboPix.Services
                         finalMessage = "Printer is cleaning.";
                         break;
                     case StatusCode.ST_NotPrint:
-                        _printerStatus = 3; // Other error
-                        finalMessage = "Printer is not in a ready state.";
+                        _printerStatus = 14; // Cover open or not ready
+                        finalMessage = "Cover open or printer not ready. Please check the printer.";
                         break;
                     case StatusCode.ST_Error:
-                        _printerStatus = 3; // Other error
-                        finalMessage = "Other error. Please check printer.";
+                        _printerStatus = 14; // Cover open or error
+                        finalMessage = "Cover open or printer error. Please check the printer.";
                         break;
                     default:
                         _printerStatus = 3; // Unknown/Other
                         finalMessage = "Printer is not in a ready state.";
                         break;
                 }
-            }
-
-            if (wc.InkLowWarning)
-            {
-                finalMessage += "\n\nAdditional Info: Ink is low.";
-            }
-            if (wc.OtherWarning)
-            {
-                finalMessage += "\n\nAdditional Info: Other warning.";
             }
 
             return finalMessage.Trim();
@@ -1835,19 +1909,41 @@ namespace kuboPix.Services
                         if (sc == StatusCode.ST_Error || sc == StatusCode.ST_NotPrint)
                         {
                             ErrorCode ec = ErrorCode.ERR_FatalError;
-                            try
+                            WARNING_INFO wc = new WARNING_INFO();
+
+                            // Retry up to 3 times — when cover is open the SDK may need
+                            // a moment before it can be queried for the full error details.
+                            for (int attempt = 0; attempt < 3; attempt++)
+                            {
+                                try
                             {
                                 ensControl.Initialize(printerName, "");
-                                ec = ensControl.GetErrorInformation();
+                                    ensControl.GetPrinterFullStatus(out _, out ec, out wc);
+                                    break; // success — stop retrying
 
-                            }
+                                }
                             catch { }
                             finally
                             {
                                 try { ensControl.Release(); } catch { }
                             }
+                                await Task.Delay(500); // brief pause before retry
+                            }
 
-                            string err = GetEpsonMessageFromErrorCodes(sc, ec, new WARNING_INFO());
+                            string err = GetEpsonMessageFromErrorCodes(sc, ec, wc);
+
+                            // If ec is still the default ERR_FatalError (0x00) after all retries,
+                            // the SDK couldn't tell us the specific error. Try reading PrintStopCoverOpen
+                            // directly by calling GetPrinterFullStatus one more time to avoid showing
+                            // the misleading "Other error." to the customer.
+                            if (ec == ErrorCode.ERR_FatalError && string.IsNullOrEmpty(err))
+                            {
+                                err = "Printer error. Please check the printer and try again.";
+                            }
+
+                            AppLogger.Log($"[EPSON-MONITOR] Print error detected. Status={sc}, ErrorCode={ec}, Message={err}");
+
+                         
                             return (false, err);
                         }
                     }
@@ -1990,6 +2086,42 @@ namespace kuboPix.Services
         // Process Single Order
         public async Task<bool> ProcessSingleOrderAsync(PendingOrder order, bool isRetry = false)
         {
+            // Fix C — Atomic claim at entry, identical to ProcessPendingOrders.
+            // Without this the queue loop and the retry path can both call PrintOrderAsync
+            // for the same order simultaneously (one prints via the loop, the other via
+            // the retry button) — producing a physical duplicate card print.
+            //
+            // Fix D (retry race) — When this is a manual retry the queue loop may have
+            // re-added this order to _processedOrderIds (because the backend still returns
+            // it as pending until the status-update round-trip completes). That stale
+            // in-memory claim would make the guard below skip the retry silently.
+            // We clear the transient claim BEFORE the guard when isRetry=true so the
+            // retry can re-enter. The permanent ledger check is unaffected — if the
+            // order was actually printed it still blocks correctly.
+            if (isRetry)
+            {
+                lock (_processedLock)
+                {
+                    _processedOrderIds.Remove(order.OrderId);
+                }
+                AppLogger.Log($"ProcessSingleOrderAsync: Retry — cleared stale claim for Order {order.OrderId}.");
+            }
+
+            bool alreadyHandled;
+            lock (_processedLock)
+            {
+                alreadyHandled = _processedOrderIds.Contains(order.OrderId)
+                                 || ProcessedOrderLedger.IsPrinted(order.OrderId);
+                if (!alreadyHandled)
+                    _processedOrderIds.Add(order.OrderId); // claim
+            }
+
+            if (alreadyHandled)
+            {
+                AppLogger.Log($"ProcessSingleOrderAsync: Order {order.OrderId} already claimed or printed — skipping.");
+                return false;
+            }
+
             try
             {
                 //AppLogger.Log(isRetry
@@ -1999,7 +2131,8 @@ namespace kuboPix.Services
                 PrintProgressView? printProgressView = null;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    printProgressView = new PrintProgressView();
+                    int countdownSeconds = _printerBrand == "Epson" ? 20 : 30;
+                    printProgressView = new PrintProgressView(countdownSeconds);
                     NavigationService.Navigate(printProgressView);
                 });
 
@@ -2009,17 +2142,18 @@ namespace kuboPix.Services
                 {
                     // Record the successful hardware print before any status update (T-5.1),
                     // so a restart can never reprint this order.
+                    // Keep the order in _processedOrderIds — permanent claim for a successful print.
                     ProcessedOrderLedger.MarkPrinted(order.OrderId);
 
                     if (printProgressView != null)
                     {
                         try
                         {
-                            await printProgressView.WaitForCompletionAsync();
+                            printProgressView.StopTimer();
                         }
                         catch (Exception ex)
                         {
-                            AppLogger.Log($"PrintProgress wait failed: {ex}");
+                            AppLogger.Log($"PrintProgress StopTimer failed: {ex}");
                         }
                     }
 
@@ -2050,6 +2184,15 @@ namespace kuboPix.Services
                 }
                 else
                 {
+                    // Fix C — Release the claim so the operator can press "retry" again.
+                    // The order was NOT successfully printed, so ProcessedOrderLedger is
+                    // NOT written — a subsequent retry will re-enter this method, re-claim
+                    // the order, and attempt the print again safely.
+                    lock (_processedLock)
+                    {
+                        _processedOrderIds.Remove(order.OrderId);
+                    }
+
                     await HandlePrintFailure(order, message);
                     return false; // print Fail
                 }
@@ -2057,7 +2200,14 @@ namespace kuboPix.Services
             catch (Exception ex)
             {
                 AppLogger.Log($"ProcessSingleOrderAsync Exception: {ex}");
-                return false; // Exception occured 
+
+                // Release claim on unexpected exception so a retry attempt is still possible.
+                lock (_processedLock)
+                {
+                    _processedOrderIds.Remove(order.OrderId);
+                }
+
+                return false; // Exception occurred
             }
         }
 
