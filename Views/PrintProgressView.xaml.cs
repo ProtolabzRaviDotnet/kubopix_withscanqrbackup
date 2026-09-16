@@ -33,9 +33,12 @@ namespace kuboPix.Views
             new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         // Constructor
-        public PrintProgressView()
+        // Constructor
+        public PrintProgressView(int initialSeconds = 30)
         {
+            seconds = initialSeconds;
             InitializeComponent();
+            TimerText.Text = "00:" + seconds.ToString("D2");
         }
 
         // Page Loaded event handler
