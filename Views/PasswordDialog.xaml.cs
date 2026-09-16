@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace kuboPix.Views
 {
@@ -28,6 +29,8 @@ namespace kuboPix.Views
         // PROPERTIES
         public string? SelectedAction { get; private set; }
         public string? Password { get; private set; }
+
+        private DispatcherTimer? _inactivityTimer;
 
         // CONSTRUCTOR
         public PasswordDialog()
@@ -65,7 +68,64 @@ namespace kuboPix.Views
             }
         }
 
-     
+        // ------------------ INACTIVITY TIMER SETUP ------------------
+        private void SetupInactivityTimer()
+        {
+            _inactivityTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(30)
+            };
+            _inactivityTimer.Tick += InactivityTimer_Tick;
+            _inactivityTimer.Start();
+
+            this.PreviewMouseMove += ResetInactivityTimer;
+            this.PreviewMouseDown += ResetInactivityTimer;
+            this.PreviewKeyDown += ResetInactivityTimer;
+            this.TouchDown += ResetInactivityTimer;
+            this.Closed += PasswordDialog_Closed;
+        }
+
+        private void ResetInactivityTimer(object? sender, EventArgs e)
+        {
+            if (_inactivityTimer != null)
+            {
+                _inactivityTimer.Stop();
+                _inactivityTimer.Start();
+            }
+        }
+
+        private void InactivityTimer_Tick(object? sender, EventArgs e)
+        {
+            StopInactivityTimer();
+            try
+            {
+                DialogResult = false;
+            }
+            catch { }
+            Close();
+        }
+
+        private void PasswordDialog_Closed(object? sender, EventArgs e)
+        {
+            StopInactivityTimer();
+        }
+
+        private void StopInactivityTimer()
+        {
+            if (_inactivityTimer != null)
+            {
+                _inactivityTimer.Stop();
+                _inactivityTimer.Tick -= InactivityTimer_Tick;
+                _inactivityTimer = null;
+            }
+
+            this.PreviewMouseMove -= ResetInactivityTimer;
+            this.PreviewMouseDown -= ResetInactivityTimer;
+            this.PreviewKeyDown -= ResetInactivityTimer;
+            this.TouchDown -= ResetInactivityTimer;
+            this.Closed -= PasswordDialog_Closed;
+        }
+
         // Load Ribbon Count
         private void LoadRibbonCount(string printer)
         {
