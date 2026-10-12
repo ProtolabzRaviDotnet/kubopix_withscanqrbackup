@@ -51,6 +51,9 @@ namespace kuboPix.Services
         private int _printerStatus = 0;
         private string _printerMessage = "";
 
+        public int CurrentPrinterStatus => _printerStatus;
+        public string CurrentPrinterMessage => _printerMessage;
+
         private string _qrCodeData;
         private decimal _printerPrice;
         private DateTime _qrExpiry;
@@ -260,7 +263,7 @@ namespace kuboPix.Services
                             }
                             catch (Exception ex)
                             {
-                                AppLogger.Log("Epson Monitor Status query exception: " + ex.Message);
+                                AppLogger.Log($"[EPSON-MONITOR] Status query exception for '{_printerName}': {ex.Message}");
                             }
                             finally
                             {
@@ -763,13 +766,26 @@ namespace kuboPix.Services
                     return (false, "Image URL missing");
                 }
 
-                // STEP 1 — Load image
-                var img = await LoadImageFromUrlAsync(order.Image);
+                // STEP 1 — Load image (supports local file for Kiosk capture, or remote URL for QR phone upload)
+                Image? img = null;
+                if (File.Exists(order.Image))
+                {
+                    AppLogger.Log($"[PRINT] Loading image directly from local file: {order.Image}");
+                    using (var fs = new FileStream(order.Image, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var tempImg = Image.FromStream(fs))
+                    {
+                        img = new Bitmap(tempImg);
+                    }
+                }
+                else
+                {
+                    img = await LoadImageFromUrlAsync(order.Image);
+                }
 
                 if (img == null)
                 {
-                    AppLogger.Log("[PRINT] Failed to load image (deleted / expired)");
-                    return (false, "Print failed: the image has expired and was automatically removed after 30 minutes. Please re-scan the QR code and try again.");
+                    AppLogger.Log("[PRINT] Failed to load image (deleted / expired / not found)");
+                    return (false, "Print failed: photo could not be loaded. Please try again.");
                 }
 
                 // STEP 2 — Ensure disposal AFTER null check
@@ -798,7 +814,7 @@ namespace kuboPix.Services
                         string parsedMessage = GetEpsonMessageFromErrorCodes(sc, ec, wc);
                         if (sc != StatusCode.ST_Idle)
                         {
-                            AppLogger.Log($"Epson Printer not ready. Status: {sc}, Error: {ec}");
+                            AppLogger.Log($"Epson Printer not ready. Status: {sc}, Error: {ec} — {parsedMessage}");
                             return (false, parsedMessage);
                         }
                     }
@@ -808,7 +824,7 @@ namespace kuboPix.Services
                     }
                     catch (Exception ex)
                     {
-                        AppLogger.Log($"Epson printer status check failed: {ex.Message}");
+                        AppLogger.Log($"Epson printer '{_printerName}' status check failed: {ex.Message}");
                         return (false, $"Unable to read printer status: {ex.Message}");
                     }
                     finally
@@ -850,12 +866,12 @@ namespace kuboPix.Services
                     if (_emailNotifyWarningCodes.Any(code => warning.Contains(code)))
                     {
                         string warningMsg = GetWarningEmailMessage(warning);
-                        AppLogger.Log($"[WARNING-EMAIL] Sending warning email — Status=3 (warning), Msg={warningMsg}");
+                       
                         // Pass status=3 (not _printerStatus=1) so the backend condition
                         // (status != 1 && status != 112 && previousDbStatus != status) triggers the email.
                         // The monitor loop will restore the DB back to status=1 (Ready) within ~60 seconds.
                         await UpdatePrinterStatus(_printerId, _shopLoginId, 3, warningMsg);
-                        AppLogger.Log("[WARNING-EMAIL] Warning email sent via UpdatePrinterStatus.");
+                       
                     }
                     else
                     {
@@ -1018,6 +1034,12 @@ namespace kuboPix.Services
         // Update Order Status via API
         private async Task UpdateOrderStatus(Int64 orderId, int status, string paymentIntentId, string message = "", Int64? orderPaymentTypeId = null)
         {
+            if (string.IsNullOrWhiteSpace(paymentIntentId))
+            {
+                await UpdateOrderStatusFree(orderId, status, message, orderPaymentTypeId);
+                return;
+            }
+
             var url = $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={orderId}&status={status}&paymentIntentId={paymentIntentId}&message={message}&orderPaymentTypeId={orderPaymentTypeId}";
             try
             {
@@ -1083,7 +1105,7 @@ namespace kuboPix.Services
 
                 try
                 {
-                    string url = u.IsFree
+                    string url = (u.IsFree || string.IsNullOrWhiteSpace(u.PaymentIntentId))
                         ? $"{AppConfig.ApiBaseUrl}api/update/orderstatus/free?orderId={u.OrderId}&status={u.Status}&message={u.Message}&orderPaymentTypeId={u.OrderPaymentTypeId}"
                         : $"{AppConfig.ApiBaseUrl}api/update/orderstatus?orderId={u.OrderId}&status={u.Status}&paymentIntentId={u.PaymentIntentId}&message={u.Message}&orderPaymentTypeId={u.OrderPaymentTypeId}";
 
@@ -1103,7 +1125,7 @@ namespace kuboPix.Services
         }
 
         // Update Printer Status via API
-        private async Task UpdatePrinterStatus(long printerId, long shopLoginId, int statusCode, string message)
+        public async Task UpdatePrinterStatus(long printerId, long shopLoginId, int statusCode, string message)
         {
             try
             {
@@ -1880,7 +1902,7 @@ namespace kuboPix.Services
                         }
                         catch (Exception ex)
                         {
-                            AppLogger.Log($"[EPSON-MONITOR] Status query exception: {ex.Message}");
+                            AppLogger.Log($"[EPSON-MONITOR] Status query exception for '{printerName}': {ex.Message}");
                             continue;
                         }
                         finally

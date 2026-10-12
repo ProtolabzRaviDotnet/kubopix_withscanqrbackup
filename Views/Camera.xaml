@@ -93,10 +93,11 @@
                                    Margin="0,8,0,0"/>
                     </StackPanel>
 
-                    <!-- Step 3: Print (Inactive) -->
+                    <!-- Step 3: Print / Pay & Print (Inactive) -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                         <Ellipse Stroke="#FFE5E7EB" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
-                        <TextBlock Text="Print" 
+                        <TextBlock x:Name="Step3Text"
+                                   Text="Print" 
                                    FontFamily="Poppins" 
                                    FontSize="15" 
                                    Foreground="#FFA0A0AA" 
@@ -106,16 +107,16 @@
                 </Grid>
             </Grid>
 
-            <!-- Camera Viewport Container (880px Width, matching progress bar & buttons) -->
+            <!-- Camera Viewport Container — Portrait card 1:1.585 ratio (550×872px) -->
             <Border Grid.Row="1"
-                    Width="880" 
-                    MaxHeight="920"
+                    Width="550" 
+                    Height="872"
                     Background="#FFF9FAFB" 
                     BorderBrush="#FFE5E7EB" 
                     BorderThickness="1.5" 
                     CornerRadius="24"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Stretch">
+                    VerticalAlignment="Center">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="25" 
                                       ShadowDepth="4" 
@@ -125,10 +126,16 @@
 
                 <Grid ClipToBounds="True">
                     <!-- Image placeholder where live camera feed will bind at runtime -->
+                    <!-- LayoutTransform 180° corrects the upside-down raw frames from VideoStreamCB
+                         without touching any callback or SDK logic. -->
                     <Image x:Name="CameraPreview" 
                            HorizontalAlignment="Stretch" 
                            VerticalAlignment="Stretch" 
-                           Stretch="UniformToFill"/>
+                           Stretch="UniformToFill">
+                        <Image.LayoutTransform>
+                            <RotateTransform Angle="180"/>
+                        </Image.LayoutTransform>
+                    </Image>
 
                     <!-- Captured photo preview shown during processing -->
                     <Image x:Name="CapturedPhotoPreview" 

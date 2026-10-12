@@ -248,7 +248,7 @@ namespace kuboPix.Views
                     }
                     finally
                     {
-                        ensControl.Release();
+                        try { ensControl.Release(); } catch { } // guard Release so it never masks the real error
                     }
                 }
                 else
@@ -283,6 +283,27 @@ namespace kuboPix.Views
         // Handle Printer Recovered
         private async Task HandlePrinterRecovered(kuboPixSession session)
         {
+            bool tokenValid = await LoginView.VerifyToken(session.Token);
+            if (!tokenValid) return;
+
+            var qrDetails = await LoginView.FetchQrDetailsForkuboPix(session.PrinterId);
+            if (qrDetails == null) return;
+
+            // Fetch LIVE printer state
+            var printerState = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
+            if (printerState == null) return;
+
+            // EPSON ONLY: Purge the Windows spooler and clear printer memory before going back.
+            // When cover is opened mid-print, the old print job stays stuck in the spooler/printer.
+            // Purging ensures Epson does not resume the old print when the cover is closed.
+            string brand = session.PrinterBrand ?? LoginView.SelectedPrinterBrand ?? "Seaory";
+            if (brand == "Epson" && !string.IsNullOrEmpty(printerState.PrinterName))
+            {
+                AppLogger.Log("[RECOVERY] Epson: Purging stuck spooler/printer job before returning to ScanQrView.");
+                EpsonPrinterHelper.PurgePrinterQueue(printerState.PrinterName);
+                await Task.Delay(500); // small pause to let spooler clear
+            }
+
             NavigationService?.Navigate(new Capture());
             await Task.CompletedTask;
         }

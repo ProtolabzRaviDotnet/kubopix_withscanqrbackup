@@ -16,5 +16,8 @@ namespace kuboPix.Helpers
 
         public static double PortraitPreviewHeightFactor => 
             double.TryParse(ConfigurationManager.AppSettings["PortraitPreviewHeightFactor"], out double result) ? result : 0.9;
+
+        public static string AppVersion => 
+            ConfigurationManager.AppSettings["AppVersion"] ?? "Kubopix_1.0.0";
     }
 }

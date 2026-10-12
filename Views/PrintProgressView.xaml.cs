@@ -58,7 +58,6 @@ namespace kuboPix.Views
             try
             {
                 LoaderVideo.MediaEnded -= LoaderVideo_MediaEnded;
-                LoaderVideo.MediaFailed -= LoaderVideo_MediaFailed;
                 LoaderVideo.Stop();
                 LoaderVideo.Close();
                 LoaderVideo.Source = null;
@@ -139,11 +138,11 @@ namespace kuboPix.Views
             LoaderVideo.Play();
         }
 
-        // Video media failed event handler
-        private void LoaderVideo_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
-        {
-            AppLogger.Log($"Video playback failed: {e.ErrorException?.Message}");
-        }
+        //// Video media failed event handler
+        //private void LoaderVideo_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
+        //{
+        //    AppLogger.Log($"Video playback failed: {e.ErrorException?.Message}");
+        //}
 
         // Return true if the timer has completed
         public bool IsTimerCompleted()
@@ -154,6 +153,12 @@ namespace kuboPix.Views
         // Stop the timer forcefully
         public void StopTimer()
         {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(StopTimer);
+                return;
+            }
+
             try
             {
                 if (timer != null)
@@ -167,14 +172,13 @@ namespace kuboPix.Views
                 if (LoaderVideo != null)
                     LoaderVideo.Stop();
 
-                AppLogger.Log("PrintProgress timer stopped forcefully due to print error.");
+                AppLogger.Log("PrintProgress timer stopped forcefully.");
             }
             catch (Exception ex)
             {
                 AppLogger.Log("StopTimer Exception: " + ex.Message);
             }
         }
-
         // Wait for the progress timer to complete
         public Task WaitForCompletionAsync()
         {

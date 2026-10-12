@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using kuboPix.Helpers;
+using kuboPix.Services;
 using kuboPix.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,48 +36,118 @@ namespace kuboPix.Views
         private string _capturedPhotoPath = "";
         private string _selectedFrame = "none";
         private string _selectedBackground = "none";
+        private string _selectedLogo = "none";
+        private long _selectedFrameId = 0;
+        private long _selectedLogoId = 0;
         private string? _selectedFrameImageUrl = null;
+        private string? _selectedLogoImageUrl = null;
         private string? _selectedBackgroundImageUrl = null;
         private string? _removedBgPhotoPath = null;
         private string? _bakedPhotoPath = null;
 
+        // Set true when GET /api/get/backgrounds returns enabled:true (KuboPix shops only)
+        private bool _backgroundsEnabled = false;
+
         private List<WatermarkFrame> _availableFrames = new();
-        private List<WatermarkFrame> _availableBackgrounds = new();
+        private List<WatermarkFrame> _availableLogos = new();
+        private List<BackgroundItem> _availableBackgrounds = new();
 
         private static readonly Brush GrayBorder = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFE5E7EB"));
         private static readonly Brush ActiveBorder = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF5C6BFF"));
 
+        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly Dictionary<string, ImageSource> _imageCache = new();
+
         public Edit()
         {
             InitializeComponent();
+            UpdatePaymentProgressText();
         }
 
         public Edit(string imagePath) : this()
         {
             _capturedPhotoPath = imagePath;
 
-            // Load captured image file safely
             if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
             {
-                try
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(imagePath);
-                    bitmap.EndInit();
-                    CapturedPhoto.Source = bitmap;
-                }
-                catch (Exception ex)
-                {
-                    AppLogger.Log("Error loading captured image: " + ex.Message);
-                }
+                SetCapturedPhotoSource(imagePath);
             }
 
             Loaded += async (s, e) =>
             {
-                await LoadWatermarksFromBackendAsync();
+                UpdatePaymentProgressText();
+                await Task.WhenAll(
+                    LoadWatermarksFromBackendAsync(),
+                    LoadBackgroundsFromBackendAsync()
+                );
             };
+        }
+
+        private static string NormalizeUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return url;
+            int schemeIdx = url.IndexOf("://", StringComparison.Ordinal);
+            if (schemeIdx > 0)
+            {
+                string schemeAndHost = url.Substring(0, schemeIdx + 3);
+                string rest = url.Substring(schemeIdx + 3);
+                while (rest.Contains("//"))
+                {
+                    rest = rest.Replace("//", "/");
+                }
+                return schemeAndHost + rest;
+            }
+            return url;
+        }
+
+        private static async Task<ImageSource?> LoadImageAsync(string? url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return null;
+            url = NormalizeUrl(url);
+
+            lock (_imageCache)
+            {
+                if (_imageCache.TryGetValue(url, out var cached))
+                    return cached;
+            }
+
+            try
+            {
+                byte[] data;
+                if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                    url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    data = await _httpClient.GetByteArrayAsync(url);
+                }
+                else
+                {
+                    string localPath = url.StartsWith("file://", StringComparison.OrdinalIgnoreCase)
+                        ? new Uri(url).LocalPath : url;
+                    if (!File.Exists(localPath)) return null;
+                    data = await File.ReadAllBytesAsync(localPath);
+                }
+
+                var bmp = new BitmapImage();
+                using (var ms = new MemoryStream(data))
+                {
+                    bmp.BeginInit();
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+                    bmp.StreamSource = ms;
+                    bmp.EndInit();
+                }
+                bmp.Freeze();
+
+                lock (_imageCache)
+                {
+                    _imageCache[url] = bmp;
+                }
+                return bmp;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"LoadImageAsync failed for [{url}]: {ex.Message}");
+                return null;
+            }
         }
 
         private async Task LoadWatermarksFromBackendAsync()
@@ -85,10 +156,10 @@ namespace kuboPix.Views
             string token = session?.Token ?? "";
 
             _availableFrames.Clear();
-            _availableBackgrounds.Clear();
+            _availableLogos.Clear();
 
-            // Default 'None' item for frames
-            _availableFrames.Add(new WatermarkFrame { Id = 0, FrameName = "none", FrameImage = "", Status = 1, Type = "frame" });
+            // Single clean 'None' option
+            _availableFrames.Add(new WatermarkFrame { Id = 0, FrameName = "None", FrameImage = "", Status = 1, Type = "frame" });
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -98,71 +169,47 @@ namespace kuboPix.Views
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                     string apiUrl = $"{AppConfig.ApiBaseUrl}api/get/watermarks";
-                    AppLogger.Log($"Calling watermarks API: {apiUrl} | Token present: {!string.IsNullOrEmpty(token)}");
 
                     var resp = await client.GetAsync(apiUrl);
-                    AppLogger.Log($"Watermarks API HTTP status: {(int)resp.StatusCode} {resp.StatusCode}");
 
                     if (resp.IsSuccessStatusCode)
                     {
                         string json = await resp.Content.ReadAsStringAsync();
-                        AppLogger.Log("Watermarks API raw response: " + json);
-
                         JObject? result = JsonConvert.DeserializeObject<JObject>(json);
 
-                        if (result != null && (int?)result["status"] == 1 && result["data"] != null)
+                        if (result != null && (int?)result["status"] == 1 && result["data"] is JArray flatList)
                         {
-                            var data = result["data"];
-
-                            // API returns a flat list of logos and frames (no backgrounds)
-                            // Parse as JArray directly
-                            JArray? flatList = data as JArray;
-                            if (flatList != null)
+                            var items = flatList.ToObject<List<WatermarkFrame>>();
+                            if (items != null)
                             {
-                                var items = flatList.ToObject<List<WatermarkFrame>>();
-                                if (items != null)
+                                foreach (var item in items.Where(x => x.Status == 1))
                                 {
-                                    foreach (var item in items.Where(x => x.Status == 1))
+                                    // Skip duplicate 'No Frame' or empty image items from server
+                                    if (item.Id == 80 ||
+                                        item.FrameName.Equals("No Frame", StringComparison.OrdinalIgnoreCase) ||
+                                        string.IsNullOrEmpty(item.FrameImage))
                                     {
-                                        // TypeId 1 = Frame → show in frame panel
-                                        // TypeId 2 = Watermark/Logo → show in logo panel
-                                        if (item.TypeId == WatermarkFrame.TypeWatermark)
-                                        {
-                                            item.Type = "background";
-                                            _availableBackgrounds.Add(item);
-                                        }
-                                        else // TypeId == 1 (Frame) or unknown
-                                        {
-                                            item.Type = "frame";
-                                            _availableFrames.Add(item);
-                                        }
+                                        continue;
+                                    }
+
+                                    // Check if item is Frame (TypeId=2 or path in /Frames/) or Logo
+                                    bool isFrame = item.TypeId == 2 ||
+                                                   item.FrameImage.Contains("/Frames/", StringComparison.OrdinalIgnoreCase) ||
+                                                   item.FrameImage.Contains("Frame", StringComparison.OrdinalIgnoreCase);
+
+                                    if (isFrame)
+                                    {
+                                        item.Type = "frame";
+                                        _availableFrames.Add(item);
+                                    }
+                                    else
+                                    {
+                                        item.Type = "logo";
+                                        _availableLogos.Add(item);
                                     }
                                 }
                             }
-                            else
-                            {
-                                // Fallback: old nested format {frames:[], backgrounds:[]}
-                                if (data?["frames"] != null)
-                                {
-                                    var framesList = data["frames"]!.ToObject<List<WatermarkFrame>>();
-                                    if (framesList != null)
-                                        foreach (var f in framesList.Where(x => x.Status == 1))
-                                            _availableFrames.Add(f);
-                                }
-
-                                if (data?["backgrounds"] != null)
-                                {
-                                    var bgList = data["backgrounds"]!.ToObject<List<WatermarkFrame>>();
-                                    if (bgList != null)
-                                        foreach (var bg in bgList.Where(x => x.Status == 1))
-                                        {
-                                            bg.Type = "background";
-                                            _availableBackgrounds.Add(bg);
-                                        }
-                                }
-                            }
-
-                            AppLogger.Log($"Watermarks loaded — Frames: {_availableFrames.Count - 1}, Backgrounds: {_availableBackgrounds.Count}");
+                           
                         }
                     }
                     else
@@ -176,25 +223,7 @@ namespace kuboPix.Views
                 }
             }
 
-            // Fallback frames if API returned nothing
-            if (_availableFrames.Count == 1)
-            {
-                AppLogger.Log("No remote frames found — using local fallback frames.");
-                _availableFrames.Add(new WatermarkFrame { Id = -1, FrameName = "Ellipse", FrameImage = "Ellipse 5@2x.png", Status = 1, Type = "frame" });
-                _availableFrames.Add(new WatermarkFrame { Id = -2, FrameName = "Bottle", FrameImage = "750mL Bottles (3)@2x.png", Status = 1, Type = "frame" });
-            }
-
-            // Fallback backgrounds if API returned nothing
-            if (_availableBackgrounds.Count == 0)
-            {
-                AppLogger.Log("No remote backgrounds found — using local fallback backgrounds.");
-                _availableBackgrounds.Add(new WatermarkFrame { Id = -1, FrameName = "Winter", FrameImage = "Ellipse 5@2x.png", Status = 1, Type = "background" });
-                _availableBackgrounds.Add(new WatermarkFrame { Id = -2, FrameName = "X-mas", FrameImage = "750mL Bottles (3)@2x.png", Status = 1, Type = "background" });
-                _availableBackgrounds.Add(new WatermarkFrame { Id = -3, FrameName = "Summer", FrameImage = "Ellipse 5@2x.png", Status = 1, Type = "background" });
-            }
-
             RenderFrameButtons();
-            RenderBackgroundButtons();
         }
 
         private void RenderFrameButtons()
@@ -202,13 +231,34 @@ namespace kuboPix.Views
             if (FrameWrapPanel == null) return;
             FrameWrapPanel.Children.Clear();
 
+            // ── Frames ──────────────────────────────────────────────────────────────
             foreach (var frame in _availableFrames)
             {
+                bool isNone = frame.Id == 0 || string.Equals(frame.FrameName, "none", StringComparison.OrdinalIgnoreCase);
+                bool isSelected = isNone
+                    ? (string.IsNullOrEmpty(_selectedFrame) || string.Equals(_selectedFrame, "none", StringComparison.OrdinalIgnoreCase))
+                    : string.Equals(frame.FrameName, _selectedFrame, StringComparison.OrdinalIgnoreCase);
+
                 var card = CreateThumbnailCard(
-                    frame.FrameName,
+                    isNone ? "None" : frame.FrameName,
                     GetFrameImageUri(frame),
-                    frame.FrameName == _selectedFrame,
-                    () => SelectFrameItem(frame)
+                    isSelected,
+                    () => SelectFrameItem(frame),
+                    isFrame: true
+                );
+                FrameWrapPanel.Children.Add(card);
+            }
+
+            // ── Logos (if any returned from watermarks) ──────────────────────────────
+            foreach (var logo in _availableLogos)
+            {
+                bool isSelected = string.Equals(logo.FrameName, _selectedLogo, StringComparison.OrdinalIgnoreCase);
+                var card = CreateThumbnailCard(
+                    logo.FrameName,
+                    GetFrameImageUri(logo),
+                    isSelected,
+                    () => SelectLogoItem(logo),
+                    isFrame: false
                 );
                 FrameWrapPanel.Children.Add(card);
             }
@@ -218,79 +268,171 @@ namespace kuboPix.Views
         {
             if (string.IsNullOrEmpty(frame.FrameImage)) return null;
 
-            if (frame.Id < 0)
+            if (frame.FrameImage.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                frame.FrameImage.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                // Local asset fallback
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", frame.FrameImage);
-                if (!File.Exists(path))
-                {
-                    path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Assets", frame.FrameImage);
-                }
-                return File.Exists(path) ? new Uri(path, UriKind.Absolute) : null;
+                return new Uri(NormalizeUrl(frame.FrameImage), UriKind.Absolute);
             }
 
-            // Remote URL
-            return new Uri($"{AppConfig.ApiBaseUrl}Content/Uploads/WaterMarks/Frames/{frame.FrameImage}", UriKind.Absolute);
+            string subFolder = (frame.TypeId == 1 || frame.Type == "logo") ? "Logos" : "Frames";
+            return new Uri(NormalizeUrl($"{AppConfig.ApiBaseUrl}Content/Uploads/WaterMarks/{subFolder}/{frame.FrameImage}"), UriKind.Absolute);
         }
 
         private void RenderBackgroundButtons()
         {
-            if (BackgroundWrapPanel == null || BackgroundSectionHeader == null) return;
+            if (BackgroundSectionHeader != null)
+                BackgroundSectionHeader.Visibility = Visibility.Visible;
+            if (BackgroundScrollViewer != null)
+                BackgroundScrollViewer.Visibility = Visibility.Visible;
+            if (BackgroundWrapPanel == null) return;
 
             BackgroundWrapPanel.Children.Clear();
 
-            if (_availableBackgrounds.Count == 0)
-            {
-                BackgroundSectionHeader.Visibility = Visibility.Collapsed;
-                BackgroundWrapPanel.Visibility = Visibility.Collapsed;
-                return;
-            }
- 
-            BackgroundSectionHeader.Visibility = Visibility.Visible;
-            BackgroundWrapPanel.Visibility = Visibility.Visible;
+            // "None" — always first (restores original photo)
+            var noneItem = new BackgroundItem { Id = 0, BackgroundName = "None", BackgroundImage = "", Status = 1 };
+            bool noneSelected = string.IsNullOrEmpty(_selectedBackground) || string.Equals(_selectedBackground, "none", StringComparison.OrdinalIgnoreCase);
+            BackgroundWrapPanel.Children.Add(
+                CreateThumbnailCard("None", null, noneSelected, () => SelectBackgroundItem(noneItem), isFrame: false));
 
-            // 'None' background option
-            if (!_availableBackgrounds.Any(x => x.FrameName == "none"))
+            // API backgrounds
+            if (_backgroundsEnabled)
             {
-                _availableBackgrounds.Insert(0, new WatermarkFrame { Id = 0, FrameName = "none", FrameImage = "", Status = 1, Type = "background" });
-            }
-
-            foreach (var bg in _availableBackgrounds)
-            {
-                Uri? uri = string.IsNullOrEmpty(bg.FrameImage)
-                    ? null
-                    : new Uri($"{AppConfig.ApiBaseUrl}Content/Uploads/WaterMarks/Logos/{bg.FrameImage}", UriKind.Absolute);
-
-                var card = CreateThumbnailCard(
-                    bg.FrameName,
-                    uri,
-                    bg.FrameName == _selectedBackground,
-                    () => SelectBackgroundItem(bg)
-                );
-                BackgroundWrapPanel.Children.Add(card);
+                foreach (var bg in _availableBackgrounds.Where(x => x.Id != 0))
+                {
+                    Uri? uri = GetBackgroundImageUri(bg);
+                    bool isSelected = string.Equals(bg.BackgroundName, _selectedBackground, StringComparison.OrdinalIgnoreCase);
+                    var card = CreateThumbnailCard(
+                        bg.BackgroundName,
+                        uri,
+                        isSelected,
+                        () => SelectBackgroundItem(bg),
+                        isFrame: false
+                    );
+                    BackgroundWrapPanel.Children.Add(card);
+                }
             }
         }
 
-        private FrameworkElement CreateThumbnailCard(string title, Uri? imageUri, bool isSelected, Action onClick)
+        private Uri? GetBackgroundImageUri(BackgroundItem bg)
+        {
+            if (string.IsNullOrEmpty(bg.BackgroundImage)) return null;
+
+            if (bg.BackgroundImage.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                bg.BackgroundImage.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                return new Uri(NormalizeUrl(bg.BackgroundImage), UriKind.Absolute);
+            }
+
+            return new Uri(NormalizeUrl($"{AppConfig.ApiBaseUrl}Content/Uploads/Backgrounds/{bg.BackgroundImage}"), UriKind.Absolute);
+        }
+
+        private async void SelectLogoItem(WatermarkFrame logo)
+        {
+            bool isNone = logo.Id == 0 || string.Equals(logo.FrameName, "none", StringComparison.OrdinalIgnoreCase);
+            _selectedLogo = isNone ? "none" : logo.FrameName;
+            _selectedLogoId = isNone ? 0 : logo.Id;
+
+            if (isNone)
+            {
+                _selectedLogoImageUrl = null;
+                if (LogoOverlay != null)
+                {
+                    LogoOverlay.Source = null;
+                    LogoOverlay.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                var uri = GetFrameImageUri(logo);
+                if (uri != null)
+                {
+                    _selectedLogoImageUrl = uri.ToString();
+                    var src = await LoadImageAsync(_selectedLogoImageUrl);
+                    if (LogoOverlay != null && _selectedLogo == logo.FrameName)
+                    {
+                        LogoOverlay.Source = src;
+                        LogoOverlay.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+
+            RenderFrameButtons();
+        }
+
+        private async Task LoadBackgroundsFromBackendAsync()
+        {
+            var session = kuboPixSessionManager.Load();
+            string token = session?.Token ?? "";
+
+            _backgroundsEnabled = false;
+            _availableBackgrounds.Clear();
+
+            if (string.IsNullOrEmpty(token)) { RenderBackgroundButtons(); return; }
+
+            try
+            {
+                using var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                string apiUrl = $"{AppConfig.ApiBaseUrl}api/get/backgrounds";
+           
+                var resp = await client.GetAsync(apiUrl);
+              
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    string json = await resp.Content.ReadAsStringAsync();
+                    var apiResp = JsonConvert.DeserializeObject<BackgroundApiResponse>(json);
+
+                    if (apiResp != null && apiResp.Status == 1)
+                    {
+                        _backgroundsEnabled = apiResp.Enabled;
+                        if (apiResp.Enabled && apiResp.Data != null)
+                        {
+                            _availableBackgrounds = apiResp.Data;
+                           
+                        }
+                    }
+                }
+                else
+                {
+                    AppLogger.Log($"Backgrounds API failed — HTTP {(int)resp.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("LoadBackgroundsFromBackendAsync error: " + ex.Message);
+            }
+
+            RenderBackgroundButtons();
+        }
+
+        private FrameworkElement CreateThumbnailCard(string title, Uri? imageUri, bool isSelected, Action onClick, bool isFrame = false)
         {
             var stack = new StackPanel
             {
-                Margin = new Thickness(0, 0, 18, 10),
+                Margin = new Thickness(0, 0, 16, 6),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
 
             var border = new Border
             {
                 BorderBrush = isSelected ? ActiveBorder : GrayBorder,
-                BorderThickness = new Thickness(isSelected ? 2.0 : 1.5),
-                CornerRadius = new CornerRadius(10),
-                Width = 94,
-                Height = 94,
-                Background = System.Windows.Media.Brushes.White,
-                Cursor = Cursors.Hand
+                BorderThickness = new Thickness(isSelected ? 3.0 : 1.5),
+                CornerRadius = new CornerRadius(14),
+                Width = 100,
+                Height = 100,
+                Background = isFrame
+                    ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF3F4F6"))
+                    : System.Windows.Media.Brushes.White,
+                Cursor = Cursors.Hand,
+                ClipToBounds = true
             };
 
-            border.MouseLeftButtonDown += (s, e) => onClick();
+            border.MouseLeftButtonUp += (s, e) =>
+            {
+                if (!_isMouseDragging) onClick();
+            };
 
             if (imageUri == null)
             {
@@ -299,15 +441,15 @@ namespace kuboPix.Views
                 var ellipse = new System.Windows.Shapes.Ellipse
                 {
                     Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFA0A0AA")),
-                    StrokeThickness = 1.5,
-                    Width = 38,
-                    Height = 38
+                    StrokeThickness = 2.0,
+                    Width = 42,
+                    Height = 42
                 };
                 var path = new System.Windows.Shapes.Path
                 {
-                    Data = Geometry.Parse("M 14,34 L 34,14"),
+                    Data = Geometry.Parse("M 15,37 L 37,15"),
                     Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFA0A0AA")),
-                    StrokeThickness = 1.5
+                    StrokeThickness = 2.0
                 };
                 grid.Children.Add(ellipse);
                 grid.Children.Add(path);
@@ -315,46 +457,36 @@ namespace kuboPix.Views
             }
             else
             {
-                var isRemoteUrl = imageUri.Scheme == Uri.UriSchemeHttp || imageUri.Scheme == Uri.UriSchemeHttps;
-
-                var bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.UriSource = imageUri;
-                if (!isRemoteUrl)
-                {
-                    // Local file: load immediately (safe to block)
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                }
-                else
-                {
-                    // Remote URL: load asynchronously — OnLoad throws for HTTP URIs in WPF
-                    bmp.CreateOptions = BitmapCreateOptions.None;
-                }
-                bmp.EndInit();
-
-                // Log failures for remote images without crashing the card loop
-                if (isRemoteUrl)
-                {
-                    bmp.DownloadFailed += (s, e) =>
-                        AppLogger.Log($"Frame thumbnail download failed [{imageUri}]: {e.ErrorException?.Message}");
-                }
-
                 var img = new Image
                 {
-                    Source = bmp,
-                    Stretch = Stretch.Uniform,
-                    Margin = new Thickness(10)
+                    Stretch = isFrame ? Stretch.Uniform : Stretch.UniformToFill,
+                    Margin = isFrame ? new Thickness(6) : new Thickness(0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
                 };
                 border.Child = img;
+
+                string urlStr = imageUri.ToString();
+                _ = Dispatcher.InvokeAsync(async () =>
+                {
+                    var src = await LoadImageAsync(urlStr);
+                    if (src != null) img.Source = src;
+                });
             }
 
             var text = new TextBlock
             {
                 Text = title,
                 FontFamily = new System.Windows.Media.FontFamily("Poppins"),
-                FontSize = 12,
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFA0A0AA")),
+                FontSize = 16,
+                FontWeight = isSelected ? FontWeights.Bold : FontWeights.SemiBold,
+                Foreground = isSelected ? ActiveBorder : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF1F2937")),
                 HorizontalAlignment = HorizontalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                Width = 115,
+                TextWrapping = TextWrapping.Wrap,
+                MaxHeight = 44,
+                TextTrimming = TextTrimming.CharacterEllipsis,
                 Margin = new Thickness(0, 6, 0, 0)
             };
 
@@ -363,14 +495,20 @@ namespace kuboPix.Views
             return stack;
         }
 
-        private void SelectFrameItem(WatermarkFrame frame)
+        private async void SelectFrameItem(WatermarkFrame frame)
         {
-            _selectedFrame = frame.FrameName;
+            bool isNone = frame.Id == 0 || string.Equals(frame.FrameName, "none", StringComparison.OrdinalIgnoreCase);
+            _selectedFrame = isNone ? "none" : frame.FrameName;
+            _selectedFrameId = isNone ? 0 : frame.Id;
 
-            if (frame.FrameName == "none")
+            if (isNone)
             {
                 _selectedFrameImageUrl = null;
-                FrameOverlay.Visibility = Visibility.Collapsed;
+                if (FrameOverlay != null)
+                {
+                    FrameOverlay.Source = null;
+                    FrameOverlay.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
@@ -378,55 +516,108 @@ namespace kuboPix.Views
                 if (uri != null)
                 {
                     _selectedFrameImageUrl = uri.ToString();
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = uri;
-                    bitmap.EndInit();
-
-                    FrameOverlay.Source = bitmap;
-                    FrameOverlay.Visibility = Visibility.Visible;
+                    var src = await LoadImageAsync(_selectedFrameImageUrl);
+                    if (FrameOverlay != null && _selectedFrame == frame.FrameName)
+                    {
+                        FrameOverlay.Source = src;
+                        FrameOverlay.Visibility = Visibility.Visible;
+                    }
                 }
             }
 
             RenderFrameButtons();
         }
 
-        private async void SelectBackgroundItem(WatermarkFrame background)
+        private void SetCapturedPhotoSource(string photoPath)
         {
-            _selectedBackground = background.FrameName;
+            try
+            {
+                if (!File.Exists(photoPath)) return;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(photoPath);
+                bitmap.EndInit();
+                if (CapturedPhoto != null)
+                {
+                    CapturedPhoto.Source = bitmap;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("Error loading photo source: " + ex.Message);
+            }
+        }
 
-            if (background.FrameName == "none")
+        private async void SelectBackgroundItem(BackgroundItem background)
+        {
+            bool isNone = background.Id == 0 || string.Equals(background.BackgroundName, "none", StringComparison.OrdinalIgnoreCase);
+            _selectedBackground = isNone ? "none" : background.BackgroundName;
+
+            if (isNone)
             {
                 _selectedBackgroundImageUrl = null;
-                PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF9FAFB"));
-                if (CapturedPhoto != null) CapturedPhoto.Opacity = 1.0;
+                if (BackgroundImage != null)
+                {
+                    BackgroundImage.Source = null;
+                    BackgroundImage.Visibility = Visibility.Collapsed;
+                }
+                if (PhotoBorder != null)
+                {
+                    PhotoBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF9FAFB"));
+                }
+                if (CapturedPhoto != null)
+                {
+                    CapturedPhoto.Opacity = 1.0;
+                    SetCapturedPhotoSource(_capturedPhotoPath);
+                }
             }
             else
             {
-                _selectedBackgroundImageUrl = $"{AppConfig.ApiBaseUrl}Content/Uploads/WaterMarks/Logos/{background.FrameImage}";
+                var uri = GetBackgroundImageUri(background);
+                _selectedBackgroundImageUrl = uri?.ToString();
 
-                // Call ClearBackdrop API once if not already removed
-                if (_removedBgPhotoPath == null)
+                // Show background image behind photo cutout
+                if (BackgroundImage != null && !string.IsNullOrEmpty(_selectedBackgroundImageUrl))
                 {
-                    _removedBgPhotoPath = await RemoveBackgroundOnceAsync(_capturedPhotoPath);
+                    var bgSource = await LoadImageAsync(_selectedBackgroundImageUrl);
+                    if (_selectedBackground == background.BackgroundName)
+                    {
+                        BackgroundImage.Source = bgSource;
+                        BackgroundImage.Visibility = Visibility.Visible;
+                    }
                 }
 
-                if (!string.IsNullOrEmpty(_removedBgPhotoPath) && File.Exists(_removedBgPhotoPath))
+                // Show loading indicator while background removal completes
+                if (BgLoadingOverlay != null && _removedBgPhotoPath == null)
                 {
-                    try
+                    BgLoadingOverlay.Visibility = Visibility.Visible;
+                }
+                Cursor = Cursors.Wait;
+
+                try
+                {
+                    if (_removedBgPhotoPath == null)
                     {
-                        BitmapImage bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmap.UriSource = new Uri(_removedBgPhotoPath);
-                        bitmap.EndInit();
-                        CapturedPhoto.Source = bitmap;
+                        _removedBgPhotoPath = await RemoveBackgroundOnceAsync(_capturedPhotoPath);
                     }
-                    catch (Exception ex)
+
+                    if (!string.IsNullOrEmpty(_removedBgPhotoPath) && File.Exists(_removedBgPhotoPath) && _removedBgPhotoPath != _capturedPhotoPath)
                     {
-                        AppLogger.Log("Error updating photo with transparent background: " + ex.Message);
+                        SetCapturedPhotoSource(_removedBgPhotoPath);
                     }
+                    if (PhotoBorder != null)
+                    {
+                        PhotoBorder.Background = System.Windows.Media.Brushes.Transparent;
+                    }
+                }
+                finally
+                {
+                    if (BgLoadingOverlay != null)
+                    {
+                        BgLoadingOverlay.Visibility = Visibility.Collapsed;
+                    }
+                    Cursor = Cursors.Arrow;
                 }
             }
 
@@ -437,94 +628,131 @@ namespace kuboPix.Views
         {
             try
             {
-                string apiKey = ConfigurationManager.AppSettings["ClearBackdropApiKey"] ?? "";
-                if (string.IsNullOrEmpty(apiKey))
+                if (!File.Exists(photoPath))
                 {
-                    AppLogger.Log("ClearBackdropApiKey not set; skipping background removal.");
+                    AppLogger.Log($"Photo not found for background removal: {photoPath}");
                     return photoPath;
                 }
 
-                using var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-                using var form = new MultipartFormDataContent();
-                byte[] bytes = await File.ReadAllBytesAsync(photoPath);
-                form.Add(new ByteArrayContent(bytes), "image_file", Path.GetFileName(photoPath));
-
-                var response = await client.PostAsync("https://api.clearbackdrop.com/remove", form);
-                if (!response.IsSuccessStatusCode)
+                if (LocalBackgroundRemovalService.Instance.IsModelAvailable)
                 {
-                    AppLogger.Log($"ClearBackdrop API non-success status: {response.StatusCode}");
-                    return photoPath;
+                  
+                    string? localResult = await LocalBackgroundRemovalService.Instance.RemoveBackgroundAsync(photoPath);
+                    if (!string.IsNullOrEmpty(localResult) && File.Exists(localResult))
+                    {
+                        AppLogger.Log($"Local background removal successful: {localResult}");
+                        return localResult;
+                    }
+                    AppLogger.Log("Local background removal returned null.");
+                }
+                else
+                {
+                    AppLogger.Log("Local ONNX model file not found in Models directory.");
                 }
 
-                byte[] pngBytes = await response.Content.ReadAsByteArrayAsync();
-                string tempPath = Path.Combine(Path.GetTempPath(), $"removed_bg_{Guid.NewGuid()}.png");
-                await File.WriteAllBytesAsync(tempPath, pngBytes);
-                return tempPath;
+                return photoPath;
             }
             catch (Exception ex)
             {
-                AppLogger.Log("ClearBackdrop exception: " + ex.Message);
+                AppLogger.Log("Background removal exception: " + ex.Message);
                 return photoPath;
             }
         }
 
-        private string BakeFrameOntoPhoto(string photoPath, string? frameImageUrl)
+        private string BakeFrameOntoPhoto(string photoPath, string? frameImageUrl, string? logoImageUrl = null, string? backgroundImageUrl = null)
         {
             try
             {
                 if (!File.Exists(photoPath)) return photoPath;
 
                 using var baseImage = System.Drawing.Image.FromFile(photoPath);
-                int width = baseImage.Width;
-                int height = baseImage.Height;
 
-                using var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                // Target portrait aspect ratio matching kiosk viewport (550x872 = ~1:1.585)
+                double targetAspect = 550.0 / 872.0;
+
+                int outWidth, outHeight;
+                Rectangle srcRect;
+
+                double srcAspect = (double)baseImage.Width / baseImage.Height;
+
+                if (srcAspect > targetAspect)
+                {
+                    // Source image is wider than target portrait (e.g. landscape camera photo 2592x1944):
+                    // Match WPF Stretch="UniformToFill": fit full height, crop center horizontally
+                    int cropWidth = (int)Math.Round(baseImage.Height * targetAspect);
+                    int cropX = (baseImage.Width - cropWidth) / 2;
+                    srcRect = new Rectangle(cropX, 0, cropWidth, baseImage.Height);
+                    outWidth = cropWidth;
+                    outHeight = baseImage.Height;
+                }
+                else
+                {
+                    // Source image is taller than target portrait:
+                    // Match WPF Stretch="UniformToFill": fit full width, crop center vertically
+                    int cropHeight = (int)Math.Round(baseImage.Width / targetAspect);
+                    int cropY = (baseImage.Height - cropHeight) / 2;
+                    srcRect = new Rectangle(0, cropY, baseImage.Width, cropHeight);
+                    outWidth = baseImage.Width;
+                    outHeight = cropHeight;
+                }
+
+                using var bitmap = new Bitmap(outWidth, outHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 using var g = Graphics.FromImage(bitmap);
 
                 g.CompositingQuality = CompositingQuality.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.SmoothingMode = SmoothingMode.HighQuality;
+                g.Clear(System.Drawing.Color.White);
 
-                // Draw photo
-                g.DrawImage(baseImage, 0, 0, width, height);
-
-                // Overlay frame if selected
-                if (!string.IsNullOrEmpty(frameImageUrl))
+                // Helper: load image from URL or file path
+                System.Drawing.Image? LoadOverlay(string? url)
                 {
-                    System.Drawing.Image? frameImg = null;
-                    if (frameImageUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                        frameImageUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                    if (string.IsNullOrEmpty(url)) return null;
+                    try
                     {
-                        using var client = new HttpClient();
-                        var stream = client.GetStreamAsync(frameImageUrl).GetAwaiter().GetResult();
-                        frameImg = System.Drawing.Image.FromStream(stream);
-                    }
-                    else if (frameImageUrl.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
-                    {
-                        string localFile = new Uri(frameImageUrl).LocalPath;
-                        if (File.Exists(localFile))
+                        url = NormalizeUrl(url);
+                        if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                         {
-                            frameImg = System.Drawing.Image.FromFile(localFile);
+                            using var hc = new HttpClient();
+                            var bytes = hc.GetByteArrayAsync(url).GetAwaiter().GetResult();
+                            using var ms = new MemoryStream(bytes);
+                            return new Bitmap(ms);
                         }
+                        string localPath = url.StartsWith("file://", StringComparison.OrdinalIgnoreCase)
+                            ? new Uri(url).LocalPath : url;
+                        return File.Exists(localPath) ? System.Drawing.Image.FromFile(localPath) : null;
                     }
-                    else if (File.Exists(frameImageUrl))
+                    catch (Exception ex)
                     {
-                        frameImg = System.Drawing.Image.FromFile(frameImageUrl);
-                    }
-
-                    if (frameImg != null)
-                    {
-                        using (frameImg)
-                        {
-                            g.DrawImage(frameImg, 0, 0, width, height);
-                        }
+                        AppLogger.Log($"LoadOverlay failed for [{url}]: {ex.Message}");
+                        return null;
                     }
                 }
 
-                string capturesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Captures");
-                if (!Directory.Exists(capturesFolder)) Directory.CreateDirectory(capturesFolder);
+                // 1. Draw background image first (behind photo) if selected
+                if (!string.IsNullOrEmpty(backgroundImageUrl))
+                {
+                    using var bgImg = LoadOverlay(backgroundImageUrl);
+                    if (bgImg != null) g.DrawImage(bgImg, 0, 0, outWidth, outHeight);
+                }
+
+                // 2. Draw base photo cropped to portrait ratio (matching UniformToFill in Edit viewport)
+                g.DrawImage(baseImage, new Rectangle(0, 0, outWidth, outHeight), srcRect, GraphicsUnit.Pixel);
+
+                // 3. Draw frame overlay across the entire portrait canvas
+                using (var frameImg = LoadOverlay(frameImageUrl))
+                {
+                    if (frameImg != null) g.DrawImage(frameImg, 0, 0, outWidth, outHeight);
+                }
+
+                // 4. Draw logo overlay (watermark on top)
+                using (var logoImg = LoadOverlay(logoImageUrl))
+                {
+                    if (logoImg != null) g.DrawImage(logoImg, 0, 0, outWidth, outHeight);
+                }
+
+                string capturesFolder = PrintPreview.GetCapturesFolder();
 
                 string bakedFile = Path.Combine(capturesFolder, $"Capture_Baked_{DateTime.Now:yyyyMMdd_HHmmss}.jpg");
                 bitmap.Save(bakedFile, System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -552,10 +780,105 @@ namespace kuboPix.Views
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            string sourcePhoto = _removedBgPhotoPath ?? _capturedPhotoPath;
-            _bakedPhotoPath = BakeFrameOntoPhoto(sourcePhoto, _selectedFrameImageUrl);
+            bool hasBg = !string.IsNullOrEmpty(_selectedBackground) &&
+                         !string.Equals(_selectedBackground, "none", StringComparison.OrdinalIgnoreCase);
 
-            NavigationService?.Navigate(new PrintPreview(_bakedPhotoPath, _selectedFrame, _selectedBackground));
+            string sourcePhoto = (hasBg && !string.IsNullOrEmpty(_removedBgPhotoPath) && File.Exists(_removedBgPhotoPath))
+                ? _removedBgPhotoPath
+                : _capturedPhotoPath;
+
+            string? bgUrlToBake = hasBg ? _selectedBackgroundImageUrl : null;
+
+            // Bake background + photo + frame + logo overlays onto the photo before navigating
+            _bakedPhotoPath = BakeFrameOntoPhoto(sourcePhoto, _selectedFrameImageUrl, _selectedLogoImageUrl, bgUrlToBake);
+
+            NavigationService?.Navigate(new PrintPreview(_bakedPhotoPath, _selectedFrame, _selectedBackground, _selectedFrameId, _selectedLogoId));
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is ScrollViewer sv)
+            {
+                sv.ScrollToHorizontalOffset(sv.HorizontalOffset - e.Delta);
+                e.Handled = true;
+            }
+        }
+
+        private Point _mouseScrollStart;
+        private double _mouseScrollStartOffset;
+        private bool _isMouseDragging = false;
+        private ScrollViewer? _activeScrollViewer = null;
+
+        private void ScrollViewer_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ScrollViewer sv && e.LeftButton == MouseButtonState.Pressed)
+            {
+                _activeScrollViewer = sv;
+                _mouseScrollStart = e.GetPosition(sv);
+                _mouseScrollStartOffset = sv.HorizontalOffset;
+                _isMouseDragging = false;
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_activeScrollViewer != null && e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point current = e.GetPosition(_activeScrollViewer);
+                double deltaX = current.X - _mouseScrollStart.X;
+                if (Math.Abs(deltaX) > 6)
+                {
+                    _isMouseDragging = true;
+                    _activeScrollViewer.ScrollToHorizontalOffset(_mouseScrollStartOffset - deltaX);
+                }
+            }
+        }
+
+        private void ScrollViewer_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _activeScrollViewer = null;
+            if (_isMouseDragging)
+            {
+                Dispatcher.BeginInvoke(new Action(() => _isMouseDragging = false), System.Windows.Threading.DispatcherPriority.Background);
+            }
+        }
+
+        private async void UpdatePaymentProgressText()
+        {
+            try
+            {
+                var session = kuboPixSessionManager.Load();
+                bool isPaymentEnabled = (session != null && session.PrinterPaymentEnabled == 1) ||
+                                        LoginView.GetCurrentSessionPrinterPaymentEnabled() == 1;
+
+                if (Step3Text != null)
+                {
+                    Step3Text.Text = isPaymentEnabled ? "Pay & Print" : "Print";
+                }
+
+                if (session != null && !string.IsNullOrEmpty(session.Token))
+                {
+                    var livePrinter = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
+                    if (livePrinter != null)
+                    {
+                        session.PrinterPaymentEnabled = livePrinter.PrinterPaymentEnabled;
+                        session.PrinterPrice = livePrinter.PrinterPrice;
+                        session.PrinterStatus = livePrinter.PrinterStatus;
+                        kuboPixSessionManager.Save(session);
+                        LoginView.SetCurrentSessionPrinterPaymentEnabled(livePrinter.PrinterPaymentEnabled);
+
+                        bool livePaymentEnabled = livePrinter.PrinterPaymentEnabled == 1;
+                        if (Step3Text != null)
+                        {
+                            Step3Text.Text = livePaymentEnabled ? "Pay & Print" : "Print";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("Edit UpdatePaymentProgressText error: " + ex.Message);
+            }
         }
     }
 }

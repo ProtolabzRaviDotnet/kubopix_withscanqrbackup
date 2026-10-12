@@ -18,7 +18,7 @@ namespace kuboPix
         // Set to TRUE only when recording a UI demo/walkthrough video.
         // Printer calls are completely skipped; flow goes straight to PrintProgressView.
         // ⚠️  Set back to FALSE before building the production release.
-        public static bool BypassPrinterForDemo { get; } = true;
+        public static bool BypassPrinterForDemo { get; } = false;                                                                                                                                                                                                                    
 
         public App()
         {

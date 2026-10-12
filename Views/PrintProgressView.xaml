@@ -23,15 +23,14 @@
             <MediaElement x:Name="LoaderVideo"
                            LoadedBehavior="Manual"
                            UnloadedBehavior="Stop"
-                           MediaEnded="LoaderVideo_MediaEnded"
-                           MediaFailed="LoaderVideo_MediaFailed"/>
+                           MediaEnded="LoaderVideo_MediaEnded"/>
             <TextBlock x:Name="TimerText" Text="00:30"/>
         </Grid>
 
         <!-- ================= HEADER (Logo + Tagline) ================= -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Top"
-                    Margin="0,95,0,0"
+                    Margin="0,120,0,0"
                     HorizontalAlignment="Center">
             <Image Source="/Assets/logo.png"
                    Width="240"

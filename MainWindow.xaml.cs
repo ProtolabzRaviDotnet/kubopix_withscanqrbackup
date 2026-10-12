@@ -35,7 +35,10 @@ namespace kuboPix
             InitializeComponent();
             NavigationService.Initialize(MainFrame);
 
-             if (AppConfig.PortraitPreview)
+
+            MainFrame.Navigate(new Views.LoginView());
+
+            if (AppConfig.PortraitPreview)
             {
                 this.WindowState = WindowState.Normal;
                 this.WindowStyle = WindowStyle.SingleBorderWindow;
@@ -48,13 +51,7 @@ namespace kuboPix
                 this.Left = (SystemParameters.PrimaryScreenWidth - this.Width) / 2;
                 this.Top = (SystemParameters.PrimaryScreenHeight - this.Height) / 2;
             }
-            // ── BYPASS MODE: skip Login entirely for demo recording ────────────
-            // In production this is always LoginView; set BypassPrinterForDemo=false
-            // in App.xaml.cs before the production build.
-            if (App.BypassPrinterForDemo)
-                MainFrame.Navigate(new Views.Capture());
-            else
-                MainFrame.Navigate(new Views.LoginView());
+
 
         }
 

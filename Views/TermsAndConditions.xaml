@@ -12,192 +12,192 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Row 0: Top Header Bar -->
-            <RowDefinition Height="*"/>    <!-- Row 1: Content Area -->
+            <RowDefinition Height="Auto"/> <!-- Row 0: Header (Logo + Tagline) -->
+            <RowDefinition Height="*"/>    <!-- Row 1: Content Area (Terms Card) -->
+            <RowDefinition Height="Auto"/> <!-- Row 2: Bottom Back Button -->
         </Grid.RowDefinitions>
 
-        <!-- Top Header Bar (Row 0) -->
-        <Grid Grid.Row="0" Margin="0,80,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/> <!-- Back Button Column -->
-                <ColumnDefinition Width="6*"/> <!-- Centered Logo Column -->
-                <ColumnDefinition Width="2*"/> <!-- Spacer Column -->
-            </Grid.ColumnDefinitions>
+        <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
+        <StackPanel Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Margin="0,95,0,0"
+                    HorizontalAlignment="Center">
+            <!-- Logo -->
+            <Image Source="/Assets/logo.png" 
+                   Width="240" 
+                   Stretch="Uniform" 
+                   HorizontalAlignment="Center" 
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <!-- Back Button -->
-            <Button Grid.Column="0"
-                    x:Name="BackButton"
-                    Click="BackButton_Click"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    HorizontalAlignment="Left"
-                    Margin="50,0,0,0"
-                    Cursor="Hand">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <StackPanel Orientation="Horizontal" Background="Transparent" x:Name="ButtonContent">
-                            <Image Source="/Assets/BackIcon.png" 
-                                   Width="42" 
-                                   Height="42" 
-                                   VerticalAlignment="Center"/>
-                            <TextBlock Text="BACK" 
+            <!-- Tagline -->
+            <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
+                       FontFamily="Poppins" 
+                       FontWeight="Bold" 
+                       FontSize="15" 
+                       Foreground="#FF1C244B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+
+        <!-- ===== 2. MIDDLE CONTENT (Terms & Conditions Card) ===== -->
+        <Grid Grid.Row="1" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Stretch"
+              Width="880"
+              Margin="0,45,0,35">
+            <Border Background="#FFF9FAFB" 
+                    BorderBrush="#FFE5E7EB" 
+                    BorderThickness="1.5" 
+                    CornerRadius="24"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ClipToBounds="True">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" 
+                                      ShadowDepth="4" 
+                                      Opacity="0.08" 
+                                      Color="#000000"/>
+                </Border.Effect>
+
+                <Grid Margin="45,35,45,35">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Card Title Header -->
+                        <RowDefinition Height="*"/>    <!-- Scrollable content -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Card Header -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,25">
+                        <TextBlock Text="Terms &amp; Conditions" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="Bold" 
+                                   FontSize="28" 
+                                   Foreground="#FF1C244B" />
+                        <TextBlock Text="Last updated: August 2026" 
+                                   FontFamily="Poppins" 
+                                   FontSize="15" 
+                                   Foreground="#FFA0A0AA" 
+                                   Margin="0,6,0,0"/>
+                        <Border Height="1" Background="#FFE5E7EB" Margin="0,18,0,0"/>
+                    </StackPanel>
+
+                    <!-- Scrollable Terms Text -->
+                    <ScrollViewer Grid.Row="1" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  PanningMode="VerticalOnly">
+                        <StackPanel Margin="0,0,15,0">
+                            
+                            <TextBlock Text="1. Welcome to KuboPix" 
                                        FontFamily="Poppins" 
-                                       FontWeight="Bold" 
-                                       FontSize="16" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="18" 
                                        Foreground="#FF1C244B" 
-                                       VerticalAlignment="Center" 
-                                       Margin="10,0,0,0"/>
-                        </StackPanel>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonContent" Property="Opacity" Value="0.8"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonContent" Property="Opacity" Value="0.6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="By using this instant photo kiosk, you agree to comply with and be bound by the following terms and conditions of use. Please read them carefully before using the service." 
+                                       FontFamily="Poppins" 
+                                       FontSize="15" 
+                                       Foreground="#FF555555" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="24"
+                                       Margin="0,0,0,24"/>
 
-            <!-- KuboPix Logo & Subtitle -->
-            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image Source="/Assets/logo.png" 
-                       Width="180" 
-                       Stretch="Uniform" 
-                       HorizontalAlignment="Center"/>
-                <TextBlock Text="I N S T A N T   P H O T O   K I O S K" 
-                           FontFamily="Poppins" 
-                           FontWeight="Bold" 
-                           FontSize="9" 
-                           Foreground="#FF1C244B" 
-                           HorizontalAlignment="Center" 
-                           Margin="0,5,0,0"/>
-            </StackPanel>
+                            <TextBlock Text="2. Privacy &amp; Data Collection" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="18" 
+                                       Foreground="#FF1C244B" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="We care about your privacy. Photos captured or uploaded via this kiosk are processed instantly for printing. We do not store your photos on our servers after printing is complete, unless explicitly consented to for saving your creations. No personal identification data is collected without your direct input." 
+                                       FontFamily="Poppins" 
+                                       FontSize="15" 
+                                       Foreground="#FF555555" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="24"
+                                       Margin="0,0,0,24"/>
+
+                            <TextBlock Text="3. Use of Photos" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="18" 
+                                       Foreground="#FF1C244B" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="You represent and warrant that you own or have the necessary rights to use and print the photos you submit. You agree not to upload or capture any content that is unlawful, harmful, offensive, or infringes upon the intellectual property rights of others." 
+                                       FontFamily="Poppins" 
+                                       FontSize="15" 
+                                       Foreground="#FF555555" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="24"
+                                       Margin="0,0,0,24"/>
+
+                            <TextBlock Text="4. Printing and Quality Disclaimer" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="18" 
+                                       Foreground="#FF1C244B" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="While we strive for high-quality prints on custom magnets, print quality depends on the resolution and lighting of the source photos. Prints are provided on an 'as-is' basis. In the event of a mechanical printer failure, please contact support for assistance or refunds." 
+                                       FontFamily="Poppins" 
+                                       FontSize="15" 
+                                       Foreground="#FF555555" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="24"
+                                       Margin="0,0,0,24"/>
+
+                            <TextBlock Text="5. Contact Us" 
+                                       FontFamily="Poppins" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="18" 
+                                       Foreground="#FF1C244B" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock Text="If you have any questions about these Terms &amp; Conditions, please reach out to our team at support@kubopix.com or visit our help desk." 
+                                       FontFamily="Poppins" 
+                                       FontSize="15" 
+                                       Foreground="#FF555555" 
+                                       TextWrapping="Wrap" 
+                                       LineHeight="24"
+                                       Margin="0,0,0,16"/>
+                            
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
         </Grid>
 
-        <!-- Main Content Area (Row 1) -->
-        <Grid Grid.Row="1" Margin="45,10,45,40" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel Width="500" HorizontalAlignment="Center">
-                <!-- Terms Card -->
-                <Border Width="500" 
-                        Height="500" 
-                        Background="#FFF9FAFB" 
-                        BorderBrush="#FFE5E7EB" 
-                        BorderThickness="1.5" 
-                        CornerRadius="24"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,30"
-                        ClipToBounds="True">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="25" 
-                                          ShadowDepth="4" 
-                                          Opacity="0.08" 
-                                          Color="#000000"/>
-                    </Border.Effect>
+        <!-- ===== 3. BACK BUTTON (Matching All Pages) ===== -->
+        <Button Grid.Row="2"
+                x:Name="BackButton"
+                Width="520"
+                Height="72"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,70"
+                Click="BackButton_Click"
+                Background="#FFEFEFEF"
+                BorderThickness="0"
+                Cursor="Hand">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="16">
+                        <TextBlock Text="Back" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="Medium" 
+                                   FontSize="24" 
+                                   Foreground="#FF4B5563" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
-                    <Grid Margin="30">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Title inside card -->
-                            <RowDefinition Height="*"/>    <!-- Scrollable content -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Card Header -->
-                        <StackPanel Grid.Row="0" Margin="0,0,0,20">
-                            <TextBlock Text="Terms &amp; Conditions" 
-                                       FontFamily="Poppins" 
-                                       FontWeight="Bold" 
-                                       FontSize="22" 
-                                       Foreground="#FF1C244B" />
-                            <TextBlock Text="Last updated: August 2026" 
-                                       FontFamily="Poppins" 
-                                       FontSize="12" 
-                                       Foreground="#FFA0A0AA" 
-                                       Margin="0,4,0,0"/>
-                            <Border Height="1" Background="#FFE5E7EB" Margin="0,15,0,0"/>
-                        </StackPanel>
-
-                        <!-- Scrollable Terms Text -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="0,0,10,0">
-                                
-                                <TextBlock Text="1. Welcome to KuboPix" 
-                                           FontFamily="Poppins" 
-                                           FontWeight="Bold" 
-                                           FontSize="15" 
-                                           Foreground="#FF1C244B" 
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="By using this instant photo kiosk, you agree to comply with and be bound by the following terms and conditions of use. Please read them carefully before using the service." 
-                                           FontFamily="Poppins" 
-                                           FontSize="13.5" 
-                                           Foreground="#FF555555" 
-                                           TextWrapping="Wrap" 
-                                           LineHeight="20"
-                                           Margin="0,0,0,20"/>
-
-                                <TextBlock Text="2. Privacy &amp; Data Collection" 
-                                           FontFamily="Poppins" 
-                                           FontWeight="Bold" 
-                                           FontSize="15" 
-                                           Foreground="#FF1C244B" 
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="We care about your privacy. Photos captured or uploaded via this kiosk are processed instantly for printing. We do not store your photos on our servers after printing is complete, unless explicitly consented to for saving your creations. No personal identification data is collected without your direct input." 
-                                           FontFamily="Poppins" 
-                                           FontSize="13.5" 
-                                           Foreground="#FF555555" 
-                                           TextWrapping="Wrap" 
-                                           LineHeight="20"
-                                           Margin="0,0,0,20"/>
-
-                                <TextBlock Text="3. Use of Photos" 
-                                           FontFamily="Poppins" 
-                                           FontWeight="Bold" 
-                                           FontSize="15" 
-                                           Foreground="#FF1C244B" 
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="You represent and warrant that you own or have the necessary rights to use and print the photos you submit. You agree not to upload or capture any content that is unlawful, harmful, offensive, or infringes upon the intellectual property rights of others." 
-                                           FontFamily="Poppins" 
-                                           FontSize="13.5" 
-                                           Foreground="#FF555555" 
-                                           TextWrapping="Wrap" 
-                                           LineHeight="20"
-                                           Margin="0,0,0,20"/>
-
-                                <TextBlock Text="4. Printing and Quality Disclaimer" 
-                                           FontFamily="Poppins" 
-                                           FontWeight="Bold" 
-                                           FontSize="15" 
-                                           Foreground="#FF1C244B" 
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="While we strive for high-quality prints on custom magnets, print quality depends on the resolution and lighting of the source photos. Prints are provided on an 'as-is' basis. In the event of a mechanical printer failure, please contact support for assistance or refunds." 
-                                           FontFamily="Poppins" 
-                                           FontSize="13.5" 
-                                           Foreground="#FF555555" 
-                                           TextWrapping="Wrap" 
-                                           LineHeight="20"
-                                           Margin="0,0,0,20"/>
-
-                                <TextBlock Text="5. Contact Us" 
-                                           FontFamily="Poppins" 
-                                           FontWeight="Bold" 
-                                           FontSize="15" 
-                                           Foreground="#FF1C244B" 
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="If you have any questions about these Terms &amp; Conditions, please reach out to our team at support@kubopix.com or visit our help desk." 
-                                           FontFamily="Poppins" 
-                                           FontSize="13.5" 
-                                           Foreground="#FF555555" 
-                                           TextWrapping="Wrap" 
-                                           LineHeight="20"
-                                           Margin="0,0,0,10"/>
-                                
-                            </StackPanel>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-                <!-- Bottom Spacer to keep layout margins consistent with Camera page -->
-                <Border Height="65" Background="Transparent"/>
-            </StackPanel>
-        </Grid>
     </Grid>
 </Page>

@@ -61,7 +61,6 @@ namespace kuboPix.Views
         private bool _isFetchingQr = false;
         private int _lastReportedStatus = -1; // -1 means unknown/unreported status on startup
 
-
         // CONSTRUCTOR
         public ScanQrView(string jwtToken, long shopLoginId, long printerId, string printerName, string qrUrl, decimal printerPrice, int printerStatus, string expiry, int printerPaymentEnabled)
         {
@@ -113,6 +112,71 @@ namespace kuboPix.Views
             Unloaded += ScanQrView_Unloaded;
         }
 
+        // ADMIN EXIT BUTTON CLICK
+        private async void AdminExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            var passwordDialog = new PasswordDialog();
+            passwordDialog.Owner = Window.GetWindow(this);
+            kuboPix.Helpers.DialogScaler.CenterOnElement(passwordDialog, this);
+
+            bool? result = passwordDialog.ShowDialog();
+            if (result != true)
+                return;
+
+            // ACTION BASED LOGIC 
+            if (passwordDialog.SelectedAction == "EXIT")
+            {
+                // MAKE PRINTER OFFLINE BEFORE EXIT
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
+                // Close only Mini-App
+                Application.Current.MainWindow.Close();
+            }
+            else if (passwordDialog.SelectedAction == "SHUTDOWN")
+            {
+                // MAKE PRINTER OFFLINE BEFORE  SHUTDOWN
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
+                // Shutdown Windows
+                System.Diagnostics.Process.Start("shutdown", "/s /t 0");
+            }
+            else if (passwordDialog.SelectedAction == "MAINTENANCE")
+            {
+                var maintenancePage = new UnderMaintenancePage(false);
+                NavigationService?.Navigate(maintenancePage);
+            }
+            else if (passwordDialog.SelectedAction == "LOGOUTPROFILE")
+            {
+                // MAKE PRINTER OFFLINE BEFORE EXIT
+                if (_printerId > 0 && _shopLoginId > 0)
+                {
+                    await OrderQueueService.SetPrinterOffline(
+                        _printerId,
+                        _shopLoginId
+                    );
+                }
+
+               kuboPixSessionManager.Clear();
+                var LoginPage = new LoginView();
+                NavigationService?.Navigate(LoginPage);
+            }
+            else if (passwordDialog.SelectedAction == "PRINT_FAILED_JOBS")
+            {
+                await RetryFailedPrintJobsAsync();
+            }
+        }
 
         // SCAN QR VIEW LOADED 
         private void ScanQrView_Loaded(object sender, RoutedEventArgs e)
@@ -392,6 +456,11 @@ namespace kuboPix.Views
             // intentionally left blank or navigate to PrintProgress if required
         }
 
+        // LOGO CLICK - TRIGGERS ADMIN EXIT
+        private void Logo_Click(object sender, MouseButtonEventArgs e)
+        {
+            AdminExitButton_Click(sender, e);  // Trigger the existing exit logic when the logo is clicked
+        }
 
         // PRINTER STATUS POLLING AND UI UPDATES
         private void StartPrinterStatusPolling()
@@ -448,18 +517,17 @@ namespace kuboPix.Views
                     try
                     {
                         ensControl.Initialize(printerName, "");
-                        sc = ensControl.GetStatusInformation();
-                        ec = ensControl.GetErrorInformation();
-                        wc = ensControl.GetWarningInformation();
+                        ensControl.GetPrinterFullStatus(out sc, out ec, out wc);
                         queryOk = true;
                     }
                     catch (Exception ex)
                     {
                         AppLogger.Log($"Epson ScanQrView query error: {ex.Message}");
+                        // queryOk stays false, but sc/ec/wc may still hold partial status from the SDK
                     }
                     finally
                     {
-                        ensControl.Release();
+                        try { ensControl.Release(); } catch { } // guard Release so it never masks the real error
                     }
 
                     if (queryOk)
@@ -473,11 +541,21 @@ namespace kuboPix.Views
                         parsedMessage = _orderQueue.GetEpsonMessageFromErrorCodes(sc, ec, wc) ?? "";
                         warning = $"InkLow={wc.InkLowWarning}, Other={wc.OtherWarning}";
                     }
-
                     else
                     {
-                        status = "Error";
-                        parsedMessage = "Printer connection failed";
+                        // SDK call failed — try to map whatever status/error we got from the partial read.
+                        // If ec was populated (e.g. ERR_CoverOpen), use the real message; else fall back to connection error.
+                        string epsonMessage = _orderQueue.GetEpsonMessageFromErrorCodes(sc, ec, wc) ?? "";
+                        if (!string.IsNullOrEmpty(epsonMessage) && sc != StatusCode.ST_Idle)
+                        {
+                            status = "Error";
+                            parsedMessage = epsonMessage; // e.g. "Cover open. Please close the cover."
+                        }
+                        else
+                        {
+                            status = "Error";
+                            parsedMessage = "Printer connection failed";
+                        }
                     }
                 }
                 else
@@ -503,39 +581,25 @@ namespace kuboPix.Views
                     if (_lastReportedStatus != 1)
                     {
                         _lastReportedStatus = 1;
-                        if (printerId > 0 && shoploginId > 0)
-                        {
-                            try
-                            {
-                                using (HttpClient client = new HttpClient())
-                                {
-                                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
-                                    string url = $"{AppConfig.ApiBaseUrl}api/update/printerstatus?printerId={printerId}&shopLoginId={shoploginId}&status=1&message={Uri.EscapeDataString("Your printer is online and ready for printing.")}";
-                                    await client.GetAsync(url);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                AppLogger.Log($"Error reporting printer online to server: {ex.Message}");
-                            }
-                        }
+                        await UpdatePrinterStatus(printerId, shoploginId, 1, "Your printer is online and ready for printing.");
                     }
                 }
                 else
                 {
                     SetPrinterNotReadyUI(parsedMessage);
 
-                    if (_lastReportedStatus != 0)
+                    int errStatusCode = _orderQueue?.CurrentPrinterStatus ?? 0;
+                    if (errStatusCode == 1)
                     {
-                        _lastReportedStatus = 0;
-                        if (printerId > 0 && shoploginId > 0)
-                        {
-                            await OrderQueueService.SetPrinterOffline(
-                                printerId,
-                                shoploginId
-                            );
-                        }
+                        errStatusCode = 0;
                     }
+
+                    if (_lastReportedStatus != errStatusCode)
+                    {
+                        _lastReportedStatus = errStatusCode;
+                        await UpdatePrinterStatus(printerId, shoploginId, errStatusCode, parsedMessage);
+                    }
+
                     //var ErrorPage = new PrintErrorView(parsedMessage);
                     var ErrorPage = new PrintErrorView(
                     parsedMessage,
@@ -549,30 +613,87 @@ namespace kuboPix.Views
             catch (Exception ex)
             {
                 AppLogger.Log($"Error updating printer status: {ex.Message}");
-                SetPrinterNotReadyUI("Not Connected");
 
-                if (_lastReportedStatus != 0)
+                // For Epson: try to get the REAL error message (e.g. cover open) instead of the raw exception
+                string realErrorMessage = "";
+                var session2 = kuboPixSessionManager.Load();
+                string brand2 = session2?.PrinterBrand ?? LoginView.SelectedPrinterBrand ?? "Seaory";
+
+                if (brand2 == "Epson")
                 {
-                    _lastReportedStatus = 0;
-                    if (printerId > 0 && shoploginId > 0)
+                    string printerName2 = LoginView.GetCurrentSessionPrinterName() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(printerName2))
                     {
-                        await OrderQueueService.SetPrinterOffline(
-                            printerId,
-                            shoploginId
-                        );
+                        try
+                        {
+                            ENS2Control ensControl2 = ENS2Control.GetInstance();
+                            try
+                            {
+                                ensControl2.Initialize(printerName2, "");
+                                ensControl2.GetPrinterFullStatus(out StatusCode sc2, out ErrorCode ec2, out WARNING_INFO wc2);
+                                realErrorMessage = _orderQueue?.GetEpsonMessageFromErrorCodes(sc2, ec2, wc2) ?? "";
+                            }
+                            catch { }
+                            finally
+                            {
+                                try { ensControl2.Release(); } catch { }
+                            }
+                        }
+                        catch { }
                     }
                 }
-                // Exception occurred → also go to login page
 
-                //var ErrorPage = new PrintErrorView($"Error updating printer status: {ex.Message}");
-                // SDK Printer error → flag = true
+                string finalErrorMsg = !string.IsNullOrEmpty(realErrorMessage)
+                    ? realErrorMessage
+                    : "Printer connection failed. Please check the printer cable and power.";
+
+                SetPrinterNotReadyUI(finalErrorMsg);
+
+                int catchStatusCode = _orderQueue?.CurrentPrinterStatus ?? 0;
+                if (catchStatusCode == 1)
+                {
+                    catchStatusCode = 0;
+                }
+
+                if (_lastReportedStatus != catchStatusCode)
+                {
+                    _lastReportedStatus = catchStatusCode;
+                    await UpdatePrinterStatus(printerId, shoploginId, catchStatusCode, finalErrorMsg);
+                }
+
                 var ErrorPage = new PrintErrorView(
-                    $"Error updating printer status: {ex.Message}",
+                    finalErrorMsg,
                     null,
                     null,
-                    true
+                    true  // isSdkPrinterError
                 );
                 NavigationService?.Navigate(ErrorPage);
+            }
+        }
+
+        private async Task UpdatePrinterStatus(long printerId, long shopLoginId, int statusCode, string message)
+        {
+            if (printerId <= 0 || shopLoginId <= 0) return;
+
+            if (_orderQueue != null)
+            {
+                await _orderQueue.UpdatePrinterStatus(printerId, shopLoginId, statusCode, message);
+            }
+            else
+            {
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _jwtToken);
+                        string url = $"{AppConfig.ApiBaseUrl}api/update/printerstatus?printerId={printerId}&shopLoginId={shopLoginId}&status={statusCode}&message={Uri.EscapeDataString(message ?? "")}";
+                        await client.GetAsync(url);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Log($"Error updating printer status: {ex.Message}");
+                }
             }
         }
 
@@ -665,6 +786,60 @@ namespace kuboPix.Views
             }
         }
 
+        // RETRY FAILED PRINT JOBS --Last Order Print Only
+        public async Task RetryFailedPrintJobsAsync()
+        {
+            try
+            {
+                var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
+
+                if (lastJob == null)
+                {
+                    AppLogger.Log("No failed print jobs available.");
+                    return;
+                }
+
+                // Await the async API call
+                var orderDetail = await LoginView.GetOrderDetailByOrderId(lastJob.OrderId);
+
+                if (orderDetail == null)
+                {
+                    AppLogger.Log($"Order details not found for Order ID {lastJob.OrderId}. Retry aborted.");
+                    return;
+                }
+
+                // SAFETY CHECK — BACKEND REFUND PROTECTION
+                if (orderDetail.OrderStatus == 3 && orderDetail.OrderPaymentTypeId == 3) // 3 = Refunded // OrderPaymentTypeId 3 = Twint
+                {
+                    FailedPrintSession.Remove(lastJob.OrderId);
+                    AppLogger.Log(
+                        $"Order {lastJob.OrderId} already refunded by backend. Retry blocked."
+                    );
+                    return;
+                }
+
+                AppLogger.Log($"Retrying LAST failed Order {lastJob.OrderId}");
+
+
+                // success/fail
+                var isSuccess = await _orderQueue.ProcessSingleOrderAsync(lastJob, isRetry: true);
+
+                if (isSuccess)
+                {
+                    FailedPrintSession.Remove(lastJob.OrderId);
+                    AppLogger.Log($"Retry completed successfully for LAST failed Order {lastJob.OrderId}");
+                }
+                else
+                {
+                    AppLogger.Log($"Retry FAILED again for Order {lastJob.OrderId}, keeping it in FailedPrintSession");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"RetryFailedPrintJobsAsync Exception: {ex}");
+            }
+        }
 
         // Refresh Live Printer State
         private async Task RefreshLivePrinterState()
@@ -710,12 +885,12 @@ namespace kuboPix.Views
                 AppLogger.Log("RefreshLivePrinterState error: " + ex.Message);
             }
         }
-
         // Cancel Button Click
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Capture());
         }
+
 
     }
 }

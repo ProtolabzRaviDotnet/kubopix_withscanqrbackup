@@ -37,7 +37,7 @@
 
 
             <!-- Title -->
-            <TextBlock Text="Exit Mini App ?"
+            <TextBlock Text="Exit KuboPix ?"
                        FontSize="22"
                        FontWeight="Bold"
                        Foreground="#333"
@@ -45,7 +45,7 @@
                        HorizontalAlignment="Center"/>
 
             <!-- Subtitle -->
-            <TextBlock Text="Are you sure you want to exit the mini app?"
+            <TextBlock Text="Are you sure you want to exit KuboPix?"
                        FontSize="14"
                        Foreground="#777"
                        TextAlignment="Center"

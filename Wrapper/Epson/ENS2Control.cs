@@ -256,7 +256,16 @@ namespace com.epson.label.driver
 
                 if (sc != StatusCode.ST_Idle)
                 {
-                    AppLogger.Log($"[EPSON-STATUS] StatusCode={structSTATUS.StatusCode} ({(StatusCode)structSTATUS.StatusCode}), ErrorCode={structSTATUS.ErrorCode}, PrintStopCoverOpen={structSTATUS.PrintStopCoverOpen}, FatalErrorCode={structSTATUS.FatalErrorCode}");
+                    string errDesc = structSTATUS.ErrorCode switch
+                    {
+                        0x00 => "No Error / Fatal",
+                        0x02 => "Cover Open",
+                        0x04 => "Paper Jam",
+                        0x05 => "Ink Out",
+                        0x06 => "Paper Out",
+                        _ => "Other"
+                    };
+                    AppLogger.Log($"[EPSON-STATUS] StatusCode={structSTATUS.StatusCode} ({(StatusCode)structSTATUS.StatusCode}), ErrorCode={structSTATUS.ErrorCode} ({errDesc}), PrintStopCoverOpen={structSTATUS.PrintStopCoverOpen}, FatalErrorCode={structSTATUS.FatalErrorCode}");
                 }
 
                 if (structSTATUS.PrintStopCoverOpen != 0 ||

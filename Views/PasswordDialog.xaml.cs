@@ -1,9 +1,11 @@
 using com.epson.label.driver;
+using kuboPix.Helpers;
 using kuboPix.Services;
 using kuboPix.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -32,10 +34,20 @@ namespace kuboPix.Views
 
         private DispatcherTimer? _inactivityTimer;
 
+        private const double BaseDesignWidth = 401;
+        private const double BaseDesignHeight = 345;
+        private const double WithImageDesignWidth = 420;
+        private const double WithImageDesignHeight = 635;
+
         // CONSTRUCTOR
         public PasswordDialog()
         {
             InitializeComponent();
+
+            // Apply layout immediately from KuboPixContentService cache before window displays
+            var (isEnabled, cachedImage) = KuboPixContentService.GetCachedPrivacyPolicy();
+            ApplyDialogLayout(isEnabled && cachedImage != null, cachedImage);
+
             // Match the dialog's size to the UI scale (see Helpers/DialogScaler.cs).
             SourceInitialized += (_, _) => kuboPix.Helpers.DialogScaler.ScaleToOwner(this);
         }
@@ -43,12 +55,20 @@ namespace kuboPix.Views
         // EVENTS
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            SetupInactivityTimer();
+
+            kuboPix.Helpers.DialogScaler.CenterOnOwner(this);
+
             _ = StartImageMonitorAsync();
 
             // Call helper function
             _ = CheckAndRemoveRefundedOrderAsync();
 
+            // Refresh Privacy Policy asynchronously in case it was updated on the server
+            _ = RefreshPrivacyPolicyAsync();
+
             PasswordBox.Focus();
+            Keyboard.Focus(PasswordBox);
 
             string PrinterName = LoginView.GetCurrentSessionPrinterName() ?? string.Empty;
 
@@ -62,9 +82,31 @@ namespace kuboPix.Views
             // FAILED PRINT JOB OPTION
             if (FailedPrintSession.HasFailedJobs)
             {
-                rbPrintFailedJobs.Content = $"Print Last Failed Job";
+                var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
+                bool isImageStillAvailable = false;
+                if (lastJob != null)
+                {
+                    if (File.Exists(lastJob.Image))
+                    {
+                        isImageStillAvailable = true;
+                    }
+                    else if (Uri.TryCreate(lastJob.Image, UriKind.Absolute, out var uri) &&
+                             (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                    {
+                        isImageStillAvailable = true;
+                    }
+                }
 
-                rbPrintFailedJobs.Visibility = Visibility.Visible;
+                if (isImageStillAvailable)
+                {
+                    rbPrintFailedJobs.Content = $"Print Last Failed Job";
+                    rbPrintFailedJobs.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    if (lastJob != null) FailedPrintSession.Remove(lastJob.OrderId);
+                    rbPrintFailedJobs.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -165,13 +207,17 @@ namespace kuboPix.Views
 
             if (string.IsNullOrWhiteSpace(input))
             {
+                _inactivityTimer?.Stop();
                 MessageBox.Show("Please enter password!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ResetInactivityTimer(sender, e);
                 return;
             }
 
             if (input != actualPassword)
             {
+                _inactivityTimer?.Stop();
                 MessageBox.Show("Wrong Password!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ResetInactivityTimer(sender, e);
                 return;
             }
 
@@ -179,13 +225,13 @@ namespace kuboPix.Views
             if (rbCloseApp.IsChecked == true)
                 SelectedAction = "EXIT";
 
-            else if(rbShutdown.IsChecked == true)
+            else if (rbShutdown.IsChecked == true)
                 SelectedAction = "SHUTDOWN";
 
-            else if(rbMaintenanceMode.IsChecked == true)
+            else if (rbMaintenanceMode.IsChecked == true)
                 SelectedAction = "MAINTENANCE";
 
-            else if(rbLogoutProfile.IsChecked == true)
+            else if (rbLogoutProfile.IsChecked == true)
                 SelectedAction = "LOGOUTPROFILE";
 
             else if (rbPrintFailedJobs.IsChecked == true)
@@ -221,6 +267,76 @@ namespace kuboPix.Views
             }
         }
 
+        // ── PRIVACY POLICY IMAGE & PORTRAIT ADAPTIVE SIZING ───────────
+
+        /// <summary>
+        /// Asynchronously ensures Privacy Policy is refreshed via KuboPixContentService
+        /// and applies the portrait layout.
+        /// </summary>
+        private async Task RefreshPrivacyPolicyAsync()
+        {
+            try
+            {
+                var (isEnabled, image) = await KuboPixContentService.GetPrivacyPolicyAsync();
+                Dispatcher.Invoke(() =>
+                {
+                    ApplyDialogLayout(isEnabled && image != null, image);
+                });
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log($"[PasswordDialog] RefreshPrivacyPolicyAsync error: {ex.Message}");
+            }
+        }
+
+        private void ApplyDialogLayout(bool hasImage, BitmapImage? image)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                double targetDesignWidth = (hasImage && image != null) ? WithImageDesignWidth : BaseDesignWidth;
+                double targetDesignHeight = (hasImage && image != null) ? WithImageDesignHeight : BaseDesignHeight;
+
+                if (hasImage && image != null)
+                {
+                    productInfoImage.Source = image;
+                    imageContainerBorder.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    productInfoImage.Source = null;
+                    imageContainerBorder.Visibility = Visibility.Collapsed;
+                }
+
+                // Update design dimensions of canvas grid inside Viewbox
+                if (DialogRootGrid != null)
+                {
+                    DialogRootGrid.Width = targetDesignWidth;
+                    DialogRootGrid.Height = targetDesignHeight;
+                }
+
+                // If owner is present and window is scaled, maintain scale factor
+                double scale = 1.0;
+                if (Owner != null && Owner.ActualWidth > 0 && Owner.ActualHeight > 0)
+                {
+                    scale = Math.Min(Owner.ActualHeight / 1366.0, Owner.ActualWidth / 768.0);
+                    if (scale <= 0 || double.IsNaN(scale) || double.IsInfinity(scale))
+                    {
+                        scale = 1.0;
+                    }
+                }
+
+                this.Width = targetDesignWidth * scale;
+                this.Height = targetDesignHeight * scale;
+
+                if (IsLoaded)
+                {
+                    kuboPix.Helpers.DialogScaler.CenterOnOwner(this);
+                }
+            });
+        }
+
+        // ───────────────────────────────────────────────────────────────
+
         private async Task StartImageMonitorAsync()
         {
             while (true)
@@ -233,7 +349,7 @@ namespace kuboPix.Views
                         continue;
                     }
 
-                    var lastJob = FailedPrintSession.GetAll().LastOrDefault();
+                    var lastJob = FailedPrintSession.GetAll()?.LastOrDefault();
 
                     if (lastJob == null)
                     {
@@ -241,12 +357,21 @@ namespace kuboPix.Views
                         continue;
                     }
 
-                    using var httpClient = new HttpClient();
+                    bool imageAvailable = false;
+                    if (File.Exists(lastJob.Image))
+                    {
+                        imageAvailable = true;
+                    }
+                    else if (Uri.TryCreate(lastJob.Image, UriKind.Absolute, out var uri) &&
+                             (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                    {
+                        using var httpClient = new HttpClient();
+                        var response = await httpClient.GetAsync(lastJob.Image);
+                        imageAvailable = response.IsSuccessStatusCode;
+                    }
 
-                    var response = await httpClient.GetAsync(lastJob.Image);
-
-                    // IMAGE DELETED / EXPIRED 
-                    if (!response.IsSuccessStatusCode)
+                    // IMAGE DELETED / EXPIRED / MISSING
+                    if (!imageAvailable)
                     {
                         FailedPrintSession.Remove(lastJob.OrderId);
 
@@ -255,7 +380,7 @@ namespace kuboPix.Views
                             rbPrintFailedJobs.Visibility = Visibility.Collapsed;
                         });
 
-                        AppLogger.Log($"Expired failed job removed. OrderId: {lastJob.OrderId}");
+                        AppLogger.Log($"Expired / missing failed job removed. OrderId: {lastJob.OrderId}");
 
                         break;
                     }
@@ -268,6 +393,13 @@ namespace kuboPix.Views
                 // CHECK EVERY 2 SEC
                 await Task.Delay(2000);
             }
+        }
+
+        private void PasswordBox_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            PasswordBox.Focus();
+            Keyboard.Focus(PasswordBox);
+            e.Handled = true;
         }
     }
 }

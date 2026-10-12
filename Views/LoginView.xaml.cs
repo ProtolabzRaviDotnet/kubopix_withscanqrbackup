@@ -62,6 +62,15 @@ namespace kuboPix.Views
         public LoginView()
         {
             InitializeComponent();
+
+            // If session exists, hide LoginCard immediately so user never sees login form during startup
+            var session = kuboPixSessionManager.Load();
+            if (session != null)
+            {
+                LoginCard.Visibility = Visibility.Collapsed;
+                LoadingOverlay.Visibility = Visibility.Visible;
+            }
+
             Loaded += LoginView_Loaded;
         }
 
@@ -71,18 +80,26 @@ namespace kuboPix.Views
         public static Int64 GetCurrentSessionShopLoginId() => _currentSessionShopLoginId;
         public static Int64 GetCurrentSessionPrinterId() => _currentSessionPrinterId;
         public static int GetCurrentSessionPrinterPaymentEnabled() => _currentSessionPrinterPaymentEnabled;
+        public static void SetCurrentSessionPrinterPaymentEnabled(int val) => _currentSessionPrinterPaymentEnabled = val;
 
         // Login View Loaded
         private async void LoginView_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-
-                //LoadingOverlay.Visibility = Visibility.Visible;
-                //LoginCard.Visibility = Visibility.Collapsed;
-
                 // Load existing session (if any) to set the correct SelectedPrinterBrand
                 var session = kuboPixSessionManager.Load();
+                if (session != null)
+                {
+                    LoginCard.Visibility = Visibility.Collapsed;
+                    LoadingOverlay.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LoginCard.Visibility = Visibility.Visible;
+                    LoadingOverlay.Visibility = Visibility.Collapsed;
+                }
+
                 if (session != null && !string.IsNullOrEmpty(session.PrinterBrand))
                 {
                     SelectedPrinterBrand = session.PrinterBrand;
@@ -94,15 +111,13 @@ namespace kuboPix.Views
 
                 var printerResult = await CheckPrinterOnStart();
 
-                LoadingOverlay.Visibility = Visibility.Collapsed;
-
                 if (!printerResult.IsReady)
                 {
                     // Printer issue → Login page with error
                     txtPrinterStatus.Text = $"Printer not ready : {_rawStatus}";
                     btnLogin.IsEnabled = false;
-                    //LoadingOverlay.Visibility = Visibility.Collapsed;
-                    //LoginCard.Visibility = Visibility.Visible;
+                    LoadingOverlay.Visibility = Visibility.Collapsed;
+                    LoginCard.Visibility = Visibility.Visible;
 
                     StartSilentPrinterRetry(); //Re-Render The Printer DLL Status
                     return;
@@ -124,7 +139,12 @@ namespace kuboPix.Views
                     if (livePrinter == null)
                     {
                         kuboPixSessionManager.Clear();
-                        MessageBox.Show("Printer not available.", "Error");
+                        // Clear stale session so next restart doesn't loop on the same bad state.
+                        // No popup — silently fall through to the login form.
+                        AppLogger.Log("[STARTUP] GetLivePrinterState returned null. Clearing session and showing login form silently.");
+                        LoadingOverlay.Visibility = Visibility.Collapsed;
+                        LoginCard.Visibility = Visibility.Visible;
+                        btnLogin.IsEnabled = true;
                         return;
                     }
 
@@ -154,13 +174,17 @@ namespace kuboPix.Views
                         _jwtToken = session.Token;
                         _shopLoginId = session.ShopLoginId;
                         _printerId = session.PrinterId;
-                        _sessionprinterPrice = session.PrinterPrice;
-                        _sessionprinterStatus = session.PrinterStatus;
 
-                        // Update session brand on disk to fix any legacy brand mismatches
+                        // Sync live printer state from server into session
+                        session.PrinterPaymentEnabled = livePrinter.PrinterPaymentEnabled;
+                        session.PrinterPrice = livePrinter.PrinterPrice;
+                        session.PrinterStatus = livePrinter.PrinterStatus;
                         session.PrinterBrand = SelectedPrinterBrand;
                         session.PrinterName = _connectedPrinterName ?? string.Empty;
                         kuboPixSessionManager.Save(session);
+
+                        _sessionprinterPrice = session.PrinterPrice;
+                        _sessionprinterStatus = session.PrinterStatus;
 
                         // Restore password (if using)
                         _currentSessionPassword = session.Password;
@@ -184,8 +208,8 @@ namespace kuboPix.Views
 
                 //SHOW LOGIN PAGE (AS BEFORE)
                 btnLogin.IsEnabled = true;
-                //LoadingOverlay.Visibility = Visibility.Collapsed;
-                //LoginCard.Visibility = Visibility.Visible;
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+                LoginCard.Visibility = Visibility.Visible;
 
             }
             catch (Exception ex)
@@ -206,10 +230,36 @@ namespace kuboPix.Views
                         .Cast<string>()
                         .ToList();
 
-                    string preferredBrand = SelectedPrinterBrand ?? "Seaory";
+                    // 1. Check which printer is set as Default Printer in Windows
+                    string? defaultPrinterName = physicalPrinters.FirstOrDefault(name =>
+                    {
+                        try
+                        {
+                            var settings = new PrinterSettings { PrinterName = name };
+                            return settings.IsValid && settings.IsDefaultPrinter;
+                        }
+                        catch { return false; }
+                    });
+
+                    string preferredBrand;
+                    if (!string.IsNullOrEmpty(defaultPrinterName) && IsEpsonPrinter(defaultPrinterName))
+                    {
+                        preferredBrand = "Epson";
+                    }
+                    else if (!string.IsNullOrEmpty(defaultPrinterName) && !IsVirtualPrinter(defaultPrinterName))
+                    {
+                        preferredBrand = "Seaory";
+                    }
+                    else
+                    {
+                        preferredBrand = SelectedPrinterBrand ?? "Seaory";
+                    }
+
                     string otherBrand = preferredBrand == "Epson" ? "Seaory" : "Epson";
 
-                    // 1. Try preferred brand
+                    // AppLogger.Log($"CheckPrinterOnStart called. Preferred brand: {preferredBrand}, Other brand: {otherBrand}");
+
+                    // 2. Try preferred brand (Windows Default Printer brand)
                     var result = CheckPrinterBrandInternal(preferredBrand, physicalPrinters);
                     if (result.IsReady)
                     {
@@ -218,9 +268,19 @@ namespace kuboPix.Views
                         return (true, result.DeviceId, result.PrinterName);
                     }
 
-                   
+                    // If the preferred brand printer is detected but has an error, do NOT try the
+                    // other brand. Stay on the preferred brand and surface its error so the user
+                    // knows exactly which printer needs attention.
+                    if (result.PrinterName != null)
+                    {
+                        SelectedPrinterBrand = preferredBrand;
+                        _rawStatus = result.RawStatus;
+                        AppLogger.Log($"Printer error detected on '{preferredBrand}' printer '{result.PrinterName}': {_rawStatus}.");
+                        return (false, null, null);
+                    }
 
-                    // 2. Try the other brand
+                    // Preferred brand has NO printer installed at all — only now try the other brand.
+                    AppLogger.Log($"No '{preferredBrand}' printer installed. Checking '{otherBrand}'.");
                     var otherResult = CheckPrinterBrandInternal(otherBrand, physicalPrinters);
                     if (otherResult.IsReady)
                     {
@@ -229,20 +289,17 @@ namespace kuboPix.Views
                         return (true, otherResult.DeviceId, otherResult.PrinterName);
                     }
 
-                    // If neither is ready, decide which error status to show based on what printer was found.
+                    // Neither brand has a ready printer — show the best available error.
                     if (otherResult.PrinterName != null)
                     {
                         SelectedPrinterBrand = otherBrand;
                         _rawStatus = otherResult.RawStatus;
                     }
-                    else if (result.PrinterName != null)
-                    {
-                        SelectedPrinterBrand = preferredBrand;
-                        _rawStatus = result.RawStatus;
-                    }
                     else
                     {
-                        _rawStatus = result.RawStatus; // Default to preferred brand's error status (e.g. "Not Detected")
+                        // No printer of any brand was found at all.
+                        SelectedPrinterBrand = preferredBrand;
+                        _rawStatus = result.RawStatus;
                     }
 
                     // AppLogger.Log($"CheckPrinterOnStart failed. Determined brand: {SelectedPrinterBrand}, Status: {_rawStatus}");
@@ -307,7 +364,7 @@ namespace kuboPix.Views
                         catch (Exception ex)
                         {
                             string errStr = $"Epson Error: {ex.Message}";
-                            AppLogger.Log($"Error checking Epson printer '{name}': {ex}");
+                            AppLogger.Log($"Error checking Epson printer '{name}': {ex.Message}");
                             if (firstEpsonName == null)
                             {
                                 firstEpsonName = name;
@@ -400,7 +457,14 @@ namespace kuboPix.Views
                    (name.Contains("EPSON", StringComparison.OrdinalIgnoreCase) ||
                     name.Contains("CW-", StringComparison.OrdinalIgnoreCase));
         }
-
+        private static bool IsVirtualPrinter(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return true;
+            return name.Contains("PDF", StringComparison.OrdinalIgnoreCase) ||
+                   name.Contains("XPS", StringComparison.OrdinalIgnoreCase) ||
+                   name.Contains("OneNote", StringComparison.OrdinalIgnoreCase) ||
+                   name.Contains("Fax", StringComparison.OrdinalIgnoreCase);
+        }
         // Retry printer check silently
         private void StartSilentPrinterRetry()
         {
@@ -481,7 +545,6 @@ namespace kuboPix.Views
             try
             {
                 LoadingOverlay.Visibility = Visibility.Visible;
-                LoginCard.Visibility = Visibility.Collapsed;
 
                 bool loginSuccess = await AuthenticateUser(email, password, _printerDeviceId);
 

@@ -170,7 +170,7 @@ namespace com.epson.label.driver
 
         public override void PtrToStructure()
         {
-            _struct = (ENSTATUS_LABEL)Marshal.PtrToStructure(_ptrToStruct, typeof(ENSTATUS_LABEL));
+            _struct = Marshal.PtrToStructure<ENSTATUS_LABEL>(_ptrToStruct);
         }
 
         public override void StructureToPtr()

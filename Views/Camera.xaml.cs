@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using kuboPix.Helpers;
 
 namespace kuboPix.Views
 {
@@ -34,6 +35,11 @@ namespace kuboPix.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdatePaymentProgressText();
+
+            // Clean up leftover captured photos from previous sessions (older than 1 hour)
+            PrintPreview.CleanupCapturesFolder(TimeSpan.FromHours(1));
+
             if (BYPASS_CAMERA)
             {
                 // ── BYPASS MODE: skip all campro.dll calls ──
@@ -85,20 +91,40 @@ namespace kuboPix.Views
             _videoStreamCallBack = new CamHelp.VideoStreamCallBack(VideoStreamCB);
             CamHelp.HIGH_SetVideoStreamCallBack(_videoStreamCallBack);
 
-            // Set camera resolution
+            // Set camera resolution (Select highest available quality, e.g. 5.0MP 2592x1944)
             try
             {
                 int resCount = CamHelp.HIGH_GetPixelNum();
+
                 if (resCount > 0)
                 {
-                    // Choose first resolution (typically highest/default)
-                    int hPixel = CamHelp.HIGH_GetHPixelByIndex(0);
-                    int vPixel = CamHelp.HIGH_GetVPixelByIndex(0);
-                    CamHelp.HIGH_SetCameraPixel(hPixel, vPixel);
+                    int bestHPixel = 0;
+                    int bestVPixel = 0;
+                    long maxPixelArea = 0;
+
+                    for (int i = 0; i < resCount; i++)
+                    {
+                        int h = CamHelp.HIGH_GetHPixelByIndex(i);
+                        int v = CamHelp.HIGH_GetVPixelByIndex(i);
+                        long area = (long)h * v;
+
+                        if (area > maxPixelArea)
+                        {
+                            maxPixelArea = area;
+                            bestHPixel = h;
+                            bestVPixel = v;
+                        }
+                    }
+
+                    if (bestHPixel > 0 && bestVPixel > 0)
+                    {
+                        CamHelp.HIGH_SetCameraPixel(bestHPixel, bestVPixel);
+                    }
                 }
             }
             catch (Exception ex)
             {
+                AppLogger.Log($"[Camera] Error setting camera pixel: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine("Error setting camera pixel: " + ex.Message);
             }
 
@@ -114,7 +140,7 @@ namespace kuboPix.Views
             }
 
             // Rotate camera feed 180° to correct upside-down image
-            CamHelp.HIGH_SetRotateSize(2); // 0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°
+            CamHelp.HIGH_SetRotateSize(1); // 0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°
 
             // Reset processing overlay, captured preview and buttons
             if (ProcessingOverlay != null) ProcessingOverlay.Visibility = Visibility.Collapsed;
@@ -239,9 +265,7 @@ namespace kuboPix.Views
                 // ── BYPASS MODE: use a dummy image instead of the real camera ──
                 try
                 {
-                    string capturesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Captures");
-                    if (!Directory.Exists(capturesFolder))
-                        Directory.CreateDirectory(capturesFolder);
+                    string capturesFolder = PrintPreview.GetCapturesFolder();
 
                     string fileName = $"Capture_{DateTime.Now:yyyyMMdd_HHmmss}.jpg";
                     string filePath = Path.Combine(capturesFolder, fileName);
@@ -297,12 +321,8 @@ namespace kuboPix.Views
 
             try
             {
-                // Create Captures folder in Application base directory
-                string capturesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Captures");
-                if (!Directory.Exists(capturesFolder))
-                {
-                    Directory.CreateDirectory(capturesFolder);
-                }
+                // Create/Get Captures folder in local Temp directory
+                string capturesFolder = PrintPreview.GetCapturesFolder();
 
                 string fileName = $"Capture_{DateTime.Now:yyyyMMdd_HHmmss}.jpg";
                 string filePath = Path.Combine(capturesFolder, fileName);
@@ -355,6 +375,44 @@ namespace kuboPix.Views
                 if (ProcessingOverlay != null) ProcessingOverlay.Visibility = Visibility.Collapsed;
                 if (CaptureButton != null) CaptureButton.IsEnabled = true;
                 if (BackButton != null) BackButton.IsEnabled = true;
+            }
+        }
+
+        private async void UpdatePaymentProgressText()
+        {
+            try
+            {
+                var session = kuboPixSessionManager.Load();
+                bool isPaymentEnabled = (session != null && session.PrinterPaymentEnabled == 1) ||
+                                        LoginView.GetCurrentSessionPrinterPaymentEnabled() == 1;
+
+                if (Step3Text != null)
+                {
+                    Step3Text.Text = isPaymentEnabled ? "Pay & Print" : "Print";
+                }
+
+                if (session != null && !string.IsNullOrEmpty(session.Token))
+                {
+                    var livePrinter = await LoginView.GetLivePrinterState(session.Token, session.ShopLoginId, session.PrinterId);
+                    if (livePrinter != null)
+                    {
+                        session.PrinterPaymentEnabled = livePrinter.PrinterPaymentEnabled;
+                        session.PrinterPrice = livePrinter.PrinterPrice;
+                        session.PrinterStatus = livePrinter.PrinterStatus;
+                        kuboPixSessionManager.Save(session);
+                        LoginView.SetCurrentSessionPrinterPaymentEnabled(livePrinter.PrinterPaymentEnabled);
+
+                        bool livePaymentEnabled = livePrinter.PrinterPaymentEnabled == 1;
+                        if (Step3Text != null)
+                        {
+                            Step3Text.Text = livePaymentEnabled ? "Pay & Print" : "Print";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Log("Camera UpdatePaymentProgressText error: " + ex.Message);
             }
         }
     }

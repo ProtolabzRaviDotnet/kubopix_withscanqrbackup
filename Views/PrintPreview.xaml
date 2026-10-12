@@ -98,10 +98,11 @@
                                    Margin="0,8,0,0"/>
                     </StackPanel>
 
-                    <!-- Step 3: Print (Active) -->
+                    <!-- Step 3: Print / Pay & Print (Active) -->
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                         <Ellipse Stroke="#FF1C244B" StrokeThickness="2.5" Fill="White" Width="56" Height="56"/>
-                        <TextBlock Text="Print" 
+                        <TextBlock x:Name="Step3Text"
+                                   Text="Print" 
                                    FontFamily="Poppins" 
                                    FontWeight="SemiBold" 
                                    FontSize="15" 
@@ -127,19 +128,19 @@
                            FontSize="50" 
                            Foreground="#FF1C244B" 
                            HorizontalAlignment="Center" 
-                           Margin="0,160,0,15"/>
+                           Margin="0,20,0,15"/>
   
-                <!-- Image Viewport displaying final photo with frame and background -->
+                <!-- Image Viewport — Portrait card 1:1.585 ratio (550×872px) -->
                 <Border Grid.Row="1"
                         x:Name="PhotoBorder"
-                        Width="880" 
-                        MaxHeight="900" 
+                        Width="550" 
+                        Height="872" 
                         Background="#FFF9FAFB" 
                         BorderBrush="#FFE5E7EB" 
                         BorderThickness="1.5" 
                         CornerRadius="24"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Stretch"
+                        VerticalAlignment="Center"
                         ClipToBounds="True">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="25" 

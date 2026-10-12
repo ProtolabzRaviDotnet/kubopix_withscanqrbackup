@@ -2,6 +2,7 @@ using kuboPix;
 using kuboPix.Views;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Management;
 using System.Printing;
@@ -80,7 +81,8 @@ namespace kuboPix.Helpers
                                             if (!bSuccess)
                                             {
                                                 int err = Marshal.GetLastWin32Error();
-                                                AppLogger.Log($"[EPSON] WritePrinter failed. Win32 Error: {err}");
+                                                string errMsg = new Win32Exception(err).Message;
+                                                AppLogger.Log($"[EPSON] WritePrinter failed. Win32 Error: {err} ({errMsg})");
                                             }
                                         }
                                         finally
@@ -96,7 +98,8 @@ namespace kuboPix.Helpers
                                 else
                                 {
                                     int err = Marshal.GetLastWin32Error();
-                                    AppLogger.Log($"[EPSON] StartPagePrinter failed. Win32 Error: {err}");
+                                    string errMsg = new Win32Exception(err).Message;
+                                    AppLogger.Log($"[EPSON] StartPagePrinter failed. Win32 Error: {err} ({errMsg})");
                                 }
                             }
                             finally
@@ -107,7 +110,8 @@ namespace kuboPix.Helpers
                         else
                         {
                             int err = Marshal.GetLastWin32Error();
-                            AppLogger.Log($"[EPSON] StartDocPrinter failed. Win32 Error: {err}");
+                            string errMsg = new Win32Exception(err).Message;
+                            AppLogger.Log($"[EPSON] StartDocPrinter failed. Win32 Error: {err} ({errMsg})");
                         }
                     }
                     finally
@@ -118,7 +122,8 @@ namespace kuboPix.Helpers
                 else
                 {
                     int err = Marshal.GetLastWin32Error();
-                    AppLogger.Log($"[EPSON] OpenPrinter failed for '{printerName}'. Win32 Error: {err}");
+                    string errMsg = new Win32Exception(err).Message;
+                    AppLogger.Log($"[EPSON] OpenPrinter failed for '{printerName}'. Win32 Error: {err} ({errMsg})");
                 }
             }
             catch (Exception ex)

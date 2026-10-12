@@ -8,13 +8,14 @@
       d:DesignHeight="1920" d:DesignWidth="1080"
       Background="#FFFFFF"
       FontFamily="Poppins, Segoe UI"
-      Title="Checkout">
+      Title="Checkout"
+      Unloaded="Page_Unloaded">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Logo/Header -->
-            <RowDefinition Height="*"/>    <!-- Stepper + Payment Options -->
-            <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
+            <RowDefinition Height="Auto"/> <!-- Row 0: Header (Logo) -->
+            <RowDefinition Height="*"/>    <!-- Row 1: Stepper + QR Content (Middle) -->
+            <RowDefinition Height="Auto"/> <!-- Row 2: Cancel Button -->
         </Grid.RowDefinitions>
 
         <!-- ===== 1. HEADER (Logo + Tagline) ===== -->
@@ -26,7 +27,7 @@
             <Image Source="/Assets/logo.png" 
                    Width="240" 
                    Stretch="Uniform" 
-                   HorizontalAlignment="Center"
+                   HorizontalAlignment="Center" 
                    RenderOptions.BitmapScalingMode="HighQuality"/>
 
             <!-- Tagline -->
@@ -39,19 +40,18 @@
                        Margin="0,8,0,0"/>
         </StackPanel>
 
-        <!-- ===== 2. MIDDLE CONTENT (Stepper + Payment Options) ===== -->
+        <!-- ===== 2. MIDDLE CONTENT (Stepper + Scan to Pay QR Section) ===== -->
         <Grid Grid.Row="1"
-              Margin="0,80,0,40"
               HorizontalAlignment="Center"
-              Width="880">
+              Width="880"
+              Margin="0,40,0,20">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!-- Stepper -->
-                <RowDefinition Height="Auto"/> <!-- Title -->
-                <RowDefinition Height="*"/>    <!-- Payment Cards Stack -->
+                <RowDefinition Height="Auto"/> <!-- Stepper Progress Indicator -->
+                <RowDefinition Height="*"/>    <!-- Center QR Content -->
             </Grid.RowDefinitions>
 
-            <!-- Stepper Progress Indicator (880px width, matching Camera/Edit/PrintPreview) -->
-            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,78" Width="880">
+            <!-- Stepper Progress Indicator (Preserved & Maintained) -->
+            <Grid Grid.Row="0" Height="90" HorizontalAlignment="Center" Margin="0,0,0,30" Width="880">
                 <!-- Connector Track Line behind circles -->
                 <Grid Height="2" Margin="95,28,95,0" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
@@ -127,217 +127,154 @@
                 </Grid>
             </Grid>
 
-            <!-- Page Title positioned directly below Stepper -->
-            <TextBlock Grid.Row="1" 
-                       Text="Choose a Payment Method" 
-                       FontFamily="Poppins" 
-                       FontWeight="Bold" 
-                       FontSize="36" 
-                       Foreground="#FF1C244B" 
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,45"/>
+            <!-- Center Content (Scan to Pay + QR + Instructions) -->
+            <StackPanel Grid.Row="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
 
-            <!-- Payment Options Container positioned from top -->
-            <StackPanel Grid.Row="2" Width="880" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <!-- Title: Scan to Pay -->
+                <TextBlock Text="Scan to Pay" 
+                           FontFamily="Poppins" 
+                           FontWeight="SemiBold" 
+                           FontSize="34" 
+                           Foreground="#FF333333" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,16"/>
 
-                <!-- ===== PAYMENT OPTION 1: Debit/Credit Card (selected by default) ===== -->
-                <Border x:Name="CardPaymentBorder"
-                        Background="#EEF2FF"
-                        BorderBrush="#FF5C6BFF"
-                        BorderThickness="2"
-                        CornerRadius="24"
-                        MinHeight="255"
-                        Margin="0,0,0,30"
-                        Padding="38,30"
-                        Cursor="Hand"
-                        MouseLeftButtonDown="CardPayment_Click">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Icon from Assets -->
-                        <Image Source="/Assets/GPay_Card.png" 
-                               Width="120" 
-                               Height="120" 
-                               Margin="0,0,32,0" 
+                <!-- Price / Amount Display -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
+                    <TextBlock Text="Total: " 
+                               FontFamily="Poppins" 
+                               FontWeight="SemiBold" 
+                               FontSize="24" 
+                               Foreground="#FF555555" 
+                               VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtAmount" 
+                               Text="--.--" 
+                               FontFamily="Poppins" 
+                               FontWeight="Bold" 
+                               FontSize="28" 
+                               Foreground="#FF1C244B" 
+                               VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtCurrency" 
+                               Text=" CHF" 
+                               FontFamily="Poppins" 
+                               FontWeight="Bold" 
+                               FontSize="22" 
+                               Foreground="#FF1C244B" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- QR Code Box (Matching Scan to Upload frame) -->
+                <Grid HorizontalAlignment="Center">
+                    <Border BorderBrush="#DCDCDC" 
+                            BorderThickness="1.5" 
+                            CornerRadius="8" 
+                            Padding="22" 
+                            Background="White" 
+                            HorizontalAlignment="Center">
+                        <Image x:Name="ImgQrCode" 
+                               Width="480" 
+                               Height="480" 
                                Stretch="Uniform" 
+                               HorizontalAlignment="Center" 
                                RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <!-- Text Details -->
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Debit/Credit Card" 
+                    </Border>
+
+                    <!-- Loading / Initializing Overlay -->
+                    <Grid x:Name="LoadingOverlay" 
+                          Background="White" 
+                          Visibility="Visible">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock x:Name="TxtLoadingTitle"
+                                       Text="Generating Payment QR..." 
                                        FontFamily="Poppins" 
                                        FontWeight="SemiBold" 
-                                       FontSize="28" 
-                                       Foreground="#FF1C244B"/>
-                            <TextBlock Text="OR" 
-                                       FontFamily="Poppins" 
-                                       FontSize="13" 
-                                       Foreground="#FFA0A0AA" 
-                                       Margin="0,4,0,4"/>
-                            <TextBlock Text="Google Pay or Apple Pay" 
+                                       FontSize="24" 
+                                       Foreground="#FF333333" 
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="TxtLoadingSubtitle"
+                                       Text="Connecting to payment server..." 
                                        FontFamily="Poppins" 
                                        FontSize="16" 
-                                       Foreground="#FF6B7280"/>
+                                       Foreground="#FF888888" 
+                                       HorizontalAlignment="Center"/>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Grid>
+                </Grid>
 
-                <!-- ===== PAYMENT OPTION 2: Twint ===== -->
-                <Border x:Name="TwintBorder"
-                        Background="#FFFFFF"
-                        BorderBrush="#FFE5E7EB"
-                        BorderThickness="1.5"
-                        CornerRadius="24"
-                        MinHeight="255"
-                        Margin="0,0,0,30"
-                        Padding="38,30"
-                        Cursor="Hand"
-                        MouseLeftButtonDown="Twint_Click">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Icon from Assets -->
-                        <Image Source="/Assets/Twint.png" 
-                               Width="120" 
-                               Height="120" 
-                               Margin="0,0,32,0" 
-                               Stretch="Uniform" 
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <TextBlock Text="Twint" 
-                                   FontFamily="Poppins" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="28" 
-                                   Foreground="#FF1C244B" 
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                <!-- Instructions (Matching Scan to Upload 3-step style) -->
+                <StackPanel HorizontalAlignment="Center" Margin="0,32,0,0">
+                    <TextBlock Text="1. Open Camera on your phone" 
+                               FontFamily="Poppins" 
+                               FontSize="22" 
+                               Foreground="#FF555555" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,0,0,8"/>
 
-                <!-- ===== PAYMENT OPTION 3: Pay with Coupon ===== -->
-                <Border x:Name="CouponBorder"
-                        Background="#FFFFFF"
-                        BorderBrush="#FFE5E7EB"
-                        BorderThickness="1.5"
-                        CornerRadius="24"
-                        MinHeight="255"
-                        Margin="0,0,0,30"
-                        Padding="38,30"
-                        Cursor="Hand"
-                        MouseLeftButtonDown="Coupon_Click">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Icon from Assets -->
-                        <Image Source="/Assets/Coupon.png" 
-                               Width="120" 
-                               Height="120" 
-                               Margin="0,0,32,0" 
-                               Stretch="Uniform" 
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <TextBlock Text="Pay with Coupon" 
-                                   FontFamily="Poppins" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="28" 
-                                   Foreground="#FF1C244B" 
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                    <TextBlock Text="2. Scan the code above" 
+                               FontFamily="Poppins" 
+                               FontSize="22" 
+                               Foreground="#FF555555" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,0,0,8"/>
 
-                <!-- ===== PAYMENT OPTION 4: Terminal (Card Reader) ===== -->
-                <Border x:Name="TerminalBorder"
-                        Background="#FFFFFF"
-                        BorderBrush="#FFE5E7EB"
-                        BorderThickness="1.5"
-                        CornerRadius="24"
-                        MinHeight="255"
-                        Margin="0,0,0,0"
-                        Padding="38,30"
-                        Cursor="Hand"
-                        MouseLeftButtonDown="Terminal_Click">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Icon from Assets -->
-                        <Image Source="/Assets/Terminal.png" 
-                               Width="120" 
-                               Height="120" 
-                               Margin="0,0,32,0" 
-                               Stretch="Uniform" 
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <TextBlock Text="Terminal (Card Reader)" 
-                                   FontFamily="Poppins" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="28" 
-                                   Foreground="#FF1C244B" 
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                    <TextBlock Text="3. Complete the payment to print" 
+                               FontFamily="Poppins" 
+                               FontSize="22" 
+                               Foreground="#FF555555" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,0,0,18"/>
+
+                    <!-- Countdown Timer -->
+                    <TextBlock x:Name="TxtCountdownTimer" 
+                               Text="Expires in: 10:00" 
+                               FontFamily="Poppins" 
+                               FontWeight="Medium"
+                               FontSize="22" 
+                               Foreground="#FF6B7280" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
             </StackPanel>
-
         </Grid>
 
-        <!-- ===== 3. BOTTOM ACTION BUTTONS ===== -->
-        <Grid Grid.Row="2" Width="880" Height="80" HorizontalAlignment="Center" Margin="0,0,0,60">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="28"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Back Button -->
-            <Button Grid.Column="0"
-                    x:Name="BackButton"
-                    Click="BackButton_Click"
-                    Background="#FFEFEFEF"
-                    BorderThickness="0"
-                    Cursor="Hand">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder" 
-                                Background="{TemplateBinding Background}" 
-                                CornerRadius="16">
-                            <TextBlock Text="BACK" 
-                                       FontFamily="Poppins" 
-                                       FontWeight="Bold" 
-                                       FontSize="20" 
-                                       Foreground="#FF4B5563" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-
-            <!-- Pay Now Action Button -->
-            <Button Grid.Column="2"
-                    x:Name="NextButton"
-                    Click="NextButton_Click"
-                    Background="#FF5C6BFF"
-                    BorderThickness="0"
-                    Cursor="Hand">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder" 
-                                Background="{TemplateBinding Background}" 
-                                CornerRadius="16">
-                            <TextBlock Text="PAY NOW" 
-                                       FontFamily="Poppins" 
-                                       FontWeight="Bold" 
-                                       FontSize="20" 
-                                       Foreground="White" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </Grid>
+        <!-- ===== 3. CANCEL BUTTON (Matching ScanQrView style) ===== -->
+        <Button Grid.Row="2"
+                x:Name="BackButton"
+                Width="520"
+                Height="72"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,70"
+                Click="BackButton_Click"
+                Background="#FFEFEFEF"
+                BorderThickness="0"
+                Cursor="Hand">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="16">
+                        <TextBlock Text="Cancel" 
+                                   FontFamily="Poppins" 
+                                   FontWeight="Medium" 
+                                   FontSize="24" 
+                                   Foreground="#FF4B5563" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
     </Grid>
 </Page>
